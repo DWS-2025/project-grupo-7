@@ -1,5 +1,6 @@
 package com.example.proyectodws.Entities;
 
+//this code is for subjects
 public class Class {
     private long id;
     private String name;
