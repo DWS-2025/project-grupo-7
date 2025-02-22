@@ -2,6 +2,7 @@ package com.example.proyectodws.Entities;
 import java.util.ArrayList;
 import java.util.List;
 
+//this code is for subjects
 public class Class {
     private long id;
     private String name;
