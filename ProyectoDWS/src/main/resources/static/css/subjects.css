@@ -1,15 +1,31 @@
+/* General Styles */
 body {
     font-family: sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
+/* Header */
 header {
     background-color: #e0e0e0;
+    width: 100%;
     padding: 20px 0;
     text-align: center;
 }
+
+.content {
+    width: 90%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Navigation Menu */
 .menu nav ul {
     list-style: none;
     padding: 0;
@@ -19,7 +35,7 @@ header {
 }
 
 .menu nav ul li {
-    margin: 0 20px;
+    margin: 0 15px;
 }
 
 .menu nav ul li a {
@@ -35,64 +51,97 @@ header {
     background-color: #d0d0d0;
 }
 
+/* Title */
 .titular h1 {
     font-family: 'Tilt Warp', cursive;
     font-size: 2.5em;
     color: #333;
-    margin-top: 30px;
-}
-
-#cards {
-    padding: 40px 0;
+    margin-top: 20px;
     text-align: center;
 }
 
-.content {
-    width: 80%;
-    margin: 0 auto;
-    max-width: 1200px;
-}
-
-.content-cards {
+/* Main Content */
+main {
+    width: 90%;
+    max-width: 800px;
+    margin: 30px auto;
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
 }
 
-.card {
+/* Sections */
+section {
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 20px;
-    padding: 20px;
-    width: 250px;
+    padding: 30px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 700px;
     text-align: center;
-    transition: transform 0.3s ease;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-}
-
-.card img {
-    max-width: 100px;
-    margin-bottom: 15px;
-}
-
-.card h3 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
+/* Section Titles */
+section h2 {
     color: #333;
+    font-size: 1.8em;
+    margin-bottom: 10px;
 }
 
-.card a {
-    text-decoration: none;
+/* Paragraphs */
+section p {
+    color: #555;
+    font-size: 1.2em;
+    line-height: 1.6;
+}
+
+/* Lists */
+section ul {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+section ul li {
+    background: url('/icons/check.svg') no-repeat left center;
+    background-size: 20px;
+    padding-left: 30px;
+    font-size: 1.2em;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+/* Resources Section */
+.resources ul {
+    padding: 0;
+}
+
+.resources ul li {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.resources ul li a {
     color: #007bff;
+    text-decoration: none;
     font-weight: bold;
 }
 
-.card a u {
-    text-decoration: none;
-    border-bottom: 2px solid #007bff;
-    padding-bottom: 2px;
+.resources ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+footer {
+    background-color: #e0e0e0;
+    width: 100%;
+    padding: 15px;
+    text-align: center;
+    color: #333;
+    font-weight: bold;
+    margin-top: 20px;
 }
