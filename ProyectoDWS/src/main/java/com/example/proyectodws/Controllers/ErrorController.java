@@ -24,6 +24,11 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
         return new ModelAndView("Error401");
     }
+    @ExceptionHandler(org.springframework.web.servlet.NoHandlerFoundException.class)
+    public ModelAndView handleNotFound(HttpServletResponse response) {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND); // 404
+        return new ModelAndView("Error404");
+    }
 
     @ExceptionHandler(IOException.class)
     public ModelAndView handleMovedPermanently(HttpServletResponse response) {
