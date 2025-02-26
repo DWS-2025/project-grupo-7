@@ -28,14 +28,14 @@ public class ClassService {
     }
 
     // Keep the language / puts new ID
-    public void save(Class class) {
+    public void save(Class class1) {
 
-        if(class.getId() == null || class.getId() == 0) {
+        if(class1.getId() == null || class1.getId() == 0) {
             long id = nextId.getAndIncrement();
-            class.setId(id);
+            class1.setId(id);
         }
 
-        this.classes.put(class.getId(), class);
+        this.classes.put(class1.getId(), class1);
     }
 
     // Delete languages by ID
