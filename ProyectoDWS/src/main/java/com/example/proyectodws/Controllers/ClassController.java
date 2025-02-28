@@ -38,8 +38,9 @@ public class ClassController {
 
         model.addAttribute("posts", classService.findAll()); // add the list of languages to the model
         model.addAttribute("welcome", session.isNew()); // 'welcome' for new user's session
-        return "index";
+        return "index.html";
     }
+
     // Display new language form
     @GetMapping("/language/new")
     public String newPostForm(Model model) {
@@ -69,7 +70,7 @@ public class ClassController {
         Class class1 = classService.findById(id);
         // return 404
         if (class1 == null) {
-            return "page404";
+            return "Error404";
         }
 
         model.addAttribute("class", class1); // adds the language attribute to the model
@@ -99,13 +100,10 @@ public class ClassController {
 
         //404
         if (class1 == null) {
-            return "page404"; // O cualquier otra lógica de manejo de error
+            return "Error404"; // O cualquier otra lógica de manejo de error
         }
 
         model.addAttribute("class", class1); // adds the language attribute to the model
         return "show_courses_for_language";
     }
-
-
-
 }
