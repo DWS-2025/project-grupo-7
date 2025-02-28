@@ -2,13 +2,12 @@ package com.example.proyectodws.Service;
 
 import com.example.proyectodws.Entities.Course;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Service
+
 public class UserSession {
     private String user;
     private Set<Course> enrolledCourses = new HashSet<>();
