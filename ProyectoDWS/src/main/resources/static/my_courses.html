@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cursos Matriculados</title>
+    <link rel="stylesheet" href="/css/style_Courses.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="header">
+    <p>CURSOS MATRICULADOS</p>
+</header>
+<div class="list-courses">
+    <ul>
+        {{#enrolledCourses}}
+        <li><u>{{title}}</u><br>{{description}}<br></li>
+        {{/enrolledCourses}}
+    </ul>
+</div>
+<div class="button">
+    <a href="/courses">Volver a la lista de cursos</a>
+</div>
+</body>
+</html>

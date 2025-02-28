@@ -1,0 +1,41 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AJAcademic</title>
+    <link rel="stylesheet" href="/css/style_Courses.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
+</head>
+<header class="header">
+    <nav>
+        <ul class="nav-links">
+            <li><a href="/">INICIO</a></li>
+            <li><a href="/courses">CURSOS</a></li>
+            <li><a href="/aboutUs">SOBRE NOSOTROS</a></li>
+        </ul>
+    </nav>
+    <a href="/enrolled_courses" class="btn"><button>MIS CURSOS</button></a>
+</header>
+<body>
+<div class="image">
+    <img src="/language/{{post.id}}/image">
+</div>
+
+<p>Idioma: <span style="text-transform: uppercase;"><b>{{post.title}}</b></span></p>
+<p>{{post.text}}</p>
+
+<div class="container">
+    <div class="section-button">
+        <div class="button">
+            <a href="/language/{{post.id}}/delete">Delete language</a>
+        </div>
+        <div class="button">
+            <a href="/language/{{post.id}}/courses">Lista de cursos</a><br>
+        </div>
+    </div>
+
+    <div class="select">
+        <a href="/">Back</a>
+    </div>
+</div>
+</body>
+</html>

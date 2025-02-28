@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cursos</title>
+  <link rel="stylesheet" href="./css/style_Courses.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="header">
+  <nav>
+    <ul class="nav-links">
+      <li><a href="/">INICIO</a></li>
+      <li><a href="subjects.html">ASIGNATURAS</a></li>
+      <li><a href="aboutUS.html">SOBRE NOSOTROS</a></li>
+    </ul>
+  </nav>
+  <a href="/enrolled_courses" class="btn"><button>MIS CURSOS</button></a>
+</header>
+{{#welcome}}
+<h1>Welcome!</h1>
+{{/welcome}}
+<section id="curso-content">
+  <h2>Nuestros Cursos</h2>
+  <p>Explora nuestra variedad de cursos para aprender idiomas de manera efectiva.</p>
+</section>
+<section id="cards">
+  <div class="content">
+    <div class="content-cards">
+      {{#courses}}
+      <div class="card">
+        <a href="/course/{{id}}">{{title}}</a>
+        <p><u>Idioma:</u> {{language}}</p>
+      </div>
+      {{/courses}}
+    </div>
+  </div>
+</section>
+{{^courses}}
+<p>No languages yet.</p>
+{{/courses}}
+<div class="contenedor-botones">
+  <button class="botones" onclick="window.location.href='/course/new'">AGREGAR CURSO</button>
+</div>
+</body>
+</html>
