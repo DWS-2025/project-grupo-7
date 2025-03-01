@@ -7,6 +7,7 @@ import com.example.proyectodws.Service.ClassService;
 import com.example.proyectodws.Service.UserSession;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -66,15 +68,13 @@ public class ClassController {
     // Display a view of the language
     @GetMapping("/language/{id}")
     public String showPost(Model model, @PathVariable long id) {
-
         Class class1 = classService.findById(id);
-        // return 404
+
         if (class1 == null) {
-            return "Error404";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Class not found");
         }
 
-        model.addAttribute("class", class1); // adds the language attribute to the model
-
+        model.addAttribute("class", class1);
         return "show_language";
     }
     // Return the image for user
@@ -106,4 +106,5 @@ public class ClassController {
         model.addAttribute("class", class1); // adds the language attribute to the model
         return "show_courses_for_language";
     }
+
 }
