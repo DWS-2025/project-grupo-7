@@ -45,9 +45,9 @@ public class ClassService {
     }
 
     public Class getPostByLanguage(String language) {
-        for (Class post : classes.values()) {
-            if (post.getTitle().equals(language)) {
-                return post;
+        for (Class class1 : classes.values()) {
+            if (class1.getTitle().equals(language)) {
+                return class1;
             }
         }
         return null; // if doesn't find anything

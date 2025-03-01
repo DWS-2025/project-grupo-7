@@ -11,7 +11,7 @@
   <nav>
     <ul class="nav-links">
       <li><a href="/">INICIO</a></li>
-      <li><a href="subjects.html">ASIGNATURAS</a></li>
+      <li><a href="courses.html">CURSOS</a></li>
       <li><a href="aboutUS.html">SOBRE NOSOTROS</a></li>
     </ul>
   </nav>
@@ -22,7 +22,7 @@
 {{/welcome}}
 <section id="curso-content">
   <h2>Nuestros Cursos</h2>
-  <p>Explora nuestra variedad de cursos para aprender idiomas de manera efectiva.</p>
+  <p>Explora nuestra variedad de cursos para aprender diferentes asignaturas.</p>
 </section>
 <section id="cards">
   <div class="content">
@@ -30,14 +30,14 @@
       {{#courses}}
       <div class="card">
         <a href="/course/{{id}}">{{title}}</a>
-        <p><u>Idioma:</u> {{language}}</p>
+        <p><u>Asignatura:</u> {{subject}}</p>
       </div>
       {{/courses}}
     </div>
   </div>
 </section>
 {{^courses}}
-<p>No languages yet.</p>
+<p>No subjects yet.</p>
 {{/courses}}
 <div class="contenedor-botones">
   <button class="botones" onclick="window.location.href='/course/new'">AGREGAR CURSO</button>
