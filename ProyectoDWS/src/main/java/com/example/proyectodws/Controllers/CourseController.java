@@ -30,20 +30,26 @@ public class CourseController {
     public String showCourses(Model model, HttpSession session) {
         model.addAttribute("courses", courseService.findAll()); // add the list to the model
         model.addAttribute("welcome", session.isNew()); // 'welcome' to indicates new session
-        return "courses";
+        return "courses.html";
     }
     @GetMapping("/courses/manage")
     public String manageCourses(Model model, HttpSession session) {
         model.addAttribute("courses", courseService.findAll()); // add the list to the model
         model.addAttribute("welcome", session.isNew()); // 'welcome' for new session
-        return "manage_form";
+        return "manage_form.html";
     }
 
     // Display form for new course
     @GetMapping("/course/new")
     public String newCourseForm(Model model) {
-        model.addAttribute("user", userSession.getUser()); // adds user attribute to the model
-        return "new_course";
+        Object user = userSession.getUser();
+
+        if (user == null) {
+            return "errorScreens/Error404.html";
+        }
+
+        model.addAttribute("user", user);
+        return "new_course.html";
     }
 
     // Save new course
@@ -58,7 +64,7 @@ public class CourseController {
             matchingClass.getAssociatedCourses().add(course);
         }
         model.addAttribute("numCourses", userSession.getNumCourses()); // adds the number of courses to the model
-        return "saved_course";
+        return "saved_course.html";
     }
 
     // Display course with ID
@@ -67,7 +73,7 @@ public class CourseController {
         Course course = courseService.findById(id);
         // if doesn't find the course throws the error page
         if (course == null) {
-            return "page404";
+            return "Error404";
         }
         // if finds the course add to the model
         model.addAttribute("course", course);
@@ -123,7 +129,7 @@ public class CourseController {
         Course course = courseService.findById(id);
 
         if (course == null) {
-            return "page404"; // O la página de error correspondiente
+            return "Error404"; // O la página de error correspondiente
         }
 
         model.addAttribute("course", course);

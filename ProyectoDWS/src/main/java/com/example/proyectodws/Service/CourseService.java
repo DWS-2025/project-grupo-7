@@ -18,7 +18,6 @@ public class CourseService {
     }
     // Look for and return all courses
     public Collection<Course> findAll() {
-
         return courses.values();
     }
     // Look for and return the course with the 'ID'

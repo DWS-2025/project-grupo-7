@@ -49,7 +49,7 @@ public class ClassController {
 
         model.addAttribute("user", userSession.getUser()); // add the user attribute to the model
 
-        return "new_language";
+        return "new_subject";
     }
     // Add new language
     @PostMapping("/language/new")
@@ -63,7 +63,7 @@ public class ClassController {
 
         model.addAttribute("numClasses", userSession.getNumLanguages()); // adds the number of languages to the model
 
-        return "saved_language";
+        return "saved_subject";
     }
     // Display a view of the language
     @GetMapping("/language/{id}")
@@ -71,11 +71,11 @@ public class ClassController {
         Class class1 = classService.findById(id);
 
         if (class1 == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Class not found");
+            return "errorScreens/Error404"; // Página de error personalizada
         }
 
         model.addAttribute("class", class1);
-        return "show_language";
+        return "show_subject";
     }
     // Return the image for user
     @GetMapping("/language/{id}/image")
@@ -91,20 +91,18 @@ public class ClassController {
         imageService.deleteImage(CLASS_FOLDER, id); // deletes the image associated with the language
         userSession.disNumLanguage(); // decrements the number of languages for the user session
 
-        return "deleted_language";
+        return "deleted_subject";
     }
     // Display courses by language
     @GetMapping("/language/{id}/courses")
     public String showCoursesForLanguage(Model model, @PathVariable long id) {
         Class class1 = classService.findById(id);
-
-        //404
         if (class1 == null) {
-            return "Error404"; // O cualquier otra lógica de manejo de error
+            return "errorScreens/Error404"; // O cualquier otra lógica de manejo de error
         }
 
         model.addAttribute("class", class1); // adds the language attribute to the model
-        return "show_courses_for_language";
+        return "show_courses_for_subject";
     }
 
 }
