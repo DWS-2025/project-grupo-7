@@ -1,0 +1,83 @@
+/* Estilos generales */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Tilt Warp', sans-serif;
+}
+
+body {
+    background-color: #f9f9f9;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Encabezado */
+.header {
+    background-color: #333333;
+    width: 100%;
+    padding: 20px 0;
+    text-align: center;
+    color: #fff;
+    font-size: 2em;
+    font-weight: bold;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+/* Ajuste para evitar que el contenido se superponga con el encabezado */
+body {
+    padding-top: 80px; /* Ajusta el valor según la altura del encabezado */
+}
+
+/* Lista de asignaturas */
+.list-subjects {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.list-subjects ul {
+    list-style: none;
+    padding: 0;
+}
+
+.list-subjects li {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 1.2em;
+}
+
+.list-subjects li u {
+    color: #333333;
+    font-weight: bold;
+}
+
+/* Botón de navegación */
+.button a {
+    display: inline-block;
+    margin-top: 20px;
+    color: white;
+    background-color: #4CAF50;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+.button a:hover {
+    background-color: #45a049;
+}

@@ -134,34 +134,5 @@ public class SubjectController {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /*@PostMapping("/subjects/update/{id}")
-    public String updateSubject(@PathVariable Long id, @ModelAttribute Subject subject) {
-        subjectService.updateSubject(id, subject);
-        return "redirect:/subjects";
-    }
-
-    @GetMapping("/subjects/delete/{id}")
-    public String deleteSubject(@PathVariable Long id) {
-        subjectService.deleteSubject(id);
-        return "redirect:/subjects";
-    }*/
 }
 
