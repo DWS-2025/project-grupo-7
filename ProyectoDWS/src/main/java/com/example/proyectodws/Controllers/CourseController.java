@@ -83,10 +83,24 @@ public class CourseController {
     // Delete course
     @GetMapping("/course/{id}/delete")
     public String deleteCourse(Model model, @PathVariable long id) {
-        courseService.deleteById(id); // deletes the course
-        userService.disNumCourses(); // decrements the number of courses for user
+        Course course = courseService.findById(id);
+
+        if (course == null) {
+            return "Error404"; // Si el curso no existe, devuelve página de error
+        }
+
+        // Eliminar el curso de la lista de cursos inscritos del usuario
+        userService.removeCourseFromUsers(course);
+
+        // Eliminar el curso de la base de datos
+        courseService.deleteById(id);
+
+        // Decrementar el número de cursos del usuario
+        userService.disNumCourses();
+
         return "deleted_course";
     }
+
 
     // Display edit course form
     @GetMapping("/course/{id}/edit")

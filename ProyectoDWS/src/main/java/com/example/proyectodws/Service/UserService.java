@@ -62,6 +62,10 @@ public class UserService {
         enrolledCourses.add(course);
         course.enrollStudent(this.user);
     }
+    public void removeCourseFromUsers(Course course) {
+        enrolledCourses.remove(course); // Eliminamos el curso de la lista de cursos inscritos
+    }
+
 
 
 
