@@ -1,6 +1,6 @@
-/*package com.example.proyectodws.Controllers;
+package com.example.proyectodws.Controllers;
 
-import com.example.proyectodws.Entities.Class;
+import com.example.proyectodws.Entities.Subject;
 import com.example.proyectodws.Service.ImageService;
 import com.example.proyectodws.Service.ClassService;
 import com.example.proyectodws.Service.UserService;
@@ -35,17 +35,27 @@ public class ClassController {
     public String showSubjects(Model model, HttpSession session) {
 
         model.addAttribute("posts", classService.findAll()); // add the list of subjects to the model
-        return "index.html";
+        return "index";
+    }
+
+    @GetMapping("/aboutUS")
+    public String aboutUs() {
+        return "aboutUS"; // Nombre del archivo HTML en templates (aboutUS.html)
+    }
+
+    @GetMapping("/contact")
+    public String contact() {
+        return "contact"; // Nombre del archivo HTML en templates (contact.html)
     }
 
     // Display new language form
     @GetMapping("/subject/new")
     public String newSubject() {
-        return "new_subject.html";
+        return "new_subject";
     }
     // Add new subject
     @PostMapping("/subject/new")
-    public String newPost(Model model, Class class1, MultipartFile image) throws IOException {
+    public String newPost(Model model, Subject class1, MultipartFile image) throws IOException {
 
         classService.save(class1);
 
@@ -55,19 +65,19 @@ public class ClassController {
 
         model.addAttribute("numClasses", userService.getNumLanguages()); // adds the number of languages to the model
 
-        return "saved_subject.html";
+        return "saved_subject";
     }
     // Display a view of the language
     @GetMapping("/subject/{id}")
     public String showPost(Model model, @PathVariable long id) {
-        Class class1 = classService.findById(id);
+        Subject class1 = classService.findById(id);
 
         if (class1 == null) {
             return "errorScreens/Error404"; // Página de error personalizada
         }
 
         model.addAttribute("class", class1);
-        return "show_subject.html";
+        return "show_subject";
     }
     // Return the image for user
     @GetMapping("/subject/{id}/image")
@@ -83,18 +93,18 @@ public class ClassController {
         imageService.deleteImage(CLASS_FOLDER, id); // deletes the image associated with the language
         userService.disNumLanguage(); // decrements the number of languages for the user session
 
-        return "deleted_subject.html";
+        return "deleted_subject";
     }
     // Display courses by language
     @GetMapping("/subject/{id}/courses")
     public String showCoursesForLanguage(Model model, @PathVariable long id) {
-        Class class1 = classService.findById(id);
+        Subject class1 = classService.findById(id);
         if (class1 == null) {
             return "errorScreens/Error404"; // O cualquier otra lógica de manejo de error
         }
 
         model.addAttribute("class", class1); // adds the language attribute to the model
-        return "show_courses_for_subject.html";
+        return "show_courses_for_subject";
     }
 
-}*/
+}

@@ -1,6 +1,6 @@
-/*package com.example.proyectodws.Service;
+package com.example.proyectodws.Service;
 
-import com.example.proyectodws.Entities.Class;
+import com.example.proyectodws.Entities.Subject;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -9,26 +9,26 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class ClassService {
-    private ConcurrentMap<Long, Class> classes = new ConcurrentHashMap<>();
+    private ConcurrentMap<Long, Subject> classes = new ConcurrentHashMap<>();
     private AtomicLong nextId = new AtomicLong(1);
 
     public ClassService() {
     }
 
     // Look for and return all languages
-    public Collection<Class> findAll() {
+    public Collection<Subject> findAll() {
 
         return classes.values();
     }
 
     // Look for and return the language by ID
-    public Class findById(long id) {
+    public Subject findById(long id) {
 
         return classes.get(id);
     }
 
     // Keep the language / puts new ID
-    public void save(Class class1) {
+    public void save(Subject class1) {
 
         if(class1.getId() == null || class1.getId() == 0) {
             long id = nextId.getAndIncrement();
@@ -44,8 +44,8 @@ public class ClassService {
         this.classes.remove(id);
     }
 
-    public Class getPostByLanguage(String language) {
-        for (Class class1 : classes.values()) {
+    public Subject getPostByLanguage(String language) {
+        for (Subject class1 : classes.values()) {
             if (class1.getTitle().equals(language)) {
                 return class1;
             }
@@ -53,4 +53,4 @@ public class ClassService {
         return null; // if doesn't find anything
     }
 
-}*/
+}

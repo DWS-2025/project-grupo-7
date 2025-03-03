@@ -1,4 +1,4 @@
-/*package com.example.proyectodws.Controllers;
+package com.example.proyectodws.Controllers;
 
 import com.example.proyectodws.Entities.Course;
 import com.example.proyectodws.Entities.Subject;
@@ -30,13 +30,13 @@ public class CourseController {
     public String showCourses(Model model, HttpSession session) {
         model.addAttribute("courses", courseService.findAll()); // add the list to the model
         model.addAttribute("welcome", session.isNew()); // 'welcome' to indicates new session
-        return "courses.html";
+        return "courses";
     }
     @GetMapping("/courses/manage")
     public String manageCourses(Model model, HttpSession session) {
         model.addAttribute("courses", courseService.findAll()); // add the list to the model
         model.addAttribute("welcome", session.isNew()); // 'welcome' for new session
-        return "manage_form.html";
+        return "manage_form";
     }
 
     // Display form for new course
@@ -49,7 +49,7 @@ public class CourseController {
         }
 
         model.addAttribute("user", user);
-        return "new_course.html";
+        return "new_course";
     }
 
     // Save new course
@@ -64,7 +64,7 @@ public class CourseController {
             matchingClass.getAssociatedCourses().add(course);
         }
         model.addAttribute("numCourses", userService.getNumCourses()); // adds the number of courses to the model
-        return "saved_course.html";
+        return "saved_course";
     }
 
     // Display course with ID
@@ -136,4 +136,4 @@ public class CourseController {
         model.addAttribute("enrolledStudents", course.getEnrolledStudents()); // Agrega la lista de estudiantes matriculados al modelo
         return "enrolled_students";
     }
-}*/
+}
