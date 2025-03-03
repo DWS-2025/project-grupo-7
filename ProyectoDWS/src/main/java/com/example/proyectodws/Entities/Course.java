@@ -3,6 +3,7 @@ package com.example.proyectodws.Entities;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Course {
     private Long id;
     private String subject;

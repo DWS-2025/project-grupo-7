@@ -1,4 +1,4 @@
-/* Estilos generales */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -16,7 +16,6 @@ body {
     flex-direction: column;
 }
 
-/* Estilo de la caja principal */
 .wrapper {
     text-align: center;
 }
@@ -38,7 +37,7 @@ body {
     margin-bottom: 20px;
 }
 
-/* Estilo de los botones */
+
 .button, .button a {
     display: block;
     margin: 10px 0;

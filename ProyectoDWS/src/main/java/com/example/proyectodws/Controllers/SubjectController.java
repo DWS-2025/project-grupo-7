@@ -30,12 +30,6 @@ public class SubjectController {
     @Autowired
     private ImageService imageService;
 
-   /* @GetMapping("/subjects")
-    public String listSubjects(Model model) {
-        Collection<Subject> subjects = subjectService.findAll();
-        model.addAttribute("subjects", subjects);
-        return "subjects";
-    }*/
     @GetMapping("/subjects")
     public String showSubjects(Model model, HttpSession session) {
         model.addAttribute("subjects", subjectService.findAll()); // add the list to the model
@@ -50,11 +44,6 @@ public class SubjectController {
         return "manage_form_subject";
     }
 
-   /* @GetMapping("/subjects/new")
-    public String newSubject(Model model) {
-        model.addAttribute("subject", new Subject());
-        return "new_subject";
-    }*/
    @GetMapping("/subjects/new")
    public String newSubjectForm(Model model) {
        Object user = userService.getUser();
@@ -76,7 +65,7 @@ public class SubjectController {
         subject.setText(text);
 
         subjectService.saveSubject(subject);
-        userService.incNumSubjects(); // increments number of courses for user
+        userService.incNumSubjects(); // increments number of subjects for user
        Subject matchingClass = classService.getPostBySubject(subject.getTitle());
 
         if (!image.isEmpty()) {
@@ -88,11 +77,11 @@ public class SubjectController {
     @GetMapping("/subject/{id}")
     public String showSubject(Model model, @PathVariable long id) {
         Subject subject = subjectService.getSubjectById(id);
-        // if doesn't find the course throws the error page
+        // if doesn't find the subject throws the error page
         if (subject == null) {
             return "Error404";
         }
-        // if finds the course add to the model
+        // if finds the subject add to the model
         model.addAttribute("subject", subject);
         return "show_subject";
     }
@@ -109,8 +98,8 @@ public class SubjectController {
     public String editSubject (Model model, @PathVariable long id, Subject updatedSubject) {
         Subject existingSubject = subjectService.getSubjectById(id);
         existingSubject.setTitle(updatedSubject.getTitle()); // updates the title
-        existingSubject.setText(updatedSubject.getText()); // updates description
-        subjectService.saveSubject(existingSubject); // saves updated course
+        existingSubject.setText(updatedSubject.getText()); // updates text
+        subjectService.saveSubject(existingSubject); // saves updated subject
 
         model.addAttribute("subject", existingSubject);
         return "edited_subject";
@@ -134,7 +123,7 @@ public class SubjectController {
     @PostMapping("/subject/{id}/enroll")
     public String enrollInSubject(Model model, @PathVariable long id) {
         Subject subject = subjectService.getSubjectById(id);
-        userService.enrollInSubject(subject); // enrolls the user in the course
+        userService.enrollInSubject(subject); // enrolls the user in the subject
         return "enrolled_subject";
     }
     // Display enrolled students

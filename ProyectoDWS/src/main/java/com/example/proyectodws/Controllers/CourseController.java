@@ -89,13 +89,13 @@ public class CourseController {
             return "Error404"; // Si el curso no existe, devuelve página de error
         }
 
-        // Eliminar el curso de la lista de cursos inscritos del usuario
+        // delete course of the list of courses of user
         userService.removeCourseFromUsers(course);
 
-        // Eliminar el curso de la base de datos
+        // delete course of bbdd
         courseService.deleteById(id);
 
-        // Decrementar el número de cursos del usuario
+        // number of courses of users down
         userService.disNumCourses();
 
         return "deleted_course";

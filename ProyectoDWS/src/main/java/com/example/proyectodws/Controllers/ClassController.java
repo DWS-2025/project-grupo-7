@@ -112,7 +112,7 @@ public class ClassController {
     public String showCoursesForSubject(Model model, @PathVariable long id) {
         Subject class1 = classService.findById(id);
         if (class1 == null) {
-            return "errorScreens/Error404"; // O cualquier otra lógica de manejo de error
+            return "errorScreens/Error404"; //
         }
 
         model.addAttribute("class", class1);

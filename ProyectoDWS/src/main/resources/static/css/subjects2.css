@@ -1,4 +1,4 @@
-/* Estilos generales */
+
 body {
     font-family: 'Tilt Warp', sans-serif;
     margin: 0;
@@ -10,7 +10,7 @@ body {
     text-align: center;
 }
 
-/* Encabezado */
+
 .header {
     background-color: #e0e0e0;
     width: 100%;
@@ -58,7 +58,6 @@ body {
     background-color: #45a049;
 }
 
-/* Contenido de asignaturas */
 #subject-content {
     padding: 20px;
     text-align: center;
@@ -76,7 +75,7 @@ body {
     line-height: 1.6;
 }
 
-/* Tarjetas de asignaturas */
+
 #cards {
     background-color: #fff;
     padding: 30px;
@@ -121,7 +120,7 @@ body {
     margin-top: 10px;
 }
 
-/* Botón de agregar asignatura */
+
 .contenedor-botones {
     text-align: center;
     padding: 20px;

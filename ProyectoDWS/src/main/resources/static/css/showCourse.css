@@ -1,4 +1,4 @@
-/* Estilos generales */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -16,7 +16,7 @@ body {
     flex-direction: column;
 }
 
-/* Contenedor principal */
+
 .container {
     background-color: #fff;
     border: 1px solid #ddd;
@@ -50,7 +50,6 @@ body {
     background-color: #45a049;
 }
 
-/* Estilo de los enlaces */
 .button, .button a {
     display: block;
     margin: 10px 0;

@@ -76,7 +76,7 @@ public class UserService {
 
 
     public void removeCourseFromUsers(Course course) {
-        enrolledCourses.remove(course); // Eliminamos el curso de la lista de cursos inscritos
+        enrolledCourses.remove(course);
     }
 
 
