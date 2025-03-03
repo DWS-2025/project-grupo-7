@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Asignaturas Matriculadas</title>
+    <link rel="stylesheet" href="/css/style_Courses.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="header">
+    <p>ASIGNATURAS MATRICULADAS</p>
+</header>
+<div class="list-subjects">
+    <ul>
+        {{#enrolledSubjects}}
+        <li><u>{{title}}</u><br>{{text}}<br></li>
+        {{/enrolledSubjects}}
+    </ul>
+</div>
+<div class="button">
+    <a href="/subjects">Volver a la lista de asignaturas</a>
+</div>
+</body>
+</html>

@@ -1,5 +1,5 @@
-/* general styles */
-*{
+/* Estilos generales */
+* {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -7,14 +7,19 @@
     font-size: 18px;
 }
 
-body p{
+body {
+    background-color: #f9f9f9;
+    line-height: 1.6;
+}
+
+p {
     text-align: center;
     margin: 10px 20px;
 }
 
-/* top menu style */
-.header{
-    background-color: #3498db;
+/* Estilo del menú superior */
+.header {
+    background-color: #e0e0e0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -22,45 +27,49 @@ body p{
     padding: 5px 10%;
 }
 
-.header .logo{
+.header .logo {
     cursor: pointer;
 }
 
-.header .logo img{
+.header .logo img {
     height: 185px;
     width: auto;
     transition: all 0.3s;
 }
 
-.header .logo img:hover{
+.header .logo img:hover {
     transform: scale(1.1);
 }
 
-.header .nav-links{
+.header .nav-links {
     list-style: none;
+    display: flex;
 }
 
-.header .nav-links li{
-    display: inline-block;
+.header .nav-links li {
     padding: 0 20px;
 }
 
-.header .nav-links li:hover{
+.header .nav-links li:hover {
     transform: scale(1.1);
 }
 
-.header .nav-links a{
+.header .nav-links a {
     font-size: 23px;
-    color: #ffffff;
+    color: #333;
     text-decoration: none;
 }
 
-.header .nav-links li a:hover{
-    color: goldenrod;
+.header .nav-links a:hover {
+    color: #d0d0d0;
 }
 
-.header .btn button{
-    font-size: 23px;;
+.header .btn {
+    text-align: center;
+}
+
+.header .btn button {
+    font-size: 23px;
     color: #ffffff;
     padding: 9px 25px;
     background: #666666;
@@ -70,15 +79,15 @@ body p{
     transition: all 0.3s ease 0s;
 }
 
-.header .btn button:hover{
+.header .btn button:hover {
     background-color: #666666;
-    color: goldenrod;
+    color: #d0d0d0;
     transform: scale(1.1);
 }
 
-/* header-courses style */
+/* Estilo de la cabecera de cursos */
 .courses .header-courses {
-    background-color: #3498db;
+    background-color: #e0e0e0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -89,37 +98,34 @@ body p{
     box-sizing: border-box;
 }
 
-.courses .header-courses h1{
+.courses .header-courses h1 {
     font-size: 35px;
     text-align: center;
-    background-color: #3498db;
-    color: #fff;
+    color: #333;
     width: 100%;
     box-sizing: border-box;
-
 }
 
-/* courses-section style */
+/* Estilo de la sección de cursos */
 #curso-content {
     background-color: #f5f5f5;
-    display: inline-block;
-    width: 100%;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-}
-
-#curso-content h2, #curso-content p {
-    margin-bottom: 20px;
+    width: 100%;
+    padding: 20px 0;
 }
 
 #curso-content h2 {
-    text-align: center;
     font-size: 45px;
+    margin-bottom: 20px;
+    color: #333;
 }
 
 #curso-content p {
-    text-align: center;
     font-size: 16px;
     color: #666;
+    margin-bottom: 20px;
 }
 
 #cards {
@@ -132,10 +138,12 @@ body p{
     justify-content: space-around;
     flex-wrap: wrap;
     background-color: #ffffff;
+    margin: 0 auto;
+    max-width: 1200px;
 }
 
 .card {
-    background-color: #f5f5f5ff;
+    background-color: #f5f5f5;
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
@@ -143,6 +151,11 @@ body p{
     width: 300px;
     padding: 20px;
     text-align: center;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .card p {
@@ -161,12 +174,12 @@ body p{
 
 .card a:hover {
     text-decoration: underline;
-    color: goldenrod;
+    color: #d0d0d0;
 }
 
-/* buttons */
-.contenedor-botones{
+.contenedor-botones {
     text-align: center;
+    padding: 20px 0;
 }
 
 .botones {
@@ -178,14 +191,19 @@ body p{
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-/* footer style */
+.botones:hover {
+    background-color: #45a049;
+}
+
+/* Estilo del pie de página */
 footer {
     text-align: center;
     padding: 10px 0;
-    background-color: #3498db;
-    color: #fff;
+    background-color: #e0e0e0;
+    color: #333;
 }
 
 footer p {

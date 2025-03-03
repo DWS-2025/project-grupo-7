@@ -1,41 +1,30 @@
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AJAcademic</title>
-    <link rel="stylesheet" href="/css/style_Courses.css">
+    <title>Asignatura</title>
+    <link rel="stylesheet" href="/css/showCourse.css">
     <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
 </head>
-<header class="header">
-    <nav>
-        <ul class="nav-links">
-            <li><a href="/">INICIO</a></li>
-            <li><a href="/courses">CURSOS</a></li>
-            <li><a href="/aboutUs">SOBRE NOSOTROS</a></li>
-        </ul>
-    </nav>
-    <a href="/enrolled_courses" class="btn"><button>MIS CURSOS</button></a>
-</header>
 <body>
-<div class="image">
-    <img src="/subject/{{post.id}}/image">
-</div>
-
-<p>Asignatura: <span style="text-transform: uppercase;"><b>{{post.title}}</b></span></p>
-<p>{{post.text}}</p>
-
 <div class="container">
-    <div class="section-button">
-        <div class="button">
-            <a href="/subject/{{post.id}}/delete">Delete subject</a>
-        </div>
-        <div class="button">
-            <a href="/subject/{{post.id}}/courses">Lista de cursos</a><br>
-        </div>
+    <p><u>Asignatura</u><br>{{subject.title}}</p>
+    <br>
+    <p><u>Descripción</u><br>{{subject.text}}</p>
+    <div class="image">
+        <img src="/subject/{{subject.id}}/image" alt="Imagen de la asignatura">
     </div>
-
-    <div class="select">
-        <a href="/">Back</a>
-    </div>
+    <form action="/subject/{{subject.id}}/enroll" method="post">
+        <button type="submit">Unirse a la asignatura</button>
+    </form>
 </div>
+<div class="button">
+    <a href="/subject/{{subject.id}}/delete">Eliminar asignatura</a>
+    <br>
+    <a href="/subject/{{subject.id}}/edit">Editar asignatura</a>
+    <br>
+    <a href="/subject/{{subject.id}}/courses">Lista de cursos</a>
+</div>
+<br>
+<a href="/subjects">Volver</a>
 </body>
 </html>

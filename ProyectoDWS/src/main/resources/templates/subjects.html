@@ -2,53 +2,49 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Subjects</title>
-    <link rel="stylesheet" href="/css/index.css">
+    <title>Asignaturas</title>
+    <link rel="stylesheet" href="/css/prueba.css">
     <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
 </head>
 <body>
-<header>
+<header class="header">
+    <nav>
+        <ul class="nav-links">
+            <li><a href="/">INICIO</a></li>
+            <li><a href="/courses">CURSOS</a></li>
+            <li><a href="/subjects">ASIGNATURAS</a></li>
+            <li><a href="/aboutUS">SOBRE NOSOTROS</a></li>
+        </ul>
+    </nav>
+    <a href="/enrolled_subject" class="btn"><button>MIS ASIGNATURAS</button></a>
+</header>
+
+<section id="subject-content">
+    <h2>Nuestras Asignaturas</h2>
+    <p>Explora nuestra variedad de asignaturas disponibles.</p>
+</section>
+
+<section id="cards">
     <div class="content">
-        <div class="menu">
-            <nav>
-                <ul>
-                    <li><a href="/">INICIO</a></li>
-                    <li><a href="aboutUS">SOBRE NOSOTROS</a></li>
-                    <li><a href="contact">CONTACTO</a></li>
-                </ul>
-            </nav>
+        <div class="content-cards">
+            {{#subjects}}
+            <div class="card">
+                <a href="/subject/{{id}}">{{title}}</a>
+                <p><u>Descripción:</u> {{text}}</p>
+            </div>
+            {{/subjects}}
         </div>
     </div>
-    <div class="titular">
-        <h1>TAKE LESSONS ABOUT</h1>
-    </div>
-    <br>
-</header>
-<div class="container">
-    <h1>Asignaturas</h1>
-    <div id="subject-list"></div>
-    <a href="/subjects/new"><button>Añadir Nueva Asignatura</button></a>
+</section>
+
+{{^subjects}}
+<p style="text-align: center;">No hay asignaturas disponibles aún.</p>
+{{/subjects}}
+
+<div class="contenedor-botones">
+    <button class="botones" onclick="window.location.href='/subjects/new'">AGREGAR ASIGNATURA</button>
 </div>
 
-<script>
-    // Suponiendo que estás usando fetch para obtener los datos desde el backend
-    fetch('/subjects')
-        .then(response => response.json())
-        .then(data => {
-            const subjectList = document.getElementById('subject-list');
-            data.forEach(subject => {
-                const subjectDiv = document.createElement('div');
-                subjectDiv.classList.add('subject');
-                subjectDiv.innerHTML = `
-                    <h2>${subject.title}</h2>
-                    <p>${subject.text}</p>
-                    <a href="/subjects/edit/${subject.id}"><button>Editar</button></a>
-                    <a href="/subjects/delete/${subject.id}"><button>Eliminar</button></a>
-                `;
-                subjectList.appendChild(subjectDiv);
-            });
-        });
-</script>
 </body>
 </html>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Cursos</title>
-  <link rel="stylesheet" href="../static/css/style_Courses.css">
+  <link rel="stylesheet" href="/css/courses.css">
   <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -11,8 +11,11 @@
   <nav>
     <ul class="nav-links">
       <li><a href="/">INICIO</a></li>
-      <li><a href="courses">CURSOS</a></li>
+      <li><a href="/subjects">ASIGNATURAS</a></li>
       <li><a href="aboutUS">SOBRE NOSOTROS</a></li>
+      <li><a href="/contact">CONTACTO</a></li>
+
+
     </ul>
   </nav>
   <a href="/enrolled_courses" class="btn"><button>MIS CURSOS</button></a>
@@ -37,7 +40,7 @@
   </div>
 </section>
 {{^courses}}
-<p>No subjects yet.</p>
+<p style="text-align: center;">No subjects yet.</p>
 {{/courses}}
 <div class="contenedor-botones">
   <button class="botones" onclick="window.location.href='/course/new'">AGREGAR CURSO</button>

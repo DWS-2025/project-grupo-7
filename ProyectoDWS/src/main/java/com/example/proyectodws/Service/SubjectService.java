@@ -1,30 +1,40 @@
 package com.example.proyectodws.Service;
 
+import com.example.proyectodws.Entities.Course;
 import com.example.proyectodws.Entities.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class SubjectService {
-    private List<Subject> subjects = new ArrayList<>();
-    private Long nextId = 1L;
+    private ConcurrentMap<Long, Subject> subjects= new ConcurrentHashMap<>();
+    private AtomicLong nextId = new AtomicLong(1);
 
-    public List<Subject> getAllSubject(){
-        return subjects;
+    public Collection<Subject> findAll(){
+        return subjects.values();
     }
 
     public Subject getSubjectById(Long id) {
-        return subjects.stream().filter(subject -> subject.getId().equals(id)).findFirst().orElse(null);
+        return subjects.get(id);
     }
 
     public void saveSubject(Subject subject) {
-        subject.setId(nextId++);
-        subjects.add(subject);
+        if (subject.getId() == null || subject.getId() == 0) {
+            long id = nextId.getAndIncrement();
+            subject.setId(id);
+        }
+
+        this.subjects.put(subject.getId(), subject);
     }
+
 
     public void updateSubject(Long id, Subject subject) {
         Subject existingSubject = getSubjectById(id);
@@ -34,8 +44,10 @@ public class SubjectService {
         }
     }
 
-    public void deleteSubject(Long id) {
-        subjects.removeIf(subject -> subject.getId().equals(id));
+    public void deleteSubject(long id) {
+        this.subjects.remove(id);
     }
+
+
 }
 

@@ -40,30 +40,30 @@ public class ClassController {
 
     @GetMapping("/aboutUS")
     public String aboutUs() {
-        return "aboutUS"; // Nombre del archivo HTML en templates (aboutUS.html)
+        return "aboutUS";
     }
 
     @GetMapping("/contact")
     public String contact() {
-        return "contact"; // Nombre del archivo HTML en templates (contact.html)
+        return "contact";
     }
 
     @GetMapping("/ds")
     public String ds() {
-        return "ds"; // Nombre del archivo HTML en templates (contact.html)
+        return "ds";
     }
 
     @GetMapping("/maths")
     public String maths() {
-        return "maths"; // Nombre del archivo HTML en templates (contact.html)
+        return "maths";
     }
 
     @GetMapping("/physics")
     public String physics() {
-        return "physics"; // Nombre del archivo HTML en templates (contact.html)
+        return "physics";
     }
 
-    @GetMapping("/subject/new")
+    /*@GetMapping("/subject/new")
     public String newSubject() {
         return "new_subject";
     }
@@ -86,7 +86,7 @@ public class ClassController {
         Subject class1 = classService.findById(id);
 
         if (class1 == null) {
-            return "errorScreens/Error404"; // Página de error personalizada
+            return "errorScreens/Error404"; // error page
         }
 
         model.addAttribute("class", class1);
@@ -117,6 +117,6 @@ public class ClassController {
 
         model.addAttribute("class", class1);
         return "show_courses_for_subject";
-    }
+    }*/
 
 }

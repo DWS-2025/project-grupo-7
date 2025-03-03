@@ -7,6 +7,9 @@ public class Subject {
     private Long id;
     private String title;
     private String text;
+    private String imagePath;
+    private List<String> enrolledStudents = new ArrayList<>();
+
 
     private List<Course> associatedCourses = new ArrayList<>();
 
@@ -50,6 +53,16 @@ public class Subject {
 
     public void setText(String text) {
         this.text = text;
+    }
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+    public void enrollStudent(String studentName) {
+        enrolledStudents.add(studentName);
     }
 
     @Override

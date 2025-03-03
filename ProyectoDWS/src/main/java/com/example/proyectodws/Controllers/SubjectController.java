@@ -1,17 +1,18 @@
 package com.example.proyectodws.Controllers;
 
+import com.example.proyectodws.Entities.Course;
 import com.example.proyectodws.Entities.Subject;
-import com.example.proyectodws.Service.CourseService;
-import com.example.proyectodws.Service.ImageService;
-import com.example.proyectodws.Service.SubjectService;
+import com.example.proyectodws.Service.*;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Controller
@@ -20,36 +21,149 @@ public class SubjectController {
     private SubjectService subjectService;
     @Autowired
     private CourseService courseService;
+
+    @Autowired
+    private ClassService classService;
+
+    @Autowired
+    private UserService userService;
     @Autowired
     private ImageService imageService;
 
-    @GetMapping("/subjects")
+   /* @GetMapping("/subjects")
     public String listSubjects(Model model) {
-        List<Subject> subjects = subjectService.getAllSubject();
+        Collection<Subject> subjects = subjectService.findAll();
         model.addAttribute("subjects", subjects);
+        return "subjects";
+    }*/
+    @GetMapping("/subjects")
+    public String showSubjects(Model model, HttpSession session) {
+        model.addAttribute("subjects", subjectService.findAll()); // add the list to the model
+        model.addAttribute("welcome", session.isNew()); // 'welcome' to indicates new session
         return "subjects";
     }
 
-    @GetMapping("/subjects/new")
+    @GetMapping("/subjects/manage")
+    public String manageSubject(Model model, HttpSession session) {
+        model.addAttribute("subjects", subjectService.findAll()); // add the list to the model
+        model.addAttribute("welcome", session.isNew()); // 'welcome' for new session
+        return "manage_form_subject";
+    }
+
+   /* @GetMapping("/subjects/new")
     public String newSubject(Model model) {
         model.addAttribute("subject", new Subject());
         return "new_subject";
-    }
+    }*/
+   @GetMapping("/subjects/new")
+   public String newSubjectForm(Model model) {
+       Object user = userService.getUser();
 
-    @PostMapping("/subjects/new")
-    public String saveSubject(@ModelAttribute Subject subject) {
+       if (user == null) {
+           return "errorScreens/Error404.html";
+       }
+
+       model.addAttribute("user", user);
+       return "new_subject";
+   }
+
+   @PostMapping("/subjects/saved")
+   public String newSubject (@RequestParam String title, @RequestParam String text,
+                              @RequestParam("image") MultipartFile image) throws IOException {
+
+        Subject subject = new Subject();
+        subject.setTitle(title);
+        subject.setText(text);
+
         subjectService.saveSubject(subject);
-        return "redirect:/subjects";
+        userService.incNumSubjects(); // increments number of courses for user
+       Subject matchingClass = classService.getPostBySubject(subject.getTitle());
+
+        if (!image.isEmpty()) {
+            imageService.saveImage("subjects", subject.getId(), image);
+        }
+
+        return "saved_subject";
+    }
+    @GetMapping("/subject/{id}")
+    public String showSubject(Model model, @PathVariable long id) {
+        Subject subject = subjectService.getSubjectById(id);
+        // if doesn't find the course throws the error page
+        if (subject == null) {
+            return "Error404";
+        }
+        // if finds the course add to the model
+        model.addAttribute("subject", subject);
+        return "show_subject";
     }
 
-    @GetMapping("/subjects/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
+    @GetMapping("/subject/{id}/edit")
+    public String editSubjectForm(Model model, @PathVariable long id) {
         Subject subject = subjectService.getSubjectById(id);
         model.addAttribute("subject", subject);
         return "edit_subject";
     }
 
-    @PostMapping("/subjects/update/{id}")
+    // Save edited subject
+    @PostMapping("/subject/{id}/edited_subject")
+    public String editSubject (Model model, @PathVariable long id, Subject updatedSubject) {
+        Subject existingSubject = subjectService.getSubjectById(id);
+        existingSubject.setTitle(updatedSubject.getTitle()); // updates the title
+        existingSubject.setText(updatedSubject.getText()); // updates description
+        subjectService.saveSubject(existingSubject); // saves updated course
+
+        model.addAttribute("subject", existingSubject);
+        return "edited_subject";
+    }
+
+    // Delete subject
+    @GetMapping("/subject/{id}/delete")
+    public String deleteSubject(Model model, @PathVariable long id) {
+        Subject subject = subjectService.getSubjectById(id);
+
+        if (subject == null) {
+            return "Error404"; //
+        }
+
+        subjectService.deleteSubject(id);
+        userService.disNumSubjects();
+
+        return "deleted_subject";
+    }
+    // Enroll in a subject
+    @PostMapping("/subject/{id}/enroll")
+    public String enrollInSubject(Model model, @PathVariable long id) {
+        Subject subject = subjectService.getSubjectById(id);
+        userService.enrollInSubject(subject); // enrolls the user in the course
+        return "enrolled_subject";
+    }
+    // Display enrolled students
+    @GetMapping("/enrolled_subject")
+    public String showEnrolledSubjects(Model model) {
+        model.addAttribute("enrolledSubjects", userService.getEnrolledSubjects());
+        return "my_subjects";
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*@PostMapping("/subjects/update/{id}")
     public String updateSubject(@PathVariable Long id, @ModelAttribute Subject subject) {
         subjectService.updateSubject(id, subject);
         return "redirect:/subjects";
@@ -59,6 +173,6 @@ public class SubjectController {
     public String deleteSubject(@PathVariable Long id) {
         subjectService.deleteSubject(id);
         return "redirect:/subjects";
-    }
+    }*/
 }
 
