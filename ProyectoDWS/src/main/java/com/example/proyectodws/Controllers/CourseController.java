@@ -1,10 +1,10 @@
-package com.example.proyectodws.Controllers;
+/*package com.example.proyectodws.Controllers;
 
 import com.example.proyectodws.Entities.Course;
-import com.example.proyectodws.Entities.Class;
+import com.example.proyectodws.Entities.Subject;
 import com.example.proyectodws.Service.CourseService;
 import com.example.proyectodws.Service.ClassService;
-import com.example.proyectodws.Service.UserSession;
+import com.example.proyectodws.Service.UserService;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class CourseController {
     private CourseService courseService;
 
     @Autowired
-    private UserSession userSession;
+    private UserService userService;
 
     @Autowired
     private ClassService classService;
@@ -42,7 +42,7 @@ public class CourseController {
     // Display form for new course
     @GetMapping("/course/new")
     public String newCourseForm(Model model) {
-        Object user = userSession.getUser();
+        Object user = userService.getUser();
 
         if (user == null) {
             return "errorScreens/Error404.html";
@@ -56,14 +56,14 @@ public class CourseController {
     @PostMapping("/courses/saved")
     public String newCourse(Model model, Course course) {
         courseService.save(course);
-        userSession.incNumCourses(); // increments number of courses for user
-        Class matchingClass = classService.getPostByLanguage(course.getLanguage());
+        userService.incNumCourses(); // increments number of courses for user
+        Subject matchingClass = classService.getPostByLanguage(course.getLanguage());
 
         // if some language matches add new course
         if (matchingClass != null) {
             matchingClass.getAssociatedCourses().add(course);
         }
-        model.addAttribute("numCourses", userSession.getNumCourses()); // adds the number of courses to the model
+        model.addAttribute("numCourses", userService.getNumCourses()); // adds the number of courses to the model
         return "saved_course.html";
     }
 
@@ -84,7 +84,7 @@ public class CourseController {
     @GetMapping("/course/{id}/delete")
     public String deleteCourse(Model model, @PathVariable long id) {
         courseService.deleteById(id); // deletes the course
-        userSession.disNumCourses(); // decrements the number of courses for user
+        userService.disNumCourses(); // decrements the number of courses for user
         return "deleted_course";
     }
 
@@ -112,14 +112,14 @@ public class CourseController {
     @PostMapping("/course/{id}/enroll")
     public String enrollInCourse(Model model, @PathVariable long id) {
         Course course = courseService.findById(id);
-        userSession.enrollInCourse(course); // enrolls the user in the course
+        userService.enrollInCourse(course); // enrolls the user in the course
         return "enrolled_courses";
     }
 
     // Display enrolled students
     @GetMapping("/enrolled_courses")
     public String showEnrolledCourses(Model model) {
-        model.addAttribute("enrolledCourses", userSession.getEnrolledCourses());
+        model.addAttribute("enrolledCourses", userService.getEnrolledCourses());
         return "my_courses";
     }
 
@@ -136,4 +136,4 @@ public class CourseController {
         model.addAttribute("enrolledStudents", course.getEnrolledStudents()); // Agrega la lista de estudiantes matriculados al modelo
         return "enrolled_students";
     }
-}
+}*/

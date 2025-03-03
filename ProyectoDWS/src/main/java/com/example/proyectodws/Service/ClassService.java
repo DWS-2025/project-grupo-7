@@ -1,4 +1,4 @@
-package com.example.proyectodws.Service;
+/*package com.example.proyectodws.Service;
 
 import com.example.proyectodws.Entities.Class;
 import org.springframework.stereotype.Service;
@@ -53,4 +53,4 @@ public class ClassService {
         return null; // if doesn't find anything
     }
 
-}
+}*/

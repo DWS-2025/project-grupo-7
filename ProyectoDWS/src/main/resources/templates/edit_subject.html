@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Asignatura</title>
+    <link rel="stylesheet" href="/css/style_Courses.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1>Editar Asignatura</h1>
+    <form action="/subjects/update/{id}" method="post">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" value="<!-- Aquí va el título de la asignatura -->" required/>
+
+        <label for="text">Descripción:</label>
+        <textarea id="text" name="text" rows="5" cols="40" required><!-- Aquí va la descripción de la asignatura --></textarea>
+
+        <input type="submit" value="Guardar"/>
+    </form>
+</div>
+</body>
+</html>

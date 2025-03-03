@@ -1,4 +1,4 @@
-package com.example.proyectodws.Controllers;
+/*package com.example.proyectodws.Controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -52,5 +52,5 @@ public class ErrorController {
         model.addAttribute("message", "Ocurrió un error inesperado.");
         return "errorScreens/Error500";
     }
-}
+}*/
 

@@ -3,21 +3,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 //this code is for subjects
-public class Class {
+public class Subject {
     private Long id;
     private String title;
     private String text;
 
     private List<Course> associatedCourses = new ArrayList<>();
 
-    public Class() {
-
-    }
-
-    public Class(String title, String text) {
-        super();
+    public Subject(String title, String text) {
         this.title = title;
         this.text = text;
+    }
+
+    public Subject() {
+
     }
 
     public List<Course> getAssociatedCourses() {

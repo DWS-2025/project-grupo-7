@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Añadir Nueva Asignatura</title>
+    <link rel="stylesheet" href="/css/style_Courses.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1>Añadir Nueva Asignatura</h1>
+    <form action="/subjects/new" method="post">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" required/>
+
+        <label for="text">Descripción:</label>
+        <textarea id="text" name="text" rows="5" cols="40" required></textarea>
+
+        <input type="submit" value="Guardar"/>
+    </form>
+</div>
+</body>
+</html>
