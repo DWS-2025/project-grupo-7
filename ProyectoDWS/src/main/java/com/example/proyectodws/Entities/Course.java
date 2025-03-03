@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Course {
     private Long id;
-    private String language;
+    private String subject;
     private String title;
     private String description;
 
@@ -16,21 +16,21 @@ public class Course {
 
     }
 
-    public Course(String language, String title, String description) {
+    public Course(String subject, String title, String description) {
         super();
-        this.language=language;
+        this.subject=subject;
         this.title = title;
         this.description = description;
     }
 
 
 
-    public String getLanguage() {
-        return language;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public String getTitle() {
@@ -75,7 +75,7 @@ public class Course {
     public String toString() {
         return "Course{" +
                 "id=" + id +
-                ", language='" + language + '\'' +
+                ", subject='" + subject + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 '}';

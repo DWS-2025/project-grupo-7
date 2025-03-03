@@ -48,7 +48,7 @@ public class ClassController {
         return "contact"; // Nombre del archivo HTML en templates (contact.html)
     }
 
-    // Display new language form
+
     @GetMapping("/subject/new")
     public String newSubject() {
         return "new_subject";
@@ -61,13 +61,12 @@ public class ClassController {
 
         imageService.saveImage(CLASS_FOLDER, class1.getId(), image); // saves the image upload by the user
 
-        userService.incNumLanguages(); // increments the number of languages for the user
+        userService.incNumSubjects();
 
-        model.addAttribute("numClasses", userService.getNumLanguages()); // adds the number of languages to the model
+        model.addAttribute("numClasses", userService.getNumSubjects());
 
         return "saved_subject";
     }
-    // Display a view of the language
     @GetMapping("/subject/{id}")
     public String showPost(Model model, @PathVariable long id) {
         Subject class1 = classService.findById(id);
@@ -90,20 +89,19 @@ public class ClassController {
 
         classService.deleteById(id);
 
-        imageService.deleteImage(CLASS_FOLDER, id); // deletes the image associated with the language
-        userService.disNumLanguage(); // decrements the number of languages for the user session
+        imageService.deleteImage(CLASS_FOLDER, id);
+        userService.disNumSubjects();
 
         return "deleted_subject";
     }
-    // Display courses by language
     @GetMapping("/subject/{id}/courses")
-    public String showCoursesForLanguage(Model model, @PathVariable long id) {
+    public String showCoursesForSubject(Model model, @PathVariable long id) {
         Subject class1 = classService.findById(id);
         if (class1 == null) {
             return "errorScreens/Error404"; // O cualquier otra lógica de manejo de error
         }
 
-        model.addAttribute("class", class1); // adds the language attribute to the model
+        model.addAttribute("class", class1);
         return "show_courses_for_subject";
     }
 

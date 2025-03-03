@@ -25,7 +25,7 @@ public class SubjectController {
 
     @GetMapping("/subjects")
     public String listSubjects(Model model) {
-        List<Subject> subjects = subjectService.getAllSubjects();
+        List<Subject> subjects = subjectService.getAllSubject();
         model.addAttribute("subjects", subjects);
         return "subjects";
     }

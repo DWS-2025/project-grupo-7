@@ -12,7 +12,7 @@ public class UserService {
     private Set<Course> enrolledCourses = new HashSet<>();
 
     private int numCourses;
-    private int numLanguages;
+    private int numSubjects;
 
 
     public UserService(){
@@ -39,17 +39,17 @@ public class UserService {
     }
 
 
-    public int getNumLanguages() {
-        return numLanguages;
+    public int getNumSubjects() {
+        return numSubjects;
     }
 
 
-    public void incNumLanguages() {
-        this.numLanguages++;
+    public void incNumSubjects() {
+        this.numSubjects++;
     }
 
-    public void disNumLanguage() {
-        this.numLanguages--;
+    public void disNumSubjects() {
+        this.numSubjects--;
     }
 
     public Set <Course> getEnrolledCourses() {

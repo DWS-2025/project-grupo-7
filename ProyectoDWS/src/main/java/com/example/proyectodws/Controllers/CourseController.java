@@ -57,7 +57,7 @@ public class CourseController {
     public String newCourse(Model model, Course course) {
         courseService.save(course);
         userService.incNumCourses(); // increments number of courses for user
-        Subject matchingClass = classService.getPostByLanguage(course.getLanguage());
+        Subject matchingClass = classService.getPostBySubject(course.getSubject());
 
         // if some language matches add new course
         if (matchingClass != null) {

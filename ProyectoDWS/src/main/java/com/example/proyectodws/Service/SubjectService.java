@@ -13,7 +13,7 @@ public class SubjectService {
     private List<Subject> subjects = new ArrayList<>();
     private Long nextId = 1L;
 
-    public List<Subject> getAllSubjects(){
+    public List<Subject> getAllSubject(){
         return subjects;
     }
 

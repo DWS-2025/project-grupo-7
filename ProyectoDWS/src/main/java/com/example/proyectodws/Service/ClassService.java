@@ -15,19 +15,17 @@ public class ClassService {
     public ClassService() {
     }
 
-    // Look for and return all languages
+
     public Collection<Subject> findAll() {
 
         return classes.values();
     }
 
-    // Look for and return the language by ID
     public Subject findById(long id) {
 
         return classes.get(id);
     }
 
-    // Keep the language / puts new ID
     public void save(Subject class1) {
 
         if(class1.getId() == null || class1.getId() == 0) {
@@ -38,15 +36,14 @@ public class ClassService {
         this.classes.put(class1.getId(), class1);
     }
 
-    // Delete languages by ID
     public void deleteById(long id) {
 
         this.classes.remove(id);
     }
 
-    public Subject getPostByLanguage(String language) {
+    public Subject getPostBySubject(String subject) {
         for (Subject class1 : classes.values()) {
-            if (class1.getTitle().equals(language)) {
+            if (class1.getTitle().equals(subject)) {
                 return class1;
             }
         }
