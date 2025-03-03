@@ -48,6 +48,20 @@ public class ClassController {
         return "contact"; // Nombre del archivo HTML en templates (contact.html)
     }
 
+    @GetMapping("/ds")
+    public String ds() {
+        return "ds"; // Nombre del archivo HTML en templates (contact.html)
+    }
+
+    @GetMapping("/maths")
+    public String maths() {
+        return "maths"; // Nombre del archivo HTML en templates (contact.html)
+    }
+
+    @GetMapping("/physics")
+    public String physics() {
+        return "physics"; // Nombre del archivo HTML en templates (contact.html)
+    }
 
     @GetMapping("/subject/new")
     public String newSubject() {
