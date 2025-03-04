@@ -4,6 +4,7 @@ import com.example.proyectodws.Entities.Course;
 import com.example.proyectodws.Entities.Subject;
 import com.example.proyectodws.Service.CourseService;
 import com.example.proyectodws.Service.ClassService;
+import com.example.proyectodws.Service.SubjectService;
 import com.example.proyectodws.Service.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class CourseController {
@@ -21,6 +23,9 @@ public class CourseController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SubjectService subjectService;
 
     @Autowired
     private ClassService classService;
@@ -143,11 +148,12 @@ public class CourseController {
         Course course = courseService.findById(id);
 
         if (course == null) {
-            return "Error404"; // O la página de error correspondiente
+            return "Error404";
         }
 
         model.addAttribute("course", course);
         model.addAttribute("enrolledStudents", course.getEnrolledStudents()); // Agrega la lista de estudiantes matriculados al modelo
         return "enrolled_students";
     }
+
 }

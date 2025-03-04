@@ -7,7 +7,9 @@
 </head>
 <body>
 <div class="container">
-    <p><u>Title</u><br>{{course.subject}} {{course.title}}</p>
+    <p><u>Asignatura</u><br>{{course.subject}}</p>
+    <br>
+    <p><u>Titulo</u><br>{{course.title}}</p>
     <br>
     <p><u>Description</u><br>{{course.description}}</p>
     <form action="/course/{{id}}/enroll" method="post">

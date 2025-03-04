@@ -133,6 +133,25 @@ public class SubjectController {
         return "my_subjects";
     }
 
+    @GetMapping("/subject/{id}/courses")
+    public String showSubjectCourses(Model model, @PathVariable long id) {
+        Subject subject = subjectService.getSubjectById(id);
+
+        if (subject == null) {
+            return "error404";
+        }
+
+        List<Course> subjectCourses = courseService.findAll().stream()
+                .filter(course -> course.getSubject().equals(subject.getTitle()))
+                .toList();
+
+        model.addAttribute("subject", subject);
+        model.addAttribute("courses", subjectCourses);
+
+        return "subject_courses";
+    }
+
+
 
 }
 
