@@ -63,6 +63,7 @@ public class ClassController {
         return "physics";
     }
 
+
     /*@GetMapping("/subject/new")
     public String newSubject() {
         return "new_subject";

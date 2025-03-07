@@ -50,7 +50,7 @@ public class CourseController {
         Object user = userService.getUser();
 
         if (user == null) {
-            return "errorScreens/Error404.html";
+            return "errorScreens/Error404";
         }
 
         model.addAttribute("user", user);
