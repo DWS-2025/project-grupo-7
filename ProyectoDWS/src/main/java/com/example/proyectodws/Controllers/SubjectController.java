@@ -5,6 +5,7 @@ import com.example.proyectodws.Entities.Subject;
 import com.example.proyectodws.Service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -150,7 +151,10 @@ public class SubjectController {
 
         return "subject_courses";
     }
-
+    @GetMapping("/subject/{id}/image")
+    public ResponseEntity<Object> getSubjectImage(@PathVariable long id) {
+        return imageService.createResponseFromImage("subjects", id);
+    }
 
 
 }

@@ -27,28 +27,36 @@ public class ImageService {
 
         Path folder = FILES_FOLDER.resolve(folderName);
 
-        Files.createDirectories(folder);
+        try {
+            Files.createDirectories(folder);
+            Path newFile = createFilePath(imageId, folder);
+            image.transferTo(newFile);
 
-        Path newFile = createFilePath(imageId, folder);
-
-        image.transferTo(newFile);
+        } catch (IOException e) {
+            throw new IOException("No se pudo guardar la imagen.", e);
+        }
     }
 
     // Return a image to the user
-    public ResponseEntity<Object> createResponseFromImage(String folderName, long imageId) throws MalformedURLException {
+    public ResponseEntity<Object> createResponseFromImage(String folderName, long imageId) {
 
-        Path folder = FILES_FOLDER.resolve(folderName);
+        try {
+            Path folder = FILES_FOLDER.resolve(folderName);
+            Path imagePath = createFilePath(imageId, folder);
 
-        Path imagePath = createFilePath(imageId, folder);
+            if (!Files.exists(imagePath) || !Files.isReadable(imagePath)) {
+                return ResponseEntity.notFound().build();
+            }
 
-        Resource file = new UrlResource(imagePath.toUri());
+            Resource file = new UrlResource(imagePath.toUri());
 
-        if(!Files.exists(imagePath)) {
-            return ResponseEntity.notFound().build();
-        } else {
             return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpeg").body(file);
+
+        } catch (MalformedURLException e) {
+            return ResponseEntity.internalServerError().body("Error al cargar la imagen.");
         }
     }
+
     public void deleteImage(String folderName, long imageId) throws IOException {
 
         Path folder = FILES_FOLDER.resolve(folderName);
