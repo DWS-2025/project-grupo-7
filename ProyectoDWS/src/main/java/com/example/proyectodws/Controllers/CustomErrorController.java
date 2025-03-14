@@ -29,4 +29,5 @@ public class CustomErrorController implements ErrorController {
         model.addAttribute("errorMessage", "Error interno del servidor.");
         return "errorScreens/Error500"; // Otra página de error si es necesario
     }
+
 }
