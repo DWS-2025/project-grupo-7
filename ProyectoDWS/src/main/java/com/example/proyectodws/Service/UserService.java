@@ -2,6 +2,9 @@ package com.example.proyectodws.Service;
 
 import com.example.proyectodws.Entities.Course;
 import com.example.proyectodws.Entities.Subject;
+import com.example.proyectodws.Entities.User;
+import com.example.proyectodws.Repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -16,6 +19,8 @@ public class UserService {
     private int numCourses;
     private int numSubjects;
 
+    @Autowired
+    private UserRepository userRepository;
 
     public UserService(){
         this.user="Equipo de administración";
@@ -80,6 +85,9 @@ public class UserService {
     }
 
 
+    public User getLoggedUser() {
+        return userRepository.findAll().get(0);
+    }
 
 
 }

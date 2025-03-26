@@ -1,11 +1,9 @@
 package com.example.proyectodws.Controllers;
 
+import com.example.proyectodws.Entities.Comment;
 import com.example.proyectodws.Entities.Course;
 import com.example.proyectodws.Entities.Subject;
-import com.example.proyectodws.Service.CourseService;
-import com.example.proyectodws.Service.ClassService;
-import com.example.proyectodws.Service.SubjectService;
-import com.example.proyectodws.Service.UserService;
+import com.example.proyectodws.Service.*;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Optional;
 
 @Controller
 public class CourseController {
@@ -29,6 +29,9 @@ public class CourseController {
 
     @Autowired
     private ClassService classService;
+
+    @Autowired
+    private CommentService commentService;
 
     //Display all courses
     @GetMapping("/courses")
@@ -154,6 +157,33 @@ public class CourseController {
         model.addAttribute("course", course);
         model.addAttribute("enrolledStudents", course.getEnrolledStudents()); // Agrega la lista de estudiantes matriculados al modelo
         return "enrolled_students";
+    }
+
+    @PostMapping("/course/{id}/comments/new")
+    public String newComment(@PathVariable long id, Comment comment) {
+        Optional<Course> op = Optional.ofNullable(courseService.findById(id));
+        if (op.isPresent()) {
+            Course course = op.get();
+            commentService.save(course, comment);
+            return "redirect:/course/" + id;
+        } else {
+            return "error404";
+        }
+    }
+
+    @PostMapping("/course/{id}/comments/{commentId}/delete")
+    public String deleteComment(@PathVariable Long id, @PathVariable Long commentId) {
+
+        Optional<Course> op = Optional.ofNullable(courseService.findById(id));
+
+        if (op.isPresent()) {
+            Course course = op.get();
+            commentService.delete(commentId, course);
+            return "redirect:/course/" + id;
+        } else {
+            return "error404";
+        }
+
     }
 
 }

@@ -11,6 +11,7 @@ public class Course {
     private String description;
 
     private List<String> enrolledStudents = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
 
     public Course(){
@@ -72,7 +73,13 @@ public class Course {
         enrolledStudents.add(studentName);
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
 
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 
 
     @Override

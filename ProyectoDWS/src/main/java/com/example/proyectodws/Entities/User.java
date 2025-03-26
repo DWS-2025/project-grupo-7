@@ -1,11 +1,16 @@
 package com.example.proyectodws.Entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
     private Long id = 0L;
 
     private String name;
 
     private String email;
+
+    private List<Comment> comments = new ArrayList<>();
 
     public User(){}
 
@@ -36,5 +41,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

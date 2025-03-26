@@ -23,7 +23,27 @@
     <br>
     <a href="/course/{{id}}/enrolledStudents">Alumnos matriculados</a>
     <br>
-    <a href="/comments">Comentarios</a>
+    <h2>Comments</h2>
+    {{#course.comments}}
+    <div>
+        <b>{{author.name}}</b>: {{message}}
+        <form action="/course/{{id}}/comments/{{id}}/delete" method="post" style="display: inline;">
+            <input type='submit' value='Delete comment'/>
+        </form>
+    </div>
+    <br>
+
+    {{/course.comments}}
+
+    {{^course.comments}}
+    <p>No comments yet.</p>
+    {{/course.comments}}
+
+    <form action="/course/{{id}}/comments/new" method="post" style="background-color: #c2c2c2; width: 200px; padding: 10px;">
+        <p>Message: <input type='text' name='message'/></p>
+        <input type='submit' value='Add comment'/>
+    </form>
+
 </div>
 <br>
 <a href="/courses">Back</a>
