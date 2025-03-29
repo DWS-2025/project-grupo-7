@@ -9,4 +9,5 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class UserController {
     @Autowired
     private UserService userService;
+
 }

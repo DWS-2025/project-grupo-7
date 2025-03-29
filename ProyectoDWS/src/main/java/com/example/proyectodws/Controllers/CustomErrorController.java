@@ -1,4 +1,4 @@
-package com.example.proyectodws.Controllers;
+/*package com.example.proyectodws.Controllers;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
@@ -31,3 +31,4 @@ public class CustomErrorController implements ErrorController {
     }
 
 }
+*/

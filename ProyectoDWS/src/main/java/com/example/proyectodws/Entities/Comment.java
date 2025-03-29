@@ -40,6 +40,6 @@ public class Comment {
 
     @Override
     public String toString() {
-        return "Comment [id=" + id + ", author=" + author.getName() + ", message=" + message + "]";
+        return "Comment [id=" + id + ", message=" + message + "]";
     }
 }

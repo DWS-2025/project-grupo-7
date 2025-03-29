@@ -164,6 +164,7 @@ public class CourseController {
         Optional<Course> op = Optional.ofNullable(courseService.findById(id));
         if (op.isPresent()) {
             Course course = op.get();
+            //comment.setAuthor(equipo);
             commentService.save(course, comment);
             return "redirect:/course/" + id;
         } else {

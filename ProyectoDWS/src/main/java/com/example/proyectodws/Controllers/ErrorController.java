@@ -1,3 +1,4 @@
+/*
 package com.example.proyectodws.Controllers;
 
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ public class ErrorController {
     public String handleNotFound(Model model) {
         model.addAttribute("error", "404 - Página no encontrada");
         model.addAttribute("message", "La página que buscas no existe.");
-        return "errorScreens/Error404"; // Asegúrate de que este archivo existe
+        return "errorScreens/Error404.html"; // Asegúrate de que este archivo existe
     }
 
     // ✅ Manejador de error 400 - Solicitud incorrecta
@@ -26,9 +27,9 @@ public class ErrorController {
         if (ex.getStatusCode() == HttpStatus.BAD_REQUEST) {
             model.addAttribute("error", "400 - Solicitud incorrecta");
             model.addAttribute("message", "Hubo un problema con la solicitud.");
-            return "errorScreens/Error400";
+            return "errorScreens/Error400.html";
         }
-        return "errorScreens/Error500";
+        return "errorScreens/Error500.html";
     }
 
     // ✅ Manejador de error 500 - Error interno del servidor
@@ -40,3 +41,4 @@ public class ErrorController {
         return "errorScreens/Error500";
     }
 }
+*/

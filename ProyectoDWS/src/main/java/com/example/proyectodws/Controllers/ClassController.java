@@ -32,7 +32,7 @@ public class ClassController {
     private ImageService imageService;
     // Return all courses
     @GetMapping("/")
-    public String showSubjects(Model model, HttpSession session) {
+    public String showSubjects(Model model) {
 
         model.addAttribute("posts", classService.findAll()); // add the list of subjects to the model
         return "index";

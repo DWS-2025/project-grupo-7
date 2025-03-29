@@ -13,6 +13,7 @@ public class UserRepository {
     private AtomicLong nextId = new AtomicLong(1L);
     private ConcurrentHashMap<Long, User> users = new ConcurrentHashMap<>();
 
+
     public List<User> findAll() {
         return users.values().stream().toList();
     }
