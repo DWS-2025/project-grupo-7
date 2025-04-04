@@ -1,11 +1,22 @@
 package com.example.proyectodws.Entities;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     private String message;
 
-    private User author;
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;  // Relación con el curso
+
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;  // Relación con el autor del comentario
 
     protected Comment() {
     }

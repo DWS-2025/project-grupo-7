@@ -1,17 +1,26 @@
 package com.example.proyectodws.Entities;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Entity
 public class Course {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String subject;
+    @ManyToOne
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
     private String title;
     private String description;
 
-    private List<String> enrolledStudents = new ArrayList<>();
-    private List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "enrolledCourse", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<User> enrolledStudents = new ArrayList<>();  // Relación con User (estudiantes)
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();  // Relación con los comentarios
 
 
     public Course(){
@@ -27,11 +36,11 @@ public class Course {
 
 
 
-    public String getSubject() {
+    public Subject getSubject() {
         return subject;
     }
 
-    public void setSubject(String subject) {
+    public void setSubject(Subject subject) {
         this.subject = subject;
     }
 
@@ -61,16 +70,16 @@ public class Course {
     }
 
 
-    public List<String> getEnrolledStudents() {
+    public List<User> getEnrolledStudents() {
         return enrolledStudents;
     }
 
-    public void setEnrolledStudents(List<String> enrolledStudents) {
+    public void setEnrolledStudents(List<User> enrolledStudents) {
         this.enrolledStudents = enrolledStudents;
     }
 
-    public void enrollStudent(String studentName) {
-        enrolledStudents.add(studentName);
+    public void enrollStudent(User user) {
+        enrolledStudents.add(user);
     }
 
     public List<Comment> getComments() {

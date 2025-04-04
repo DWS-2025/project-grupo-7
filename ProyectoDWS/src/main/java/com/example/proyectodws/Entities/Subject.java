@@ -1,16 +1,23 @@
 package com.example.proyectodws.Entities;
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
 //this code is for subjects
-public class Subject {
+ @Entity
+ public class Subject {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
     private String text;
     private String imagePath;
+    @ManyToMany(mappedBy = "enrolledStudents")
     private List<String> enrolledStudents = new ArrayList<>();
 
 
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Course> associatedCourses = new ArrayList<>();
 
     public Subject(String title, String text) {
