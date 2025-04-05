@@ -2,8 +2,10 @@ package com.example.proyectodws.Service;
 
 import com.example.proyectodws.Entities.Comment;
 import com.example.proyectodws.Entities.Course;
+import com.example.proyectodws.Entities.Subject;
 import com.example.proyectodws.Entities.User;
 import com.example.proyectodws.Repository.CommentRepository;
+import com.example.proyectodws.Repository.CourseRepository;
 import com.example.proyectodws.Repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SampleDataService {
     @Autowired
-    private CourseService courseRepository;
+    private CourseRepository courseRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -25,13 +27,15 @@ public class SampleDataService {
     public void init() {
 
         // Default user
-        User equipo = new User("Equipo", "michel.maes@urjc.es");
+        User equipo = new User("Equipo", "Todos","michel.maes@urjc.es", "TextoImagen");
 
         // Other users
-        User prueba = new User("Prueba", "carlos@urjc.es");
+        User prueba = new User("Prueba", "prueba","carlos@urjc.es", "textoImagen");
 
         // Some examples of posts and comments
-        Course course = new Course("Matematicas", "Avanzado", "Es guay");
+        Subject Math= new Subject("Math", "Text");
+
+        Course course = new Course(Math, "Avanzado", "Es guay");
 
         Comment comment = new Comment("Cool!");
         comment.setAuthor(equipo);
