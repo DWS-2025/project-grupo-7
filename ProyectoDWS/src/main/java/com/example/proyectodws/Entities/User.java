@@ -37,12 +37,11 @@ public class User {
 
     public User(){}
 
-    public User(String first_name, String last_name, String username, String imageName, Comment comment) {
+    public User(String first_name, String last_name, String username, String imageName) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.username = username;
         this.imageName = imageName;
-        this.comments = comment;
     }
 
     public long getId() {

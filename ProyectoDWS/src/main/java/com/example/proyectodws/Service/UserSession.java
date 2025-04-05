@@ -43,16 +43,16 @@ public class UserSession {
     }
 
 
-    public int getNumLanguages() {
+    public int getNumSubjects() {
         return numSubjects;
     }
 
 
-    public void incNumLanguages() {
+    public void incNumSubjects() {
         this.numSubjects++;
     }
 
-    public void disNumLanguage() {
+    public void disNumSubject() {
         this.numSubjects--;
     }
 

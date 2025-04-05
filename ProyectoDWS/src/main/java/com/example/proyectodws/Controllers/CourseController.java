@@ -3,17 +3,21 @@ package com.example.proyectodws.Controllers;
 import com.example.proyectodws.Entities.Comment;
 import com.example.proyectodws.Entities.Course;
 import com.example.proyectodws.Entities.Subject;
+import com.example.proyectodws.Entities.User;
 import com.example.proyectodws.Service.*;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -23,6 +27,9 @@ public class CourseController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserSession userSession;
 
     @Autowired
     private SubjectService subjectService;
@@ -50,28 +57,31 @@ public class CourseController {
     // Display form for new course
     @GetMapping("/course/new")
     public String newCourseForm(Model model) {
-        Object user = userService.getUser();
-
-        if (user == null) {
-            return "errorScreens/Error404";
-        }
-
-        model.addAttribute("user", user);
+        Collection<Subject> subjects = subjectService.getAllSubjects(); // Get all available languages
+        model.addAttribute("subjects", subjects); // Add all languages to the model
+        model.addAttribute("user", userSession.getUser());
         return "new_course";
     }
 
     // Save new course
     @PostMapping("/courses/saved")
-    public String newCourse(Model model, Course course) {
-        courseService.save(course);
-        userService.incNumCourses(); // increments number of courses for user
-        Subject matchingClass = classService.getPostBySubject(course.getSubject());
+    public String newCourse(Model model, @RequestParam("subjectId") Long subjectId, @Validated Course course) {
+        Subject subject = subjectService.getSubjectById(subjectId);
 
-        // if some language matches add new course
-        if (matchingClass != null) {
-            matchingClass.getAssociatedCourses().add(course);
+        // Assign the language to the course
+        course.setSubject(subject);
+
+        // Save the course
+        courseService.createCourse(course);
+        userSession.incNumCourses();
+
+        // Update the list of courses associated with the language
+        if (subject != null) {
+            subject.getAssociatedCourses().add(course);
+            subjectService.createSubject(subject); // Save changes in object Post
         }
-        model.addAttribute("numCourses", userService.getNumCourses()); // adds the number of courses to the model
+
+        model.addAttribute("numCourses", userSession.getNumCourses());
         return "saved_course";
     }
 
@@ -91,21 +101,20 @@ public class CourseController {
     // Delete course
     @GetMapping("/course/{id}/delete")
     public String deleteCourse(Model model, @PathVariable long id) {
-        Course course = courseService.findById(id);
+        Course course = courseService.getCourseById(id);
+        if (course != null) {
+            // Delete course
+            courseService.deleteCourse(id);
+            userSession.disNumCourses(); // Decrease the number of courses for the user session
 
-        if (course == null) {
-            return "Error404"; // Si el curso no existe, devuelve página de error
+            // Remove the course from the user's course list if it is associated
+            for (User user : userService.getAllUsers()) {
+                if (user.getCourses().contains(course)) {
+                    user.removeCourse(course);
+                    userService.createUser(user); // Save changes to the user
+                }
+            }
         }
-
-        // delete course of the list of courses of user
-        userService.removeCourseFromUsers(course);
-
-        // delete course of bbdd
-        courseService.deleteById(id);
-
-        // number of courses of users down
-        userService.disNumCourses();
-
         return "deleted_course";
     }
 
@@ -113,7 +122,7 @@ public class CourseController {
     // Display edit course form
     @GetMapping("/course/{id}/edit")
     public String editCourseForm(Model model, @PathVariable long id) {
-        Course course = courseService.findById(id);
+        Course course = courseService.getCourseById(id);
         model.addAttribute("course", course); // adds the edit course to the model
         return "edit_course";
     }
@@ -133,22 +142,24 @@ public class CourseController {
     // Enroll in a course
     @PostMapping("/course/{id}/enroll")
     public String enrollInCourse(Model model, @PathVariable long id) {
-        Course course = courseService.findById(id);
-        userService.enrollInCourse(course); // enrolls the user in the course
+        Course course = courseService.getCourseById(id);
+        User user = new User();
+        user.setUsername("Equipo de administración");
+        userService.enrollInCourse(course,user); // enrolls the user in the course
         return "enrolled_courses";
     }
 
     // Display enrolled students
     @GetMapping("/enrolled_courses")
     public String showEnrolledCourses(Model model) {
-        model.addAttribute("enrolledCourses", userService.getEnrolledCourses());
+        model.addAttribute("enrolledCourses", userSession.getEnrolledCourses());
         return "my_courses";
     }
 
     // Display enrolled students in a determinated course
     @GetMapping("/course/{id}/enrolledStudents")
     public String showEnrolledStudents(Model model, @PathVariable long id) {
-        Course course = courseService.findById(id);
+        Course course = courseService.getCourseById(id);
 
         if (course == null) {
             return "Error404";
@@ -158,6 +169,18 @@ public class CourseController {
         model.addAttribute("enrolledStudents", course.getEnrolledStudents()); // Agrega la lista de estudiantes matriculados al modelo
         return "enrolled_students";
     }
+    @GetMapping("/courses/search")
+    public String searchCoursesForm() {
+        return "search_courses";
+    }
+
+    @GetMapping("/courses/results")
+    public String searchCoursesByTitles(@RequestParam("subjectTitle") String subjectTitle, @RequestParam("courseTitle") String courseTitle, Model model) {
+        List<Course> courses = courseService.findCoursesByTitles(subjectTitle, courseTitle);
+        model.addAttribute("courses", courses);
+        return "search_results";
+    }
+
 
     @PostMapping("/course/{id}/comments/new")
     public String newComment(@PathVariable long id, Comment comment) {

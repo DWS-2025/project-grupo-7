@@ -4,14 +4,22 @@ import com.example.proyectodws.Entities.Course;
 import com.example.proyectodws.Entities.Subject;
 import com.example.proyectodws.Service.*;
 import jakarta.servlet.http.HttpSession;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,7 +27,7 @@ import java.util.List;
 @Controller
 public class SubjectController {
 
-    private static final String SUBEJCTS_FOLDER = "subjects";
+    private static final String SUBJECTS_FOLDER = "subjects";
 
     @Autowired
     private SubjectService subjectService;
@@ -28,58 +36,48 @@ public class SubjectController {
 
     @Autowired
     private UserSession userSession;
-    @Autowired
-    private ClassService classService;
+
 
     @Autowired
     private UserService userService;
     @Autowired
     private ImageService imageService;
 
-    @GetMapping("/subjects")
-    public String showSubjects(Model model, HttpSession session) {
-        model.addAttribute("subjects", subjectService.findAll()); // add the list to the model
-        model.addAttribute("welcome", session.isNew()); // 'welcome' to indicates new session
-        return "subjects";
-    }
-
-    @GetMapping("/subjects/manage")
-    public String manageSubject(Model model, HttpSession session) {
-        model.addAttribute("subjects", subjectService.findAll()); // add the list to the model
-        model.addAttribute("welcome", session.isNew()); // 'welcome' for new session
-        return "manage_form_subject";
-    }
-
    @GetMapping("/subjects/new")
-   public String newSubjectForm(Model model) {
-       Object user = userService.getUser();
+   public String newPostForm(Model model) {
 
-       if (user == null) {
-           return "errorScreens/Error404";
-       }
+       model.addAttribute("user", userSession.getUser()); // add the user attribute to the model
 
-       model.addAttribute("user", user);
-       return "new_subject";
+       return "new_language";
    }
+    @PostMapping("/subject/new")
+    public String newSubject(Model model, @Validated Subject subject, BindingResult result, MultipartFile image) throws IOException, SQLException {
 
-   @PostMapping("/subjects/saved")
-   public String newSubject (@RequestParam String title, @RequestParam String text,
-                              @RequestParam("image") MultipartFile image) throws IOException {
-
-        Subject subject = new Subject();
-        subject.setTitle(title);
-        subject.setText(text);
-
-        subjectService.saveSubject(subject);
-        userService.incNumSubjects(); // increments number of subjects for user
-       Subject matchingClass = classService.getPostBySubject(subject.getTitle());
-
-        if (!image.isEmpty()) {
-            imageService.saveImage("subjects", subject.getId(), image);
+        // Validate if title is present
+        if (subject.getTitle() == null || subject.getTitle().isEmpty()) {
+            result.rejectValue("title", "error.title", "El título es obligatorio");
+            return "new_language";
+        }else{
+            String cleanedTitle = Jsoup.clean(subject.getTitle(), Safelist.simpleText().addTags("li", "ol","ul"));
+            subject.setTitle(cleanedTitle);
         }
 
-        return "saved_subject";
+        if (subject.getText()!=null){
+            String cleanedText = Jsoup.clean(subject.getText(), Safelist.simpleText().addTags("li","ol","ul"));
+            subject.setText(cleanedText);
+        }
+
+        subjectService.createSubject(subject);
+        subject.setImage(image.getOriginalFilename());
+        subjectService.save(subject, image);
+        userSession.incNumSubjects();
+        model.addAttribute("numPosts", userSession.getNumSubjects());
+
+        return "saved_language";
     }
+
+
+
     @GetMapping("/subject/{id}")
     public String showSubject(Model model, @PathVariable long id) {
         Subject subject = subjectService.getSubjectById(id);
@@ -92,74 +90,52 @@ public class SubjectController {
         return "show_subject";
     }
 
-    @GetMapping("/subject/{id}/edit")
-    public String editSubjectForm(Model model, @PathVariable long id) {
-        Subject subject = subjectService.getSubjectById(id);
-        model.addAttribute("subject", subject);
-        return "edit_subject";
+    @GetMapping("/subject/{id}/image")
+    public ResponseEntity<Object> downloadImage(@PathVariable long id) throws SQLException {
+
+        Subject subject = subjectService.getSubjectById(id); // Supposing that `getLanguageById` returns an object `Post`
+
+        if (subject.getImageFile() != null) {
+            Resource file = new InputStreamResource(subject.getImageFile().getBinaryStream());
+
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
+                    .contentLength(subject.getImageFile().length()).body(file);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
-
-    // Save edited subject
-    @PostMapping("/subject/{id}/edited_subject")
-    public String editSubject (Model model, @PathVariable long id, Subject updatedSubject) {
-        Subject existingSubject = subjectService.getSubjectById(id);
-        existingSubject.setTitle(updatedSubject.getTitle()); // updates the title
-        existingSubject.setText(updatedSubject.getText()); // updates text
-        subjectService.saveSubject(existingSubject); // saves updated subject
-
-        model.addAttribute("subject", existingSubject);
-        return "edited_subject";
-    }
-
     // Delete subject
     @GetMapping("/subject/{id}/delete")
-    public String deleteSubject(Model model, @PathVariable long id) {
+    public String deleteSubject(Model model, @PathVariable long id) throws IOException {
         Subject subject = subjectService.getSubjectById(id);
 
         if (subject == null) {
-            return "Error404"; //
+            for (Course course : subject.getAssociatedCourses()) {
+                courseService.deleteCourse(course.getId());
+            }
         }
 
         subjectService.deleteSubject(id);
-        userService.disNumSubjects();
+        imageService.deleteImage(SUBJECTS_FOLDER, id); // Delete the image associated with the language
+        userSession.disNumSubject(); // Decrease the number of languages for the user session
 
         return "deleted_subject";
     }
-    // Enroll in a subject
-    @PostMapping("/subject/{id}/enroll")
-    public String enrollInSubject(Model model, @PathVariable long id) {
-        Subject subject = subjectService.getSubjectById(id);
-        userService.enrollInSubject(subject); // enrolls the user in the subject
-        return "enrolled_subject";
-    }
-    // Display enrolled students
-    @GetMapping("/enrolled_subject")
-    public String showEnrolledSubjects(Model model) {
-        model.addAttribute("enrolledSubjects", userService.getEnrolledSubjects());
-        return "my_subjects";
-    }
+
 
     @GetMapping("/subject/{id}/courses")
-    public String showSubjectCourses(Model model, @PathVariable long id) {
+    public String showCoursesForSubject(Model model, @PathVariable long id) {
         Subject subject = subjectService.getSubjectById(id);
 
+        //404
         if (subject == null) {
-            return "error404";
+            return "page404";
         }
 
-        List<Course> subjectCourses = courseService.findAll().stream()
-                .filter(course -> course.getSubject().equals(subject.getTitle()))
-                .toList();
-
-        model.addAttribute("subject", subject);
-        model.addAttribute("courses", subjectCourses);
-
-        return "subject_courses";
+        model.addAttribute("subject", subject); // adds the language attribute to the model
+        return "show_courses_for_subject";
     }
-    @GetMapping("/subject/{id}/image")
-    public ResponseEntity<Object> getSubjectImage(@PathVariable long id) {
-        return imageService.createResponseFromImage("subjects", id);
-    }
+
 
 
 }

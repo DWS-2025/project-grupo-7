@@ -3,90 +3,50 @@ package com.example.proyectodws.Service;
 import com.example.proyectodws.Entities.Course;
 import com.example.proyectodws.Entities.Subject;
 import com.example.proyectodws.Entities.User;
+import com.example.proyectodws.Repository.CourseRepository;
 import com.example.proyectodws.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
 public class UserService {
-    private String user;
-    private Set<Course> enrolledCourses = new HashSet<>();
-    private Set<Subject> enrolledSubjects = new HashSet<>();
-
-    private int numCourses;
-    private int numSubjects;
-
     @Autowired
     private UserRepository userRepository;
 
-    public UserService(){
-        this.user="Equipo de administración";
-    }
-    public void setUser(String user) {
-        this.user = user;
-    }
+    @Autowired
+    private CourseRepository courseRepository;
 
-    public String getUser() {
-        return user;
+    public User createUser(User user){
+
+        return userRepository.save(user);
     }
 
-    public int getNumCourses() {
-        return this.numCourses;
+    public User getUserById(Long id){
+        Optional<User> optionalUser = userRepository.findById(id);
+        return optionalUser.get();
     }
 
-    public void incNumCourses() {
-        this.numCourses++;
+    public List<User> getAllUsers(){
+        return userRepository.findAll();
     }
 
-    public void disNumCourses() {
-        this.numCourses--;
+    public void deleteUser (Long id){
+
+        userRepository.deleteById(id);
     }
 
-
-    public int getNumSubjects() {
-        return numSubjects;
-    }
-
-
-    public void incNumSubjects() {
-        this.numSubjects++;
-    }
-
-    public void disNumSubjects() {
-        this.numSubjects--;
-    }
-
-    public Set <Course> getEnrolledCourses() {
-
-        return enrolledCourses;
-    }
-    public Set <Subject> getEnrolledSubjects() {
-
-        return enrolledSubjects;
-    }
-
-    public void enrollInCourse(Course course) {
-
-        enrolledCourses.add(course);
-        course.enrollStudent(this.user);
-    }
-    public void enrollInSubject(Subject subject) {
-
-        enrolledSubjects.add(subject);
-        subject.enrollStudent(this.user);
-    }
-
-
-    public void removeCourseFromUsers(Course course) {
-        enrolledCourses.remove(course);
-    }
-
-
-    public User getLoggedUser() {
-        return userRepository.findAll().get(0);
+    public void enrollUserInCourse(Long userId, Long courseId) {
+        User user = userRepository.findById(userId).orElse(null);
+        Course course = courseRepository.findById(courseId).orElse(null);
+        if (user != null && course != null) {
+            user.getCourses().add(course);
+            userRepository.save(user);
+        }
     }
 
 
