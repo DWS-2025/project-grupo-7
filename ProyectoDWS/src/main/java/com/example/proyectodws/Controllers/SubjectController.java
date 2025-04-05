@@ -18,11 +18,16 @@ import java.util.List;
 
 @Controller
 public class SubjectController {
+
+    private static final String SUBEJCTS_FOLDER = "subjects";
+
     @Autowired
     private SubjectService subjectService;
     @Autowired
     private CourseService courseService;
 
+    @Autowired
+    private UserSession userSession;
     @Autowired
     private ClassService classService;
 

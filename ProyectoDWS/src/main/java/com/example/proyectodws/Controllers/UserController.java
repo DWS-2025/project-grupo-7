@@ -1,5 +1,6 @@
 package com.example.proyectodws.Controllers;
 
+import com.example.proyectodws.Entities.Course;
 import com.example.proyectodws.Entities.User;
 import org.jsoup.Jsoup;
 import com.example.proyectodws.Service.CourseService;
