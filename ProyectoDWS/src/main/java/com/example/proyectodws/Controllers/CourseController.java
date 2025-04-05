@@ -57,8 +57,8 @@ public class CourseController {
     // Display form for new course
     @GetMapping("/course/new")
     public String newCourseForm(Model model) {
-        Collection<Subject> subjects = subjectService.getAllSubjects(); // Get all available languages
-        model.addAttribute("subjects", subjects); // Add all languages to the model
+        Collection<Subject> subjects = subjectService.getAllSubjects();
+        model.addAttribute("subjects", subjects);
         model.addAttribute("user", userSession.getUser());
         return "new_course";
     }
@@ -68,14 +68,11 @@ public class CourseController {
     public String newCourse(Model model, @RequestParam("subjectId") Long subjectId, @Validated Course course) {
         Subject subject = subjectService.getSubjectById(subjectId);
 
-        // Assign the language to the course
         course.setSubject(subject);
 
-        // Save the course
         courseService.createCourse(course);
         userSession.incNumCourses();
 
-        // Update the list of courses associated with the language
         if (subject != null) {
             subject.getAssociatedCourses().add(course);
             subjectService.createSubject(subject); // Save changes in object Post
@@ -89,11 +86,9 @@ public class CourseController {
     @GetMapping("/course/{id}")
     public String showCourse(Model model, @PathVariable long id) {
         Course course = courseService.getCourseById(id);
-        // if doesn't find the course throws the error page
         if (course == null) {
             return "Error404";
         }
-        // if finds the course add to the model
         model.addAttribute("course", course);
         return "show_course";
     }

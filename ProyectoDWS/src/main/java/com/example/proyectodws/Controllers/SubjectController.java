@@ -43,20 +43,26 @@ public class SubjectController {
     @Autowired
     private ImageService imageService;
 
+    @GetMapping("/subjects")
+    public String showSujects(Model model, HttpSession session) {
+        model.addAttribute("subjects", courseService.getAllCourses()); // add the list to the model
+        model.addAttribute("welcome", session.isNew()); // 'welcome' to indicates new session
+        return "subjects";
+    }
+
    @GetMapping("/subjects/new")
    public String newPostForm(Model model) {
 
        model.addAttribute("user", userSession.getUser()); // add the user attribute to the model
 
-       return "new_language";
+       return "new_subject";
    }
     @PostMapping("/subject/new")
     public String newSubject(Model model, @Validated Subject subject, BindingResult result, MultipartFile image) throws IOException, SQLException {
 
-        // Validate if title is present
         if (subject.getTitle() == null || subject.getTitle().isEmpty()) {
             result.rejectValue("title", "error.title", "El título es obligatorio");
-            return "new_language";
+            return "new_subject";
         }else{
             String cleanedTitle = Jsoup.clean(subject.getTitle(), Safelist.simpleText().addTags("li", "ol","ul"));
             subject.setTitle(cleanedTitle);
@@ -73,7 +79,7 @@ public class SubjectController {
         userSession.incNumSubjects();
         model.addAttribute("numPosts", userSession.getNumSubjects());
 
-        return "saved_language";
+        return "saved_subject";
     }
 
 
