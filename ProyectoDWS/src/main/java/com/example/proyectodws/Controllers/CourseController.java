@@ -43,13 +43,13 @@ public class CourseController {
     //Display all courses
     @GetMapping("/courses")
     public String showCourses(Model model, HttpSession session) {
-        model.addAttribute("courses", courseService.findAll()); // add the list to the model
+        model.addAttribute("courses", courseService.getAllCourses()); // add the list to the model
         model.addAttribute("welcome", session.isNew()); // 'welcome' to indicates new session
         return "courses";
     }
     @GetMapping("/courses/manage")
     public String manageCourses(Model model, HttpSession session) {
-        model.addAttribute("courses", courseService.findAll()); // add the list to the model
+        model.addAttribute("courses", courseService.getAllCourses()); // add the list to the model
         model.addAttribute("welcome", session.isNew()); // 'welcome' for new session
         return "manage_form";
     }
@@ -88,7 +88,7 @@ public class CourseController {
     // Display course with ID
     @GetMapping("/course/{id}")
     public String showCourse(Model model, @PathVariable long id) {
-        Course course = courseService.findById(id);
+        Course course = courseService.getCourseById(id);
         // if doesn't find the course throws the error page
         if (course == null) {
             return "Error404";
@@ -130,10 +130,10 @@ public class CourseController {
     // Save edited course
     @PostMapping("/course/{id}/edited_course")
     public String editCourse (Model model, @PathVariable long id, Course updatedCourse) {
-        Course existingCourse = courseService.findById(id);
+        Course existingCourse = courseService.getCourseById(id);
         existingCourse.setTitle(updatedCourse.getTitle()); // updates the title
         existingCourse.setDescription(updatedCourse.getDescription()); // updates description
-        courseService.save(existingCourse); // saves updated course
+        courseService.createCourse(existingCourse); // saves updated course
 
         model.addAttribute("course", existingCourse);
         return "edited_course";
@@ -145,7 +145,7 @@ public class CourseController {
         Course course = courseService.getCourseById(id);
         User user = new User();
         user.setUsername("Equipo de administración");
-        userService.enrollInCourse(course,user); // enrolls the user in the course
+        userSession.enrollInCourse(course,user); // enrolls the user in the course
         return "enrolled_courses";
     }
 
@@ -184,7 +184,7 @@ public class CourseController {
 
     @PostMapping("/course/{id}/comments/new")
     public String newComment(@PathVariable long id, Comment comment) {
-        Optional<Course> op = Optional.ofNullable(courseService.findById(id));
+        Optional<Course> op = Optional.ofNullable(courseService.getCourseById(id));
         if (op.isPresent()) {
             Course course = op.get();
             //comment.setAuthor(equipo);
@@ -198,7 +198,7 @@ public class CourseController {
     @PostMapping("/course/{id}/comments/{commentId}/delete")
     public String deleteComment(@PathVariable Long id, @PathVariable Long commentId) {
 
-        Optional<Course> op = Optional.ofNullable(courseService.findById(id));
+        Optional<Course> op = Optional.ofNullable(courseService.getCourseById(id));
 
         if (op.isPresent()) {
             Course course = op.get();
