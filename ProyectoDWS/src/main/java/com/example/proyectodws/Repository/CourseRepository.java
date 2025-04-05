@@ -1,6 +1,9 @@
 package com.example.proyectodws.Repository;
 
 import com.example.proyectodws.Entities.Course;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -8,30 +11,11 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Component
-public class CourseRepository {
-    private AtomicLong nextId = new AtomicLong(1L);
-    private ConcurrentHashMap<Long, Course> courses = new ConcurrentHashMap<>();
+public interface CourseRepository extends JpaRepository<Course, Long> {
 
-    public List<Course> findAll() {
-        return courses.values().stream().toList();
-    }
-
-    public Optional<Course> findById(long id) {
-        return Optional.ofNullable(courses.get(id));
-    }
-
-    public void save(Course course) {
-        long id = course.getId();
-        if (id == 0) {
-            id = nextId.getAndIncrement();
-            course.setId(id);
-        }
-        courses.put(id, course);
-    }
-
-    public void deleteById(long id) {
-        courses.remove(id);
-    }
-
+    @Query("SELECT c FROM Course c " +
+            "JOIN c.subject l " +
+            "WHERE l.title LIKE %:subjectTitle% AND c.title LIKE %:courseTitle%")
+    List<Course> findCoursesByTitles(@Param("subjectTitle") String subjectTitle,
+                                     @Param("courseTitle") String courseTitle);
 }

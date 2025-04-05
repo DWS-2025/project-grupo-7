@@ -1,11 +1,15 @@
 package com.example.proyectodws.Entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
 //this code is for subjects
  @Entity
+ @Table(name = "Subject")
  public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,12 +17,14 @@ import java.util.List;
     private String title;
     private String text;
     private String imagePath;
-    @ManyToMany(mappedBy = "enrolledStudents")
-    private List<String> enrolledStudents = new ArrayList<>();
 
-
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Course> associatedCourses = new ArrayList<>();
+
+    @Lob
+    @JsonIgnore
+    private Blob imageFile;
 
     public Subject(String title, String text) {
         this.title = title;
@@ -26,7 +32,6 @@ import java.util.List;
     }
 
     public Subject() {
-
     }
 
     public List<Course> getAssociatedCourses() {
@@ -61,15 +66,19 @@ import java.util.List;
     public void setText(String text) {
         this.text = text;
     }
-    public String getImagePath() {
+    public String getImage() {
         return imagePath;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setImage(String image) {
+        this.imagePath = image;
     }
-    public void enrollStudent(String studentName) {
-        enrolledStudents.add(studentName);
+
+    public Blob getImageFile() {
+        return imageFile;
+    }
+    public void setImageFile(Blob imageFile) {
+        this.imageFile = imageFile;
     }
 
     @Override

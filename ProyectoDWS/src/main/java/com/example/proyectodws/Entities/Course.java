@@ -1,5 +1,6 @@
 package com.example.proyectodws.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -11,12 +12,14 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "subject_id")
     private Subject subject;
     private String title;
     private String description;
 
-    @OneToMany(mappedBy = "enrolledCourse", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(mappedBy = "courses")
+    @JsonBackReference
     private List<User> enrolledStudents = new ArrayList<>();  // Relación con User (estudiantes)
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -27,7 +30,7 @@ public class Course {
 
     }
 
-    public Course(String subject, String title, String description) {
+    public Course(Subject subject, String title, String description) {
         super();
         this.subject=subject;
         this.title = title;
