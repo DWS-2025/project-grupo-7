@@ -7,16 +7,16 @@
 </head>
 <body>
 <div class="container">
-    <form accept-charset="UTF-8" action="/subjects/saved" method="post" enctype="multipart/form-data">
+    <form action="/subjects/new" method="post" enctype="multipart/form-data">
         <p>Title:</p>
         <input type='text' name='title' required/>
         <p>Text:</p>
         <textarea name='text' rows=5 cols=40></textarea>
         <p>Image file:</p>
         <input type='file' name='image' accept=".jpg, .jpeg"/>
-
         <input type='submit' value='Save'/>
     </form>
+
 </div>
 </body>
 </html>

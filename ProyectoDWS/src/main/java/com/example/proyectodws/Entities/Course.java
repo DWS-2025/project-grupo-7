@@ -1,6 +1,7 @@
 package com.example.proyectodws.Entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -25,6 +26,15 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();  // Relación con los comentarios
 
+    @ManyToMany
+    @JoinTable(
+            name = "course_subject",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id")
+    )
+    @JsonManagedReference
+    private List<Subject> subjects = new ArrayList<>();
+
 
     public Course(){
 
@@ -37,6 +47,13 @@ public class Course {
         this.description = description;
     }
 
+    public List<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(List<Subject> subjects) {
+        this.subjects = subjects;
+    }
 
 
     public Subject getSubject() {

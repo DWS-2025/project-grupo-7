@@ -60,6 +60,10 @@ public class SubjectService {
         }
         return subjectRepository.save(subject);
     }
+    public void updateSubject(Subject subject) {
+        // Aquí se actualiza la asignatura en la base de datos
+        subjectRepository.save(subject); // Esto guarda la asignatura en la base de datos
+    }
 
 }
 

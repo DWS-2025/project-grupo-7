@@ -1,22 +1,21 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Cursos</title>
-    <link rel="stylesheet" href="/edited_courses.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/edited_subject.css">
+    <title>Editar Asignatura</title>
 </head>
 <body>
-<div class="wrapper">
-    <p>Subject Edited Successfully.</p>
-    <p>Details of the edited subject:</p>
-    <div class="container">
-        <p><u>Title</u><br>{{subject.title}}</p>
-        <br>
-        <p><u>Description</u><br>{{subject.text}}</p>
-    </div>
-    <div class="button">
-        <a href="/subjects">Back to Subjects</a>
-    </div>
-</div>
+<h1>Editar Asignatura</h1>
+<form action="#" method="POST" th:action="@{/subject/{id}/edit(id=${subject.id})}">
+    <label for="title">Título:</label>
+    <input type="text" id="title" name="title" th:value="${subject.title}" required><br><br>
+
+    <label for="text">Descripción:</label>
+    <textarea id="text" name="text" required th:text="${subject.text}"></textarea><br><br>
+
+    <button type="submit">Guardar Cambios</button>
+</form>
+<a href="/subjects">Volver a Asignaturas</a>
 </body>
 </html>

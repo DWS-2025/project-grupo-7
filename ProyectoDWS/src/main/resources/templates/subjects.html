@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Asignaturas</title>
@@ -27,19 +27,19 @@
 <section id="cards">
     <div class="content">
         <div class="content-cards">
-            {{#subjects}}
-            <div class="card">
-                <a href="/subject/{{id}}">{{title}}</a>
-                <p><u>Descripción:</u> {{text}}</p>
-            </div>
-            {{/subjects}}
+            <th:block th:each="subject : ${subjects}">
+                <div class="card">
+                    <a th:href="@{/subject/{id}(id=${subject.id})}" th:text="${subject.title}">Asignatura</a>
+                    <p><u>Descripción:</u> <span th:text="${subject.text}">Descripción</span></p>
+                </div>
+            </th:block>
         </div>
     </div>
 </section>
 
-{{^subjects}}
-<p style="text-align: center;">No hay asignaturas disponibles aún.</p>
-{{/subjects}}
+<div th:if="${#lists.isEmpty(subjects)}">
+    <p style="text-align: center;">No hay asignaturas disponibles aún.</p>
+</div>
 
 <div class="contenedor-botones">
     <button class="botones" onclick="window.location.href='/subjects/new'">AGREGAR ASIGNATURA</button>

@@ -1,0 +1,73 @@
+/* edited_courses.css */
+body {
+    font-family: 'Tilt Warp', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #007acc;
+    margin-top: 20px;
+    font-size: 28px;
+}
+
+form {
+    width: 60%;
+    margin: 20px auto;
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: vertical;
+    height: 120px;
+}
+
+button {
+    background-color: #28a745;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+a {
+    display: block;
+    text-align: center;
+    font-size: 16px;
+    color: #007acc;
+    text-decoration: none;
+    margin-top: 20px;
+}
+
+a:hover {
+    color: #0056b3;
+}

@@ -1,21 +1,28 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Cursos</title>
+    <title>Nuevo Curso</title>
     <link rel="stylesheet" href="/newCourse.css">
     <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="container">
-    <form accept-charset="UTF-8" action="/courses/saved" method="post">
-        <p>Subject:</p>
-        <input type='text' name='subject' required/>
-        <p>Title:</p>
-        <input type='text' name='title' required/>
-        <p>Description:</p>
-        <textarea name='description' rows=5 cols=40></textarea>
-        <input type='submit' value='Save'/>
+    <h2>Crear nuevo curso</h2>
+    <form th:action="@{/courses/saved}" method="post" th:object="${course}">
+        <!-- Título del curso -->
+        <p>Título:</p>
+        <input type="text" th:field="*{title}" name="title" required/>
+
+        <!-- Descripción del curso -->
+        <p>Descripción:</p>
+        <textarea th:field="*{description}" name="description" rows="5" cols="40"></textarea>
+
+        <!-- Botón para guardar -->
+        <br><br>
+        <input type="submit" value="Guardar curso"/>
     </form>
 </div>
 </body>
-</html>l>
+</html>
+

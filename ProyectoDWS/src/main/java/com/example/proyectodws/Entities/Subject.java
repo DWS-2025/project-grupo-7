@@ -1,4 +1,5 @@
 package com.example.proyectodws.Entities;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -18,9 +19,14 @@ import java.util.List;
     private String text;
     private String imagePath;
 
-    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @ManyToMany(mappedBy = "subjects")
+    @JsonBackReference
     private List<Course> associatedCourses = new ArrayList<>();
+
+
+   /* @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Course> associatedCourses = new ArrayList<>();*/
 
     @Lob
     @JsonIgnore

@@ -31,32 +31,48 @@ public class SubjectController {
 
     @Autowired
     private SubjectService subjectService;
+
     @Autowired
     private CourseService courseService;
 
     @Autowired
     private UserSession userSession;
 
-
     @Autowired
     private UserService userService;
+
     @Autowired
     private ImageService imageService;
 
     @GetMapping("/subjects")
-    public String showSujects(Model model, HttpSession session) {
-        model.addAttribute("subjects", courseService.getAllCourses()); // add the list to the model
-        model.addAttribute("welcome", session.isNew()); // 'welcome' to indicates new session
+    public String showSubjects(Model model, HttpSession session) {
+        List<Subject> allSubjects = subjectService.getAllSubjects();
+        System.out.println("Número de asignaturas encontradas: " + allSubjects.size());
+        for (Subject s : allSubjects) {
+            System.out.println("ID: " + s.getId() + " | Título: " + s.getTitle());
+        }
+
+        model.addAttribute("subjects", allSubjects);
+        model.addAttribute("welcome", session.isNew());
         return "subjects";
     }
 
-   @GetMapping("/subjects/new")
+
+  /* @GetMapping("/subjects/new")
    public String newPostForm(Model model) {
 
        model.addAttribute("user", userSession.getUser()); // add the user attribute to the model
 
        return "new_subject";
-   }
+   }*/
+
+    /*@GetMapping("/subjects/new")
+    public String newPostForm(Model model) {
+        model.addAttribute("user", userSession.getUser());
+        model.addAttribute("subject", new Subject());
+        return "new_subject";
+    }
+
     @PostMapping("/subject/new")
     public String newSubject(Model model, @Validated Subject subject, BindingResult result, MultipartFile image) throws IOException, SQLException {
 
@@ -76,6 +92,42 @@ public class SubjectController {
         subjectService.createSubject(subject);
         subject.setImage(image.getOriginalFilename());
         subjectService.save(subject, image);
+        userSession.incNumSubjects();
+        model.addAttribute("numPosts", userSession.getNumSubjects());
+
+        return "saved_subject";
+    }*/
+    @GetMapping("/subjects/new")
+    public String newSubjectForm(Model model) {
+        model.addAttribute("subject", new Subject());
+        model.addAttribute("user", userSession.getUser());
+        return "new_subject";
+    }
+
+    @PostMapping("/subjects/new")
+    public String createSubject(Model model, @ModelAttribute @Validated Subject subject, BindingResult result,
+                                @RequestParam("image") MultipartFile image) throws IOException, SQLException {
+
+        if (subject.getTitle() == null || subject.getTitle().isEmpty()) {
+            result.rejectValue("title", "error.title", "El título es obligatorio");
+            return "new_subject";
+        }
+
+        String cleanedTitle = Jsoup.clean(subject.getTitle(), Safelist.simpleText().addTags("li", "ol", "ul"));
+        subject.setTitle(cleanedTitle);
+
+        if (subject.getText() != null) {
+            String cleanedText = Jsoup.clean(subject.getText(), Safelist.simpleText().addTags("li", "ol", "ul"));
+            subject.setText(cleanedText);
+        }
+
+        if (!image.isEmpty()) {
+            subject.setImage(image.getOriginalFilename());
+            subjectService.save(subject, image);  // << Asegúrate de que este método hace el save + image
+        } else {
+            subjectService.createSubject(subject);
+        }
+
         userSession.incNumSubjects();
         model.addAttribute("numPosts", userSession.getNumSubjects());
 
@@ -141,6 +193,35 @@ public class SubjectController {
         model.addAttribute("subject", subject); // adds the language attribute to the model
         return "show_courses_for_subject";
     }
+    @GetMapping("/subject/{id}/edit")
+    public String editSubjectForm(Model model, @PathVariable long id) {
+        Subject subject = subjectService.getSubjectById(id);
+        if (subject == null) {
+            return "Error404";
+        }
+        model.addAttribute("subject", subject);
+        return "edited_subject";
+    }
+    @PostMapping("/subject/{id}/edit")
+    public String editSubject(@PathVariable long id, @ModelAttribute @Validated Subject subject, BindingResult result) {
+        if (result.hasErrors()) {
+            return "edited_subject";
+        }
+
+        Subject existingSubject = subjectService.getSubjectById(id);
+        if (existingSubject == null) {
+            return "Error404"; //
+        }
+
+        existingSubject.setTitle(subject.getTitle());
+        existingSubject.setText(subject.getText());
+
+
+        subjectService.updateSubject(existingSubject);
+
+        return "redirect:/subject/" + id;
+    }
+
 
 
 
