@@ -112,12 +112,14 @@
         @GetMapping("/course/{id}")
         public String showCourse(Model model, @PathVariable long id) {
             Course course = courseService.getCourseById(id);
+            System.out.println("¿Curso encontrado? " + (course != null ? "Sí: " + course.getTitle() : "No"));
             if (course == null) {
                 return "Error404";
             }
             model.addAttribute("course", course);
             return "show_course";
         }
+
 
         // Delete course
         @GetMapping("/course/{id}/delete")
@@ -230,7 +232,7 @@
             }
 
         }
-        @GetMapping("/courses/{id}")
+       /* @GetMapping("/courses/{id}")
         public String getCourse(@PathVariable Long id, Model model) {
             Course course = courseRepository.findById(id).orElseThrow();
             List<Subject> allSubjects = subjectRepository.findAll();
@@ -238,7 +240,7 @@
             model.addAttribute("allSubjects", allSubjects);
             model.addAttribute("subject", new Subject()); // para formulario
             return "course_detail";
-        }
+        }*/
 
         @PostMapping("/courses/{id}/add-subject")
         public String addSubjectToCourse(@PathVariable Long id, @RequestParam Long subjectId) {
@@ -252,6 +254,14 @@
 
             return "redirect:/courses/" + id;
         }
+        @PostMapping("/courses/saved")
+        public String newCourse(@Validated Course course, Model model) {
+            courseService.createCourse(course);
+            userSession.incNumCourses();
+            model.addAttribute("numCourses", userSession.getNumCourses());
+            return "saved_course";
+        }
+
 
 
     }

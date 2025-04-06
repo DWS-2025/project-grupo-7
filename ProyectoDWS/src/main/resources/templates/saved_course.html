@@ -1,19 +1,11 @@
-<html lang="en">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Cursos</title>
-    <link rel="stylesheet" href="/savedCourse.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
+    <title>Curso Guardado</title>
 </head>
 <body>
-<div class="container">
-    <p>El curso ha sido guardado correctamente.</p>
-    <br>
-    <p>Actualmente hay {{numCourses}} cursos disponibles.</p>
-    <br>
-    <div class="button">
-        <a href="/courses">Back</a>
-    </div>
-</div>
+<h1>Curso guardado correctamente</h1>
+<p>Número total de cursos: <span th:text="${numCourses}"></span></p>
+<a href="/courses">Volver a la lista de cursos</a>
 </body>
 </html>

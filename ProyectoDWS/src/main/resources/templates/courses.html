@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>Cursos</title>
@@ -10,38 +10,41 @@
 <header class="header">
   <nav>
     <ul class="nav-links">
-      <li><a href="/">INICIO</a></li>
-      <li><a href="/subjects">ASIGNATURAS</a></li>
-      <li><a href="aboutUS">SOBRE NOSOTROS</a></li>
-      <li><a href="/contact">CONTACTO</a></li>
-
-
+      <li><a th:href="@{/}">INICIO</a></li>
+      <li><a th:href="@{/subjects}">ASIGNATURAS</a></li>
+      <li><a th:href="@{/aboutUS}">SOBRE NOSOTROS</a></li>
+      <li><a th:href="@{/contact}">CONTACTO</a></li>
     </ul>
   </nav>
-  <a href="/enrolled_courses" class="btn"><button>MIS CURSOS</button></a>
+  <a th:href="@{/enrolled_courses}" class="btn"><button>MIS CURSOS</button></a>
 </header>
-{{#welcome}}
-<h1>Welcome!</h1>
-{{/welcome}}
+
+<!-- Mensaje de bienvenida opcional -->
+<div th:if="${welcome}">
+  <h1>Welcome!</h1>
+</div>
+
 <section id="curso-content">
   <h2>Nuestros Cursos</h2>
   <p>Explora nuestra variedad de cursos para aprender diferentes asignaturas.</p>
 </section>
+
 <section id="cards">
   <div class="content">
     <div class="content-cards">
-      {{#courses}}
-      <div class="card">
-        <a href="/course/{{id}}">{{title}}</a>
-        <p><u>Asignatura:</u> {{subject}}</p>
+      <div class="card" th:each="course : ${courses}">
+        <a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.title}">Título del curso</a>
+        <p><u>Asignatura:</u> <span th:text="${course.subject}">Nombre asignatura</span></p>
       </div>
-      {{/courses}}
     </div>
   </div>
 </section>
-{{^courses}}
-<p style="text-align: center;">No subjects yet.</p>
-{{/courses}}
+
+<!-- Si no hay cursos -->
+<div th:if="${#lists.isEmpty(courses)}">
+  <p style="text-align: center;">No subjects yet.</p>
+</div>
+
 <div class="contenedor-botones">
   <button class="botones" onclick="window.location.href='/courses/new'">AGREGAR CURSO</button>
 </div>

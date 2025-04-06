@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Edit Course</title>
-    <link rel="stylesheet" href="/editCourse.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
+    <title>Editar Curso</title>
 </head>
 <body>
-<div class="container">
-    <form accept-charset="UTF-8" action="/course/{{id}}/edited_course" method="post">
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" value="{{course.title}}" required><br>
+<h1>Editar Curso</h1>
 
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" required>{{course.description}}</textarea><br>
+<form th:action="@{/course/{id}/edited_course(id=${course.id})}" method="post" th:object="${course}">
+    <label for="title">Título:</label>
+    <input type="text" id="title" th:field="*{title}" required/><br/>
 
-        <input type="submit" value="Save">
-        <a href="/course/{{id}}">Cancel</a>
-    </form>
-</div>
+    <label for="description">Descripción:</label>
+    <textarea id="description" th:field="*{description}" rows="5" cols="40"></textarea><br/>
+
+    <button type="submit">Guardar cambios</button>
+</form>
+
+<br/>
+<a th:href="@{/course/{id}(id=${course.id})}">Cancelar</a>
 </body>
 </html>
+

@@ -28,10 +28,14 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
-    public Course getCourseById(Long id){
+    /*public Course getCourseById(Long id){
         Optional<Course> optionalCourse = courseRepository.findById(id);
         return optionalCourse.orElse(null);
+    }*/
+    public Course getCourseById(Long id) {
+        return courseRepository.findById(id).orElse(null);
     }
+
 
     public List<Course> getAllCourses(){
         return courseRepository.findAll();
