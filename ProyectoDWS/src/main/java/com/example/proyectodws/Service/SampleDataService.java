@@ -1,59 +1,62 @@
 package com.example.proyectodws.Service;
 
-import com.example.proyectodws.Entities.Comment;
 import com.example.proyectodws.Entities.Course;
 import com.example.proyectodws.Entities.Subject;
 import com.example.proyectodws.Entities.User;
-import com.example.proyectodws.Repository.CommentRepository;
 import com.example.proyectodws.Repository.CourseRepository;
+import com.example.proyectodws.Repository.SubjectRepository;
 import com.example.proyectodws.Repository.UserRepository;
+
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 
-/*@Service
+@Service
 public class SampleDataService {
-    @Autowired
-    private CourseRepository courseRepository;
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private CommentRepository commentsRepository;
+    private CourseRepository courseRepository;
 
+    @Autowired
+    private SubjectRepository subjectRepository;
+
+    // Este método se ejecutará cuando la aplicación se inicie
     @PostConstruct
     public void init() {
+        // Crear algunos subjects (asignaturas)
+        Subject subject1 = new Subject("Mathematics", "A subject about mathematics.");
+        Subject subject2 = new Subject("Computer Science", "A subject about computer programming.");
 
-        // Default user
-        User equipo = new User("Equipo", "Todos","michel.maes@urjc.es", "TextoImagen");
+        // Guardar los subjects
+        subjectRepository.saveAll(Arrays.asList(subject1, subject2));
 
-        // Other users
-        User prueba = new User("Prueba", "prueba","carlos@urjc.es", "textoImagen");
+        // Crear algunos users (usuarios)
+        User user1 = new User("John", "Doe", "johndoe", "profile1.png");
+        User user2 = new User("Jane", "Doe", "janedoe", "profile2.png");
 
-        // Some examples of posts and comments
-        Subject Math= new Subject("Math", "Text");
+        // Guardar los usuarios
+        userRepository.saveAll(Arrays.asList(user1, user2));
 
-        Course course = new Course(Math, "Avanzado", "Es guay");
+        // Crear algunos cursos (courses)
+        Course course1 = new Course(subject1, "Algebra", "Introduction to algebra.");
+        Course course2 = new Course(subject2, "Java Programming", "Learn the basics of Java.");
 
-        Comment comment = new Comment("Cool!");
-        comment.setAuthor(equipo);
-        equipo.getComments().add(comment);
-        course.getComments().add(comment);
-        commentsRepository.save(comment);
+        // Guardar los cursos
+        courseRepository.saveAll(Arrays.asList(course1, course2));
 
-        Comment comment2 = new Comment("I like it!");
-        comment2.setAuthor(prueba);
-        prueba.getComments().add(comment2);
-        course.getComments().add(comment2);
-        commentsRepository.save(comment2);
+        // Asociar usuarios a los cursos (inscribir estudiantes)
+        course1.getEnrolledStudents().add(user1);  // John Doe se inscribe en el curso de Algebra
+        course1.getEnrolledStudents().add(user2);  // Jane Doe se inscribe en el curso de Algebra
 
-        courseRepository.save(course);
-        userRepository.save(equipo);
-        userRepository.save(prueba);
+        course2.getEnrolledStudents().add(user2);  // Jane Doe se inscribe en el curso de Java Programming
+
+        // Guardar los cambios en los cursos
+        courseRepository.saveAll(Arrays.asList(course1, course2));
     }
 
 }
-*/
-

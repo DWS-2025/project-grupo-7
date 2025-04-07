@@ -28,6 +28,9 @@ public class User {
     @JsonManagedReference
     private Set<Course> courses = new HashSet<>();
 
+    @ManyToMany(mappedBy = "enrolledStudents")
+    private List<Course> enrolledCourses = new ArrayList<>();
+
 
     @Column(name = "image_name")
     private String imageName;
