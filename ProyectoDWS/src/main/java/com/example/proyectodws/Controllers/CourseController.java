@@ -69,8 +69,9 @@
         }*/
         @GetMapping("/courses/new")
         public String newCourseForm(Model model) {
-            model.addAttribute("course", new Course());
-            return "new_course";
+            model.addAttribute("subjects", subjectService.getAllSubjects());  // Pasar los subjects a la vista
+            model.addAttribute("course", new Course());  // Asegurarse de que el objeto Course esté disponible
+            return "new_course";  // El nombre del archivo .html que va a renderizar
         }
 
 
@@ -256,11 +257,26 @@
         }
         @PostMapping("/courses/saved")
         public String newCourse(@Validated Course course, Model model) {
+            // Obtenemos el ID del subject seleccionado del formulario
+            Long subjectId = course.getSubject().getId();  // El campo `subject` es un objeto con el ID
+
+            // Buscamos el subject correspondiente en la base de datos
+            Subject selectedSubject = subjectService.getSubjectById(subjectId);  // Obtener el subject por ID
+
+            if (selectedSubject != null) {
+                course.setSubject(selectedSubject);  // Asignamos el subject al curso
+            }
+
+            // Guardamos el curso en la base de datos
             courseService.createCourse(course);
+
+            // Incrementamos el número de cursos del usuario
             userSession.incNumCourses();
             model.addAttribute("numCourses", userSession.getNumCourses());
-            return "saved_course";
+
+            return "saved_course";  // Redirigir a la página de confirmación
         }
+
 
 
 
