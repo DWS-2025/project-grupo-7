@@ -35,8 +35,6 @@ public class User {
     @Column(name = "image_name")
     private String imageName;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
 
     public User(){}
 
@@ -79,12 +77,6 @@ public class User {
         this.last_name = last_name;
     }
 
-    public List<Comment> getComments() {
-        return comments;
-    }
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
 
     public Set<Course> getCourses() {
         return courses;

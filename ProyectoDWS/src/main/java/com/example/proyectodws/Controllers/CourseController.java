@@ -6,6 +6,7 @@
     import com.example.proyectodws.Entities.User;
     import com.example.proyectodws.Repository.CourseRepository;
     import com.example.proyectodws.Repository.SubjectRepository;
+    import com.example.proyectodws.Repository.UserRepository;
     import com.example.proyectodws.Service.*;
 
     import jakarta.servlet.http.HttpSession;
@@ -47,9 +48,12 @@
         @Autowired
         private CommentService commentService;
 
+        @Autowired
         private CourseRepository courseRepository;
+        @Autowired
         private SubjectRepository subjectRepository;
-
+        @Autowired
+        private UserRepository userRepository;
         //Display all courses
         @GetMapping("/courses")
         public String showCourses(Model model, HttpSession session) {
@@ -116,13 +120,10 @@
 
         // Display course with ID
         @GetMapping("/course/{id}")
-        public String showCourse(Model model, @PathVariable long id) {
+        public String showCourse(@PathVariable Long id, Model model) {
             Course course = courseService.getCourseById(id);
-            System.out.println("¿Curso encontrado? " + (course != null ? "Sí: " + course.getTitle() : "No"));
-            if (course == null) {
-                return "Error404";
-            }
             model.addAttribute("course", course);
+            model.addAttribute("comments", commentService.getCommentsForCourse(id));  // Mostrar comentarios
             return "show_course";
         }
 
@@ -212,31 +213,46 @@
 
 
         @PostMapping("/course/{id}/comments/new")
-        public String newComment(@PathVariable long id, Comment comment) {
-            Optional<Course> op = Optional.ofNullable(courseService.getCourseById(id));
-            if (op.isPresent()) {
-                Course course = op.get();
-                //comment.setAuthor(equipo);
-                commentService.save(course, comment);
-                return "redirect:/course/" + id;
-            } else {
-                return "error404";
+        public String addComment(@PathVariable Long id, @RequestParam String text, Model model) {
+            // Obtener el curso en base al ID
+            Course course = courseService.getCourseById(id);
+            if (course != null) {
+                // Verificar si el usuario por defecto existe. Si no existe, crearlo.
+                User defaultUser = userRepository.findByUsername("defaultUser"); // Buscar usuario por username
+
+                // Si el usuario no existe, crearlo con los campos necesarios
+                if (defaultUser == null) {
+                    // Crear un usuario por defecto con los campos que necesitas (sin email)
+                    defaultUser = new User(
+                            "defaultUser", // username
+                            "Juan",        // firstName
+                            "Pérez",       // lastName
+                            "default.jpg"  // imageName
+                    );
+
+                    // Guardar el usuario en la base de datos
+                    userRepository.save(defaultUser);
+                }
+
+                // Crear el comentario y asociarlo al curso y al usuario por defecto
+                Comment comment = new Comment(text, defaultUser, course); // Crear el comentario
+                commentService.addComment(comment);  // Guardar el comentario
+
+                // Redirigir a la página del curso después de agregar el comentario
+                return "redirect:/course/{id}";
             }
+
+            // Si no se encuentra el curso, redirige a una página de error o muestra un mensaje
+            return "errorPage";
         }
 
-        @PostMapping("/course/{id}/comments/{commentId}/delete")
-        public String deleteComment(@PathVariable Long id, @PathVariable Long commentId) {
 
-            Optional<Course> op = Optional.ofNullable(courseService.getCourseById(id));
 
-            if (op.isPresent()) {
-                Course course = op.get();
-                commentService.delete(commentId, course);
-                return "redirect:/course/" + id;
-            } else {
-                return "error404";
-            }
-
+        // Eliminar un comentario
+        @PostMapping("/course/{courseId}/comments/{commentId}/delete")
+        public String deleteComment(@PathVariable Long courseId, @PathVariable Long commentId) {
+            commentService.deleteComment(commentId);
+            return "redirect:/course/{courseId}";
         }
        /* @GetMapping("/courses/{id}")
         public String getCourse(@PathVariable Long id, Model model) {

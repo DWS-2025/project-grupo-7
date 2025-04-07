@@ -8,22 +8,22 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    private String message;
+    private String text;
+    @ManyToOne(cascade = CascadeType.PERSIST)  // Esto asegura que el usuario sea guardado automáticamente
+    @JoinColumn(name = "user_id")
+    private User author;
 
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;  // Relación con el curso
 
-    @ManyToOne
-    @JoinColumn(name = "author_id")
-    private User author;  // Relación con el autor del comentario
 
-    protected Comment() {
+    public Comment(String text, User author, Course course) {
+        this.text = text;
+        this.author = author;
+        this.course = course;
     }
 
-    public Comment(String message) {
-        this.message = message;
-    }
 
     public long getId() {
         return id;
@@ -33,12 +33,13 @@ public class Comment {
         this.id = id;
     }
 
-    public String getMessage() {
-        return message;
+    public String getText() {
+        return text;
     }
+    public Comment() {}
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public User getAuthor() {
@@ -48,9 +49,17 @@ public class Comment {
     public void setAuthor(User author) {
         this.author = author;
     }
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
 
     @Override
     public String toString() {
-        return "Comment [id=" + id + ", message=" + message + "]";
+        return "Comment [id=" + id + ", text=" + text + "]";
     }
 }
