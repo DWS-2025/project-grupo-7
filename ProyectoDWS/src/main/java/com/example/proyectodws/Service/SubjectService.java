@@ -47,18 +47,14 @@ public class SubjectService {
         subjectRepository.deleteById(id);
     }
 
-    public Subject save (Subject subject, MultipartFile imageField) throws IOException, SQLException {
-        if (imageField != null && !imageField.isEmpty()) {
-            // Convert content to Blob
-            String imageName = imageField.getOriginalFilename();
-            subject.setImage(imageName);
-            byte[] imageBytes = imageField.getBytes();
-            Blob imageBlob = new SerialBlob(imageBytes);
-            subject.setImageFile(imageBlob);
-        } else {
-            subject.setImage("no-image.png");
+    public Subject save (Subject subject, MultipartFile imageFile) throws IOException, SQLException {
+        if (imageFile != null && !imageFile.isEmpty()) {
+            // Convertir la imagen a Blob
+            byte[] imageBytes = imageFile.getBytes();
+            Blob blob = new SerialBlob(imageBytes);
+            subject.setImageFile(blob);  // Asignamos el Blob de la imagen a la asignatura
         }
-        return subjectRepository.save(subject);
+        return subjectRepository.save(subject);  // Guardamos la asignatura con la imagen
     }
     public void updateSubject(Subject subject) {
         // Aquí se actualiza la asignatura en la base de datos

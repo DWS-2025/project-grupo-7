@@ -8,9 +8,14 @@
 <p th:text="${course.description}"></p>
 <p><strong>Asignatura:</strong> <span th:text="${course.subject.title}"></span></p>
 
+<!-- Mostrar la imagen del curso -->
+
 <a th:href="@{/course/{id}/edit(id=${course.id})}">Editar</a> |
 <a th:href="@{/course/{id}/delete(id=${course.id})}">Eliminar</a> |
-<a th:href="@{/course/{id}/enroll(id=${course.id})}">Inscribirse</a>
+<form th:action="@{/course/{id}/enroll(id=${course.id})}" method="post">
+    <button type="submit">Inscribirse</button>
+</form>
+
 
 <h2>Comentarios</h2>
 <ul>

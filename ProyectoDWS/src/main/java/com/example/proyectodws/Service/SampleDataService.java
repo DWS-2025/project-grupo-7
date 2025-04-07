@@ -11,6 +11,9 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 @Service
@@ -23,14 +26,23 @@ public class SampleDataService {
     private CourseRepository courseRepository;
 
     @Autowired
+    private ImageService imageService;
+    @Autowired
     private SubjectRepository subjectRepository;
 
     // Este método se ejecutará cuando la aplicación se inicie
     @PostConstruct
-    public void init() {
+    public void init() throws SQLException, IOException {
         // Crear algunos subjects (asignaturas)
         Subject subject1 = new Subject("Mathematics", "A subject about mathematics.");
+        Blob mathImage = imageService.filePathToBlob(".\\images\\matemáticas.jpg");
+        subject1.setImageFile(mathImage);
+        subject1.setImage("matemáticas.jpg");
+
         Subject subject2 = new Subject("Computer Science", "A subject about computer programming.");
+        Blob csImage = imageService.filePathToBlob(".\\images\\images.jpeg");
+        subject2.setImageFile(csImage);
+        subject2.setImage("images.jpeg");
 
         // Guardar los subjects
         subjectRepository.saveAll(Arrays.asList(subject1, subject2));
