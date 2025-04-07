@@ -10,14 +10,26 @@
 <header class="header">
     <p>CURSOS MATRICULADOS</p>
 </header>
-<div class="list-courses">
-    <ul>
-        {{#enrolledCourses}}
-        <li><u>{{subject}}</u><br>{{title}}<br></li>
-        {{/enrolledCourses}}
-    </ul>
+<section id="cards">
+    <div class="content">
+        <h2>Cursos en los que estás matriculado</h2>
+        <div class="content-cards">
+            <div class="card" th:each="course : ${enrolledCourses}">
+                <a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.title}">Título del curso</a>
+                <p><u>Asignatura:</u> <span th:text="${course.subject.title}">Nombre asignatura</span>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Si no hay cursos -->
+<div th:if="${#lists.isEmpty(enrolledCourses)}" style="text-align: center;">
+    <p>No estás matriculado en ningún curso.</p>
 </div>
-<div class="button">
+
+<!-- Botón para volver -->
+<div class="button" style="text-align: center; margin-top: 20px;">
     <a href="/courses">Volver a la lista de cursos</a>
 </div>
 </body>
