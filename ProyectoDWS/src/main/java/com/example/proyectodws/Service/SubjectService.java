@@ -4,6 +4,8 @@ import com.example.proyectodws.Entities.Course;
 import com.example.proyectodws.Entities.Subject;
 import com.example.proyectodws.Repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,16 +51,19 @@ public class SubjectService {
 
     public Subject save (Subject subject, MultipartFile imageFile) throws IOException, SQLException {
         if (imageFile != null && !imageFile.isEmpty()) {
-            // Convertir la imagen a Blob
+
             byte[] imageBytes = imageFile.getBytes();
             Blob blob = new SerialBlob(imageBytes);
-            subject.setImageFile(blob);  // Asignamos el Blob de la imagen a la asignatura
+            subject.setImageFile(blob);
         }
-        return subjectRepository.save(subject);  // Guardamos la asignatura con la imagen
+        return subjectRepository.save(subject);
     }
     public void updateSubject(Subject subject) {
-        // Aquí se actualiza la asignatura en la base de datos
-        subjectRepository.save(subject); // Esto guarda la asignatura en la base de datos
+
+        subjectRepository.save(subject);
+    }
+    public Page<Subject> getSubjects(PageRequest pageRequest) {
+        return subjectRepository.findAll(pageRequest);
     }
 
 }

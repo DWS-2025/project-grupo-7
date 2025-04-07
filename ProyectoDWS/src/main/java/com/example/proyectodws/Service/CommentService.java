@@ -19,18 +19,18 @@ public class CommentService {
     @Autowired
     private CourseRepository courseRepository;
 
-    // Agregar un nuevo comentario
+    // add comment
     public Comment addComment(Comment comment) {
         return commentRepository.save(comment);
     }
 
-    // Obtener todos los comentarios de un curso
+    // get comments
     public List<Comment> getCommentsForCourse(Long courseId) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Curso no encontrado"));
         return course.getComments();
     }
 
-    // Eliminar un comentario
+    // delete comment
     public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
     }

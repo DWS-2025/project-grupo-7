@@ -44,7 +44,7 @@ public class CourseRestController {
         if (subjectId != null) {
             Subject subject = subjectService.getSubjectById(subjectId);
             if (subject == null) {
-                return ResponseEntity.badRequest().build(); // o un error más informativo
+                return ResponseEntity.badRequest().build();
             }
             course.setSubject(subject);
         }
@@ -65,7 +65,7 @@ public class CourseRestController {
         course.setTitle(title);
         course.setDescription(description);
 
-        Course updated = courseService.createCourse(course); // o updateCourse si lo tienes separado
+        Course updated = courseService.createCourse(course);
         return ResponseEntity.ok(updated);
     }
 

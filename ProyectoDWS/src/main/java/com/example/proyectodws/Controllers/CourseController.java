@@ -78,9 +78,9 @@
         }*/
         @GetMapping("/courses/new")
         public String newCourseForm(Model model) {
-            model.addAttribute("subjects", subjectService.getAllSubjects());  // Pasar los subjects a la vista
-            model.addAttribute("course", new Course());  // Asegurarse de que el objeto Course esté disponible
-            return "new_course";  // El nombre del archivo .html que va a renderizar
+            model.addAttribute("subjects", subjectService.getAllSubjects());
+            model.addAttribute("course", new Course());
+            return "new_course";
         }
 
 
@@ -123,7 +123,7 @@
         public String showCourse(@PathVariable Long id, Model model) {
             Course course = courseService.getCourseById(id);
             model.addAttribute("course", course);
-            model.addAttribute("comments", commentService.getCommentsForCourse(id));  // Mostrar comentarios
+            model.addAttribute("comments", commentService.getCommentsForCourse(id));
             return "show_course";
         }
 
@@ -196,7 +196,7 @@
             }
 
             model.addAttribute("course", course);
-            model.addAttribute("enrolledStudents", course.getEnrolledStudents()); // Agrega la lista de estudiantes matriculados al modelo
+            model.addAttribute("enrolledStudents", course.getEnrolledStudents());
             return "enrolled_students";
         }
         @GetMapping("/courses/search")
@@ -214,15 +214,15 @@
 
         @PostMapping("/course/{id}/comments/new")
         public String addComment(@PathVariable Long id, @RequestParam String text, Model model) {
-            // Obtener el curso en base al ID
+
             Course course = courseService.getCourseById(id);
             if (course != null) {
-                // Verificar si el usuario por defecto existe. Si no existe, crearlo.
-                User defaultUser = userRepository.findByUsername("defaultUser"); // Buscar usuario por username
 
-                // Si el usuario no existe, crearlo con los campos necesarios
+                User defaultUser = userRepository.findByUsername("defaultUser");
+
+
                 if (defaultUser == null) {
-                    // Crear un usuario por defecto con los campos que necesitas (sin email)
+
                     defaultUser = new User(
                             "defaultUser", // username
                             "Juan",        // firstName
@@ -230,25 +230,25 @@
                             "default.jpg"  // imageName
                     );
 
-                    // Guardar el usuario en la base de datos
+
                     userRepository.save(defaultUser);
                 }
 
-                // Crear el comentario y asociarlo al curso y al usuario por defecto
-                Comment comment = new Comment(text, defaultUser, course); // Crear el comentario
-                commentService.addComment(comment);  // Guardar el comentario
 
-                // Redirigir a la página del curso después de agregar el comentario
+                Comment comment = new Comment(text, defaultUser, course);
+                commentService.addComment(comment);
+
+
                 return "redirect:/course/{id}";
             }
 
-            // Si no se encuentra el curso, redirige a una página de error o muestra un mensaje
+
             return "errorPage";
         }
 
 
 
-        // Eliminar un comentario
+
         @PostMapping("/course/{courseId}/comments/{commentId}/delete")
         public String deleteComment(@PathVariable Long courseId, @PathVariable Long commentId) {
             commentService.deleteComment(commentId);
@@ -278,24 +278,24 @@
         }
         @PostMapping("/courses/saved")
         public String newCourse(@Validated Course course, Model model) {
-            // Obtenemos el ID del subject seleccionado del formulario
-            Long subjectId = course.getSubject().getId();  // El campo `subject` es un objeto con el ID
 
-            // Buscamos el subject correspondiente en la base de datos
-            Subject selectedSubject = subjectService.getSubjectById(subjectId);  // Obtener el subject por ID
+            Long subjectId = course.getSubject().getId();
+
+
+            Subject selectedSubject = subjectService.getSubjectById(subjectId);
 
             if (selectedSubject != null) {
-                course.setSubject(selectedSubject);  // Asignamos el subject al curso
+                course.setSubject(selectedSubject);
             }
 
-            // Guardamos el curso en la base de datos
+
             courseService.createCourse(course);
 
-            // Incrementamos el número de cursos del usuario
+
             userSession.incNumCourses();
             model.addAttribute("numCourses", userSession.getNumCourses());
 
-            return "saved_course";  // Redirigir a la página de confirmación
+            return "saved_course";
         }
         @GetMapping("/course/{id}/image")
         public ResponseEntity<byte[]> getCourseImage(@PathVariable Long id) {
@@ -305,7 +305,7 @@
                 try {
                     byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
                     return ResponseEntity.ok()
-                            .contentType(MediaType.IMAGE_JPEG)  // Cambia esto a un tipo adecuado según la imagen
+                            .contentType(MediaType.IMAGE_JPEG)
                             .body(imageBytes);
                 } catch (SQLException e) {
                     e.printStackTrace();

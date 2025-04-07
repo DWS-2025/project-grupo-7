@@ -9,13 +9,13 @@ public class Comment {
     private long id;
 
     private String text;
-    @ManyToOne(cascade = CascadeType.PERSIST)  // Esto asegura que el usuario sea guardado automáticamente
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
     private User author;
 
     @ManyToOne
     @JoinColumn(name = "course_id")
-    private Course course;  // Relación con el curso
+    private Course course;
 
 
     public Comment(String text, User author, Course course) {

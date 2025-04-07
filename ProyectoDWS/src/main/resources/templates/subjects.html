@@ -5,6 +5,8 @@
     <title>Asignaturas</title>
     <link rel="stylesheet" href="/subjects2.css">
     <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="paginacion.js"></script>
 </head>
 <body>
 <header class="header">
@@ -26,7 +28,7 @@
 
 <section id="cards">
     <div class="content">
-        <div class="content-cards">
+        <div class="content-cards" id="subjects-list">
             <th:block th:each="subject : ${subjects}">
                 <div class="card">
                     <a th:href="@{/subject/{id}(id=${subject.id})}" th:text="${subject.title}">Asignatura</a>
@@ -39,6 +41,12 @@
 
 <div th:if="${#lists.isEmpty(subjects)}">
     <p style="text-align: center;">No hay asignaturas disponibles aún.</p>
+</div>
+
+<div class="pagination">
+    <button th:if="${currentPage > 0}" th:onclick="'window.location.href=\'/subjects?page=' + (currentPage - 1) + '\' '">Anterior</button>
+    <span> Página <span th:text="${currentPage + 1}">1</span> de <span th:text="${totalPages}">1</span> </span>
+    <button th:if="${currentPage < totalPages - 1}" th:onclick="'window.location.href=\'/subjects?page=' + (currentPage + 1) + '\' '">Siguiente</button>
 </div>
 
 <div class="contenedor-botones">

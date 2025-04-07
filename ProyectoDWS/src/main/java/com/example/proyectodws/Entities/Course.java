@@ -21,10 +21,10 @@ public class Course {
 
     @ManyToMany(mappedBy = "courses")
     @JsonBackReference
-    private List<User> enrolledStudents = new ArrayList<>();  // Relación con User (estudiantes)
+    private List<User> enrolledStudents = new ArrayList<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();  // Relación con los comentarios
+    private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(

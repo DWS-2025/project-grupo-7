@@ -132,3 +132,17 @@ h2 {
 .botones:hover {
     background-color: #555;
 }
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    padding: 10px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.pagination span {
+    padding: 10px;
+}

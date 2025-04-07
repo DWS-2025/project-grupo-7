@@ -9,6 +9,8 @@ import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -45,18 +47,13 @@ public class SubjectController {
     private ImageService imageService;
 
     @GetMapping("/subjects")
-    public String showSubjects(Model model, HttpSession session) {
-        List<Subject> allSubjects = subjectService.getAllSubjects();
-        System.out.println("Número de asignaturas encontradas: " + allSubjects.size());
-        for (Subject s : allSubjects) {
-            System.out.println("ID: " + s.getId() + " | Título: " + s.getTitle());
-        }
-
-        model.addAttribute("subjects", allSubjects);
-        model.addAttribute("welcome", session.isNew());
+    public String getSubjects(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model) {
+        Page<Subject> subjectPage = subjectService.getSubjects(PageRequest.of(page, size));
+        model.addAttribute("subjects", subjectPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", subjectPage.getTotalPages());
         return "subjects";
     }
-
 
   /* @GetMapping("/subjects/new")
    public String newPostForm(Model model) {
@@ -123,7 +120,7 @@ public class SubjectController {
 
         if (!image.isEmpty()) {
             subject.setImage(image.getOriginalFilename());
-            subjectService.save(subject, image);  // << Asegúrate de que este método hace el save + image
+            subjectService.save(subject, image);
         } else {
             subjectService.createSubject(subject);
         }
