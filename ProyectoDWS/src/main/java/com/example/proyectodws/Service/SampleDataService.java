@@ -1,4 +1,4 @@
-package com.example.proyectodws.Service;
+/*package com.example.proyectodws.Service;
 
 import com.example.proyectodws.Entities.Course;
 import com.example.proyectodws.Entities.Subject;
@@ -71,4 +71,4 @@ public class SampleDataService {
         courseRepository.saveAll(Arrays.asList(course1, course2));
     }
 
-}
+}*/
