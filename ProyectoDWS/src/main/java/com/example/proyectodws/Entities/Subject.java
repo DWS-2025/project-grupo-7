@@ -86,6 +86,17 @@ import java.util.List;
     public void setImageFile(Blob imageFile) {
         this.imageFile = imageFile;
     }
+    @Lob
+    private byte[] imageData;
+
+    // Getters y setters
+   /* public byte[] getImageData() {
+        return imageData;
+    }*/
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
+    }
 
     @Override
     public String toString() {

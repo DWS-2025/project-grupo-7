@@ -32,23 +32,43 @@ public class CourseRestController {
     }
 
     @PostMapping
-    public ResponseEntity<Course> createCourse(@RequestBody Course course) {
-        if (course.getSubject() != null) {
-            Subject subject = subjectService.getSubjectById(course.getSubject().getId());
+    public ResponseEntity<Course> createCourseByParams(
+            @RequestParam String title,
+            @RequestParam String description,
+            @RequestParam(required = false) Long subjectId) {
+
+        Course course = new Course();
+        course.setTitle(title);
+        course.setDescription(description);
+
+        if (subjectId != null) {
+            Subject subject = subjectService.getSubjectById(subjectId);
+            if (subject == null) {
+                return ResponseEntity.badRequest().build(); // o un error más informativo
+            }
             course.setSubject(subject);
         }
+
         Course saved = courseService.createCourse(course);
         return ResponseEntity.ok(saved);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Course> updateCourse(@PathVariable Long id, @RequestBody Course updatedCourse) {
+    public ResponseEntity<Course> updateCourseByParams(
+            @PathVariable Long id,
+            @RequestParam String title,
+            @RequestParam String description) {
+
         Course course = courseService.getCourseById(id);
         if (course == null) return ResponseEntity.notFound().build();
-        course.setTitle(updatedCourse.getTitle());
-        course.setDescription(updatedCourse.getDescription());
-        return ResponseEntity.ok(courseService.createCourse(course));
+
+        course.setTitle(title);
+        course.setDescription(description);
+
+        Course updated = courseService.createCourse(course); // o updateCourse si lo tienes separado
+        return ResponseEntity.ok(updated);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
