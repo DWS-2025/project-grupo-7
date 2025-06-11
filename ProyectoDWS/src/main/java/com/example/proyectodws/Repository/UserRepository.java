@@ -7,11 +7,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     // Buscar un usuario por su nombre de usuario
-    User findByUsername(String username);
+    Optional<User> findByUsername(String username);
 }
+

@@ -13,8 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import es.codeurjc.daw.library.model.User;
-import es.codeurjc.daw.library.repository.UserRepository;
+import com.example.proyectodws.Repository.UserRepository;
 
 @Service
 public class RepositoryUserDetailsService implements UserDetailsService {
@@ -33,7 +32,7 @@ public class RepositoryUserDetailsService implements UserDetailsService {
             roles.add(new SimpleGrantedAuthority("ROLE_" + role));
         }
 
-        return new org.springframework.security.core.userdetails.User(user.getName(),
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),
                 user.getEncodedPassword(), roles);
 
     }

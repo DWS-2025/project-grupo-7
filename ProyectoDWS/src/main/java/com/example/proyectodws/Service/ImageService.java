@@ -1,4 +1,5 @@
 package com.example.proyectodws.Service;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -10,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -95,10 +97,18 @@ public class ImageService {
         return fileName;
     }
 
-    public Blob filePathToBlob (String filePath) throws IOException, SQLException {
+    /*public Blob filePathToBlob (String filePath) throws IOException, SQLException {
         byte[]bytes= Files.readAllBytes(Paths.get(filePath));
         Blob imageBlob = new SerialBlob(bytes);
         return imageBlob;
+    }*/
+
+    public Blob filePathToBlob(String resourcePath) throws IOException, SQLException {
+        ClassPathResource resource = new ClassPathResource(resourcePath);
+        try (InputStream is = resource.getInputStream()) {
+            byte[] bytes = is.readAllBytes();
+            return new SerialBlob(bytes);
+        }
     }
 
 

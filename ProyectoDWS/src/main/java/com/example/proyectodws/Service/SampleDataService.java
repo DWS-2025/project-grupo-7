@@ -35,21 +35,29 @@ public class SampleDataService {
     public void init() throws SQLException, IOException {
         // Crear algunos subjects (asignaturas)
         Subject subject1 = new Subject("Mathematics", "A subject about mathematics.");
-        Blob mathImage = imageService.filePathToBlob(".\\images\\matemáticas.jpg");
-        subject1.setImageFile(mathImage);
-        subject1.setImage("matemáticas.jpg");
-
         Subject subject2 = new Subject("Computer Science", "A subject about computer programming.");
-        Blob csImage = imageService.filePathToBlob(".\\images\\images.jpeg");
-        subject2.setImageFile(csImage);
-        subject2.setImage("images.jpeg");
 
+        try {
+            Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+            subject1.setImageFile(mathImage);
+            subject1.setImage("matematicas.jpg");
+        } catch (IOException e) {
+            System.err.println("Image matematicas.jpg not found or unreadable");
+        }
+
+        try {
+            Blob csImage = imageService.filePathToBlob("images\\images.jpeg");
+            subject2.setImageFile(csImage);
+            subject2.setImage("images.jpeg");
+        } catch (IOException e) {
+            System.err.println("Image images.jpeg not found or unreadable");
+        }
         // Guardar los subjects
         subjectRepository.saveAll(Arrays.asList(subject1, subject2));
 
         // Crear algunos users (usuarios)
-        User user1 = new User("John", "Doe", "johndoe", "profile1.png");
-        User user2 = new User("Jane", "Doe", "janedoe", "profile2.png");
+        User user1 = new User("John", "Doe", "johndoe", "profile1.png", "1234");
+        User user2 = new User("Jane", "Doe", "janedoe", "profile2.png", "1234");
 
         // Guardar los usuarios
         userRepository.saveAll(Arrays.asList(user1, user2));
@@ -71,5 +79,4 @@ public class SampleDataService {
         courseRepository.saveAll(Arrays.asList(course1, course2));
     }
 }
-
 
