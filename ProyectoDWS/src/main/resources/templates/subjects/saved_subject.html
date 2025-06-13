@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Asignatura Guardada - AcademiaSaber', '/styles/saved_subject.css')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main>
+    <div class="container">
+        <h1>Asignatura Guardada</h1>
+        <p>La asignatura ha sido guardada exitosamente.</p>
+        <a href="/subjects"><button>Volver a Asignaturas</button></a>
+    </div>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>

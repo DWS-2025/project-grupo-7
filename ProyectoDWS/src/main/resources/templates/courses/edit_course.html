@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Editar Curso - AcademiaSaber', '/styles/edit_course.css')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main>
+    <h1>Editar Curso</h1>
+
+    <form th:action="@{/course/{id}/edited_course(id=${course.id})}" method="post" th:object="${course}">
+        <label for="title">Título:</label>
+        <input type="text" id="title" th:field="*{title}" required/><br/>
+
+        <label for="description">Descripción:</label>
+        <textarea id="description" th:field="*{description}" rows="5" cols="40"></textarea><br/>
+
+        <button type="submit">Guardar cambios</button>
+    </form>
+
+    <br/>
+    <a th:href="@{/course/{id}(id=${course.id})}">Cancelar</a>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>
+

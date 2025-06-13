@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Nuevo Curso - AcademiaSaber', '/styles/new_course.css')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main>
+    <h1>Crear nuevo curso</h1>
+    <form th:action="@{/courses/saved}" method="post" th:object="${course}">
+        <!-- Desplegable de subjects -->
+        <label for="subject">Asignatura:</label>
+        <select id="subject" th:field="*{subject}" required>
+            <option value="" disabled selected>Selecciona una asignatura</option>
+            <!-- Iteramos sobre los subjects disponibles -->
+            <option th:each="subject : ${subjects}" th:value="${subject.id}" th:text="${subject.title}"></option>
+        </select><br/>
+
+        <label for="title">Título:</label>
+        <input type="text" id="title" th:field="*{title}" required/><br/>
+
+        <label for="description">Descripción:</label>
+        <textarea id="description" th:field="*{description}" rows="5" cols="40"></textarea><br/>
+
+        <button type="submit">Crear curso</button>
+    </form>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>

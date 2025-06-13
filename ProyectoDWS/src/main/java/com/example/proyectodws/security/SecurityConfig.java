@@ -18,9 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.example.proyectodws.security.jwt.JwtRequestFilter;
-import com.example.proyectodws.security.jwt.UnauthorizedHandlerJwt;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -68,9 +65,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         // PRIVATE ENDPOINTS
                         .requestMatchers(HttpMethod.GET, "/api/users/me").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST,"/api/books/").hasRole("USER")
-                        .requestMatchers(HttpMethod.PUT,"/api/books/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.DELETE,"/api/books/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/api/courses/").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT,"/api/courses/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE,"/api/courses/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/api/subjects/").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT,"/api/subjects/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE,"/api/subjects/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/api/comments/").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT,"/api/comments/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE,"/api/comments/**").hasRole("ADMIN")
                         // PUBLIC ENDPOINTS
                         .anyRequest().permitAll()
                 );
@@ -104,8 +107,14 @@ public class SecurityConfig {
                         // PUBLIC PAGES
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/images/**").permitAll()
-                        .requestMatchers("/css/**").permitAll()
-                        .requestMatchers("/books/**").permitAll()
+                        .requestMatchers("/styles/**").permitAll()
+                        .requestMatchers("/scripts/**").permitAll()
+                        .requestMatchers("/courses/**").permitAll()
+                        .requestMatchers("/course/**").permitAll()
+                        .requestMatchers("/subjects/**").permitAll()
+                        .requestMatchers("/subject/**").permitAll()
+                        .requestMatchers("/aboutUS/**").permitAll()
+                        .requestMatchers("/contact/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         // PRIVATE PAGES
                         .requestMatchers("/profile").hasAnyRole("USER")

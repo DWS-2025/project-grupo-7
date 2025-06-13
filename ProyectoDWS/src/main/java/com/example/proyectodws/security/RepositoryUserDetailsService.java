@@ -3,8 +3,8 @@ package com.example.proyectodws.security;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.proyectodws.Entities.User;
-import com.example.proyectodws.Repository.UserRepository;
+import com.example.proyectodws.entities.User;
+import com.example.proyectodws.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,8 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import com.example.proyectodws.Repository.UserRepository;
 
 @Service
 public class RepositoryUserDetailsService implements UserDetailsService {

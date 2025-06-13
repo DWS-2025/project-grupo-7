@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title, css)">
+    <meta charset="UTF-8">
+    <title th:text="${title}">AcademiaSaber</title>
+    <link rel="stylesheet" href="/styles/app.css">
+    <link rel="stylesheet" th:href="${css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<header th:fragment="header">
+    <div class="content">
+        <div class="menu">
+            <nav>
+                <ul>
+                    <li><a href="/">INICIO</a></li>
+                    <li><a href="/courses">CURSOS</a></li>
+                    <li><a href="/subjects">ASIGNATURAS</a></li>
+                    <li><a href="/aboutUS">SOBRE NOSOTROS</a></li>
+                    <li><a href="/contact">CONTACTO</a></li>
+                </ul>
+            </nav>
+            <a href="/enrolled_courses" class="btn"><button>MIS CURSOS</button></a>
+        </div>
+    </div>
+    <div class="titular">
+        <h1>TUS CLASES DE REFUERZOS DE CUALQUIER ASIGNATURA</h1>
+    </div>
+    <br>
+</header>
+
+<footer th:fragment="footer">
+    <div class="footer-content">
+        <p>&copy; 2025 AcademiaSaber. Todos los derechos reservados.</p>
+    </div>
+</footer>
+</body>
+</html>

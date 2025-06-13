@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Cursos - AcademiaSaber', '/styles/manage_form.css')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main>
+    {{#welcome}}
+    <h1>Welcome!</h1>
+    {{/welcome}}
+
+    <h1>Courses</h1>
+    {{#courses}}
+    <a href="course/{{id}}">{{title}}</a><br>
+    {{/courses}}
+
+    {{^courses}}
+    <p>No courses yet.</p>
+    {{/courses}}
+
+    <br>
+    <a href="/course/new">New Course</a>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>

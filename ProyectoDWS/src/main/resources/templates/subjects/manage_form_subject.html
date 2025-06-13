@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head th:replace="layout/layout :: head('Gestionar Asignaturas - AcademiaSaber', '/styles/manage_form_subject.css')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main>
+    {{#welcome}}
+    <h1>Welcome!</h1>
+    {{/welcome}}
+
+    <h1>Subjects</h1>
+    {{#subjects}}
+    <a href="subjects/{{id}}">{{title}}</a><br>
+    {{/subjects}}
+
+    {{^subjects}}
+    <p>No courses yet.</p>
+    {{/subjects}}
+
+    <br>
+    <a href="/subjects/new">New Course</a>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>

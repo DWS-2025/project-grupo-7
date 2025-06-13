@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Cursos - AcademiaSaber', '/styles/enrolled_courses.css')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main>
+    <div class="container">
+        <p>Te has matriculado correctamente en el curso</p>
+        <br>
+        <div class="button">
+            <a href="/courses">Volver a la lista de cursos</a>
+        </div>
+    </div>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>

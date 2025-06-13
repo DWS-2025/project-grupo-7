@@ -1,33 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estructuras de Datos - Información de la Asignatura</title>
-    <link rel="stylesheet" href="/subjects.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
-</head>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Estructuras de Datos - Información de la Asignatura', '/styles/ds.css')"></head>
 <body>
-
-<header>
-    <div class="content">
-        <div class="menu">
-            <nav>
-                <ul>
-                    <li><a href="/">INICIO</a></li>
-                    <li><a href="subjects">ASIGNATURAS</a></li>
-                    <li><a href="aboutUS">SOBRE NOSOTROS</a></li>
-                    <li><a href="contact">CONTACTO</a></li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-    <div class="titular">
-        <h1>Estructuras de Datos</h1>
-        <p>Aprende cómo se organizan, almacenan y manipulan los datos de manera eficiente.</p>
-    </div>
-</header>
-
+<div th:replace="layout/layout :: header"></div>
 <main>
     <section class="intro">
         <h2>¿Por qué estudiar Estructuras de Datos?</h2>
@@ -58,5 +33,7 @@
         </ul>
     </section>
 </main>
+<div th:replace="layout/layout :: footer"></div>
 </body>
 </html>
+

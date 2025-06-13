@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Cursos - AcademiaSaber', '/styles/edited_course.css')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main>
+    <div class="wrapper">
+        <p>Course Edited Successfully.</p>
+        <p>Details of the edited course:</p>
+        <div class="container">
+            <p><u>Title</u><br>{{course.title}}</p>
+            <br>
+            <p><u>Description</u><br>{{course.description}}</p>
+        </div>
+        <div class="button">
+            <a href="/courses">Back to Courses</a>
+        </div>
+    </div>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>
+

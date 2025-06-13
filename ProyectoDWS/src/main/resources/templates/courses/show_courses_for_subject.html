@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Cursos para la Asignatura - AcademiaSaber', '/styles/show_courses_for_subject.css')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main>
+    <h1>Cursos para la Asignatura: {{post.title}}</h1>
+
+    <ul>
+        {{#post.associatedCourses}}
+        <li>{{title}}</li>
+        {{/post.associatedCourses}}
+    </ul>
+
+    <a href="/">Volver a la página principal</a>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>

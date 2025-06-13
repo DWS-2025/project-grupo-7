@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Curso Guardado - AcademiaSaber', '/styles/saved_course.css')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main>
+    <h1>Curso guardado correctamente</h1>
+    <p>Número total de cursos: <span th:text="${numCourses}"></span></p>
+    <a href="/courses">Volver a la lista de cursos</a>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>
+

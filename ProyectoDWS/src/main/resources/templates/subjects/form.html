@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Añadir Asignatura - AcademiaSaber', '/styles/form.css')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main>
+    <section>
+        <div class="content">
+            <form th:action="@{/subjects}" th:object="${subject}" method="post">
+                <label for="title">Título:</label>
+                <input type="text" id="title" th:field="*{title}" required>
+
+                <label for="text">Descripción:</label>
+                <textarea id="text" th:field="*{text}" required></textarea>
+
+                <button type="submit">Guardar Asignatura</button>
+            </form>
+        </div>
+    </section>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>

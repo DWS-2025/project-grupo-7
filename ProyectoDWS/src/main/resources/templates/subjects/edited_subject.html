@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Editar Asignatura - AcademiaSaber', '/styles/edited_subject.css')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main>
+    <h1>Editar Asignatura</h1>
+    <form action="#" method="POST" th:action="@{/subject/{id}/edit(id=${subject.id})}">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" th:value="${subject.title}" required><br><br>
+
+        <label for="text">Descripción:</label>
+        <textarea id="text" name="text" required th:text="${subject.text}"></textarea><br><br>
+
+        <button type="submit">Guardar Cambios</button>
+    </form>
+    <a href="/subjects">Volver a Asignaturas</a>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>

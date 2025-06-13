@@ -1,58 +1,53 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Asignaturas</title>
-    <link rel="stylesheet" href="/subjects2.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="paginacion.js"></script>
-</head>
+<head th:replace="layout/layout :: head('Asignaturas - AcademiaSaber', '/styles/subjects.css')"></head>
 <body>
-<header class="header">
-    <nav>
-        <ul class="nav-links">
-            <li><a href="/">INICIO</a></li>
-            <li><a href="/courses">CURSOS</a></li>
-            <li><a href="/aboutUS">SOBRE NOSOTROS</a></li>
-            <li><a href="/contact">CONTACTO</a></li>
-        </ul>
-    </nav>
-    <a href="/enrolled_subject" class="btn"><button>MIS ASIGNATURAS</button></a>
-</header>
+<div th:replace="layout/layout :: header"></div>
+<main>
+    <section id="subject-content">
+        <h2>Nuestras Asignaturas</h2>
+        <p>Explora nuestra variedad de asignaturas disponibles.</p>
+    </section>
 
-<section id="subject-content">
-    <h2>Nuestras Asignaturas</h2>
-    <p>Explora nuestra variedad de asignaturas disponibles.</p>
-</section>
-
-<section id="cards">
-    <div class="content">
-        <div class="content-cards" id="subjects-list">
-            <th:block th:each="subject : ${subjects}">
-                <div class="card">
-                    <a th:href="@{/subject/{id}(id=${subject.id})}" th:text="${subject.title}">Asignatura</a>
-                    <p><u>Descripción:</u> <span th:text="${subject.text}">Descripción</span></p>
-                </div>
-            </th:block>
+    <section id="cards">
+        <div class="content">
+            <div class="content-cards" id="subjects-list">
+                <th:block th:each="subject : ${subjects}">
+                    <div class="card">
+                        <a th:href="@{/subject/{id}(id=${subject.id})}" th:text="${subject.title}">Asignatura</a>
+                        <p><u>Descripción:</u> <span th:text="${subject.text}">Descripción</span></p>
+                    </div>
+                </th:block>
+            </div>
         </div>
+    </section>
+
+    <div th:if="${#lists.isEmpty(subjects)}">
+        <p style="text-align: center;">No hay asignaturas disponibles aún.</p>
     </div>
-</section>
 
-<div th:if="${#lists.isEmpty(subjects)}">
-    <p style="text-align: center;">No hay asignaturas disponibles aún.</p>
-</div>
+    <div class="pagination">
+        <button th:if="${currentPage > 0}" id="prev-page">Anterior</button>
+        <span> Página <span id="currentPage" th:text="${currentPage + 1}">1</span> de <span id="totalPages" th:text="${totalPages}">1</span> </span>
+        <button th:if="${currentPage < totalPages - 1}" id="next-page">Siguiente</button>
+    </div>
 
-<div class="pagination">
-    <button th:if="${currentPage > 0}" th:onclick="'window.location.href=\'/subjects?page=' + (currentPage - 1) + '\' '">Anterior</button>
-    <span> Página <span th:text="${currentPage + 1}">1</span> de <span th:text="${totalPages}">1</span> </span>
-    <button th:if="${currentPage < totalPages - 1}" th:onclick="'window.location.href=\'/subjects?page=' + (currentPage + 1) + '\' '">Siguiente</button>
-</div>
+    <div class="pageSizes">
+        <button id="pageSize10">10</button>
+        <button id="pageSize20">20</button>
+        <button id="pageSize50">50</button>
+        <button id="pageSize100">100</button>
+    </div>
 
-<div class="contenedor-botones">
-    <button class="botones" onclick="window.location.href='/subjects/new'">AGREGAR ASIGNATURA</button>
-</div>
-
+    <div class="elementsShown">
+        <span id="elementsShown" th:text="'Mostrando ' + ${subjects.size()} + ' asignaturas'">0</span>
+    </div>
+    <div class="contenedor-botones">
+        <button class="botones" onclick="window.location.href='/subjects/new'">AGREGAR ASIGNATURA</button>
+    </div>
+</main>
+<div th:replace="layout/layout :: footer"></div>
 </body>
+<script th:src="@{/scripts/paginacion.js}"></script>
 </html>
 

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Asignaturas Matriculadas - AcademiaSaber', '/styles/my_subjects.css')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main>
+  <div class="list-subjects">
+    <ul>
+      {{#enrolledSubjects}}
+      <li><u>{{title}}</u><br>{{text}}<br></li>
+      {{/enrolledSubjects}}
+    </ul>
+  </div>
+  <div class="button">
+    <a href="/subjects">Volver a la lista de asignaturas</a>
+  </div>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>

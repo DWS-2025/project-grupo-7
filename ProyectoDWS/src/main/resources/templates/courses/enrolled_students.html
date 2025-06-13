@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Estudiantes Matriculados - AcademiaSaber', '/styles/enrolled_students.css')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main>
+    <h2>Estudiantes Matriculados</h2>
+    <ul>
+        <li th:each="student : ${enrolledStudents}" th:text="${student}"></li>
+    </ul>
+    <a href="/courses">Volver a la lista de cursos</a>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>

@@ -1,33 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacto - Contáctanos</title>
-    <link rel="stylesheet" href="/contact.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
-</head>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Contacto - AcademiaSaber', '/styles/contact.css')"></head>
 <body>
-
-<header>
-    <div class="content">
-        <div class="menu">
-            <nav>
-                <ul>
-                    <li><a href="/">INICIO</a></li>
-                    <li><a href="/courses">CURSOS</a></li>
-                    <li><a href="/subjects">ASIGNATURAS</a></li>
-                    <li><a href="/aboutUS">SOBRE NOSOTROS</a></li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-    <div class="titular">
-        <h1>Contacto</h1>
-        <p>¿Tienes alguna duda o sugerencia? ¡Escríbenos!</p>
-    </div>
-</header>
-
+<div th:replace="layout/layout :: header"></div>
 <main>
     <section class="contact-info">
         <h2>Puedes contactarnos en:</h2>
@@ -36,6 +11,6 @@
         <p><strong>Dirección:</strong> Calle Sabiduria 45, Madrid, España</p>
     </section>
 </main>
-
+<div th:replace="layout/layout :: footer"></div>
 </body>
 </html>

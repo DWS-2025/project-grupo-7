@@ -1,52 +1,19 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>AcademiaSaber</title>
-    <link rel="stylesheet" href="/index.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap" rel="stylesheet">
-</head>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Inicio - AcademiaSaber', '/styles/index.css')"></head>
 <body>
-<header>
-    <div class="content">
-        <div class="menu">
-            <nav>
-                <ul>
-                    <li><a href="/">INICIO</a></li>
-                    <li><a href="/courses">CURSOS</a></li>
-                    <li><a href="/subjects">ASIGNATURAS</a></li>
-                    <li><a href="/aboutUS">SOBRE NOSOTROS</a></li>
-                    <li><a href="/contact">CONTACTO</a></li>
-                </ul>
-            </nav>
-            <a href="/enrolled_courses" class="btn"><button>MIS CURSOS</button></a>
-        </div>
-    </div>
-    <div class="titular">
-        <h1>TUS CLASES DE REFUERZOS DE CUALQUIER ASIGNATURA</h1>
-    </div>
-    <br>
-</header>
-<section id="cards">
-    <div class="content">
-        <div class="content-cards">
+<div th:replace="layout/layout :: header"></div>
+<main>
+    <section class="content-cards">
+        <div th:each="course : ${featuredCourses}">
             <div class="card">
-                <img src="/imageStatic/maths.png" alt="Matemáticas">
-                <h3>QUIERO APRENDER<br>MATES</h3>
-                <a href="/maths"><u>CLICK AQUÍ</u></a>
-            </div>
-            <div id="medium" class="card">
-                <img src="/imageStatic/ds.png" alt="Ed">
-
-                <h3>QUIERO APRENDER ED</h3>
-                <a href="/ds"><u>CLICK AQUÍ</u></a>
-            </div>
-            <div class="card">
-                <img src="/imageStatic/physics.png" alt="Física">
-                <h3>QUIERO APRENDER FISICA</h3>
-                <a href="/physics"><u>CLICK AQUÍ</u></a>
+                <img th:src="@{/course/{id}/image(id=${course.id})}" th:alt="${course.title}">
+                <h3 th:text="${course.title}">Course Title</h3>
+                <a th:href="@{'/course/' + ${course.id}}"><u>Ver más información</u></a>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+</main>
+<div th:replace="layout/layout :: footer"></div>
 </body>
 </html>
