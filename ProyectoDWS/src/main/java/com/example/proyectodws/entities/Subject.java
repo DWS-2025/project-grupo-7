@@ -83,9 +83,11 @@ public class Subject {
     public Blob getImageFile() {
         return imageFile;
     }
+
     public void setImageFile(Blob imageFile) {
         this.imageFile = imageFile;
     }
+
     @Lob
     private byte[] imageData;
 

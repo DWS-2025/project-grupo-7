@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
-    @Query("SELECT c FROM Course c " +
-            "JOIN c.subject l " +
-            "WHERE l.title LIKE %:subjectTitle% AND c.title LIKE %:courseTitle%")
+    @Query("SELECT DISTINCT c FROM Course c " +
+            "JOIN c.subjects s " +
+            "WHERE (s.title LIKE %:subjectTitle% OR c.title LIKE %:courseTitle%)")
     List<Course> findCoursesByTitles(@Param("subjectTitle") String subjectTitle,
                                      @Param("courseTitle") String courseTitle);
 

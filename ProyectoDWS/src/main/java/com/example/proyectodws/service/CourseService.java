@@ -25,13 +25,17 @@ public class CourseService {
 
 
     // Look for and return all courses
-    public Course createCourse(Course course, MultipartFile imageFile) throws IOException, SQLException {
-        if (imageFile != null && !imageFile.isEmpty()) {
-
-            byte[] imageBytes = imageFile.getBytes();
+    public Course save(Course course, MultipartFile image) throws IOException, SQLException {
+        if (image != null && !image.isEmpty()) {
+            byte[] imageBytes = image.getBytes();
             Blob blob = new SerialBlob(imageBytes);
             course.setImageFile(blob);
         }
+
+        return courseRepository.save(course);
+    }
+
+    public Course createCourse(Course course) {
         return courseRepository.save(course);
     }
 

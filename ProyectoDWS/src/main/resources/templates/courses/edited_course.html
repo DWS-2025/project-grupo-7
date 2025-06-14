@@ -8,9 +8,13 @@
         <p>Course Edited Successfully.</p>
         <p>Details of the edited course:</p>
         <div class="container">
-            <p><u>Title</u><br>{{course.title}}</p>
+            <p><u>Title</u><br><span th:text="${course.title}"></span></p>
             <br>
-            <p><u>Description</u><br>{{course.description}}</p>
+            <p><u>Description</u><br><span th:text="${course.description}"></span></p>
+            <p><u>Asignaturas</u></p>
+            <ul>
+                <li th:each="subject : ${course.subjects}" th:text="${subject.title}"></li>
+            </ul>
         </div>
         <div class="button">
             <a href="/courses">Back to Courses</a>
@@ -20,4 +24,3 @@
 <div th:replace="layout/layout :: footer"></div>
 </body>
 </html>
-

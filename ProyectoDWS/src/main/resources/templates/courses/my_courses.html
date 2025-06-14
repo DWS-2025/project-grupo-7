@@ -9,9 +9,8 @@
             <h2>Cursos en los que estás matriculado</h2>
             <div class="content-cards">
                 <div class="card" th:each="course : ${enrolledCourses}">
+                    <img class="card-image" th:if="${course.imageFile != null}" th:src="@{/course/{id}/image(id=${course.id})}" th:alt="${course.title}" alt="Course Image">
                     <a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.title}">Título del curso</a>
-                    <p><u>Asignatura:</u> <span th:text="${course.subject.title}">Nombre asignatura</span>
-
                 </div>
             </div>
         </div>

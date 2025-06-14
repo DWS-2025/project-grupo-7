@@ -102,7 +102,7 @@ public class SecurityConfig {
 
         http.authenticationProvider(authenticationProvider());
 
-        http
+        /*http
                 .authorizeHttpRequests(authorize -> authorize
                         // PUBLIC PAGES
                         .requestMatchers("/").permitAll()
@@ -115,13 +115,10 @@ public class SecurityConfig {
                         .requestMatchers("/subject/**").permitAll()
                         .requestMatchers("/aboutUS/**").permitAll()
                         .requestMatchers("/contact/**").permitAll()
+                        .requestMatchers("/ds/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         // PRIVATE PAGES
                         .requestMatchers("/profile").hasAnyRole("USER")
-                        .requestMatchers("/newbook").hasAnyRole("USER")
-                        .requestMatchers("/editbook").hasAnyRole("USER")
-                        .requestMatchers("/editbook/*").hasAnyRole("USER")
-                        .requestMatchers("/removebook/*").hasAnyRole("ADMIN")
                 )
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
@@ -134,8 +131,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .permitAll()
                 );
-
+        */
         return http.build();
     }
 }
-

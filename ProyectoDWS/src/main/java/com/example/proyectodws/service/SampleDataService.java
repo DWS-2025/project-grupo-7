@@ -33,7 +33,7 @@ public class SampleDataService {
     // Este método se ejecutará cuando la aplicación se inicie
     @PostConstruct
     public void init() throws SQLException, IOException {
-        // create subjects
+        // Crear algunos subjects (asignaturas)
         Subject subject1 = new Subject("Mathematics", "A subject about mathematics.");
         Subject subject2 = new Subject("Computer Science", "A subject about computer programming.");
 
@@ -53,19 +53,24 @@ public class SampleDataService {
             System.err.println("Image images.jpeg not found or unreadable");
         }
 
-        // save subjects
+        // Guardar los subjects
         subjectRepository.saveAll(Arrays.asList(subject1, subject2));
 
-        // create users
-        User user1 = new User("John", "Doe", "johndoe", "profile1.png", "1234");
+        // Crear algunos users (usuarios)
+        User user1 = new User("John", "Doe", "defaultUser", "profile1.png", "1234");
         User user2 = new User("Jane", "Doe", "janedoe", "profile2.png", "1234");
 
-        // save users
+        // Guardar los usuarios
         userRepository.saveAll(Arrays.asList(user1, user2));
 
-        // create courses
-        Course course1 = new Course(subject1, "Algebra", "Introduction to algebra.", true);
-        Course course2 = new Course(subject2, "Java Programming", "Learn the basics of Java.", true);
+        // Crear algunos cursos (courses)
+        Course course1 = new Course("Algebra", "Introduction to algebra.", true);
+        Course course2 = new Course("Java Programming", "Learn the basics of Java.", true);
+
+        course1.addSubject(subject1);
+        course1.addSubject(subject2);
+        course2.addSubject(subject1);
+        course2.addSubject(subject2);
 
         try {
             Blob course1Image = imageService.filePathToBlob("images\\matematicas.jpg");
@@ -83,16 +88,16 @@ public class SampleDataService {
             System.err.println("Image images.jpeg not found or unreadable");
         }
 
-        // save courses
+        // Guardar los cursos
         courseRepository.saveAll(Arrays.asList(course1, course2));
 
-        // users - courses
+        // Asociar usuarios a los cursos (inscribir estudiantes)
         course1.getEnrolledStudents().add(user1);  // John Doe se inscribe en el curso de Algebra
         course1.getEnrolledStudents().add(user2);  // Jane Doe se inscribe en el curso de Algebra
 
         course2.getEnrolledStudents().add(user2);  // Jane Doe se inscribe en el curso de Java Programming
 
-        // save
+        // Guardar los cambios en los cursos
         courseRepository.saveAll(Arrays.asList(course1, course2));
     }
 }

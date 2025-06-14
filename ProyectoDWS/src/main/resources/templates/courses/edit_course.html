@@ -13,6 +13,12 @@
         <label for="description">Descripción:</label>
         <textarea id="description" th:field="*{description}" rows="5" cols="40"></textarea><br/>
 
+        <label for="subjects">Asignaturas:</label>
+        <select id="subjects" th:field="*{subjects}" multiple required>
+            <option value="" disabled>Selecciona una o más asignaturas</option>
+            <option th:each="subject : ${subjects}" th:value="${subject.id}" th:text="${subject.title}"></option>
+        </select><br/>
+
         <button type="submit">Guardar cambios</button>
     </form>
 

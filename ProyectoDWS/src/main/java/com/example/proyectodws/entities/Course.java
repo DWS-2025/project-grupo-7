@@ -15,10 +15,6 @@ public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "subject_id")
-    private Subject subject;
     private String title;
     private String description;
     private String imagePath;
@@ -49,16 +45,14 @@ public class Course {
 
     }
 
-    public Course(Subject subject, String title, String description) {
+    public Course(String title, String description) {
         super();
-        this.subject=subject;
         this.title = title;
         this.description = description;
     }
 
-    public Course(Subject subject, String title, String description, Boolean isFeatured) {
+    public Course(String title, String description, Boolean isFeatured) {
         super();
-        this.subject=subject;
         this.title = title;
         this.description = description;
         this.isFeatured = isFeatured;
@@ -72,13 +66,8 @@ public class Course {
         this.subjects = subjects;
     }
 
-
-    public Subject getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Subject subject) {
-        this.subject = subject;
+    public void addSubject(Subject subject) {
+        this.subjects.add(subject);
     }
 
     public String getTitle() {
@@ -145,9 +134,11 @@ public class Course {
     public Blob getImageFile() {
         return imageFile;
     }
+
     public void setImageFile(Blob imageFile) {
         this.imageFile = imageFile;
     }
+
     @Lob
     private byte[] imageData;
 
@@ -160,12 +151,10 @@ public class Course {
         this.imageData = imageData;
     }
 
-
     @Override
     public String toString() {
         return "Course{" +
                 "id=" + id +
-                ", subject='" + subject + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 '}';

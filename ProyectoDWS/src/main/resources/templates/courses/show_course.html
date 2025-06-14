@@ -6,7 +6,10 @@
 <main>
     <h1 th:text="${course.title}"></h1>
     <p th:text="${course.description}"></p>
-    <p><strong>Asignatura:</strong> <span th:text="${course.subject.title}"></span></p>
+    <p><strong>Asignaturas:</strong></p>
+    <ul>
+        <li th:each="subject : ${course.subjects}" th:text="${subject.title}"></li>
+    </ul>
 
     <!-- Botones de acción -->
     <a th:href="@{/course/{id}/edit(id=${course.id})}">Editar</a> |
@@ -40,4 +43,3 @@
 <div th:replace="layout/layout :: footer"></div>
 </body>
 </html>
-

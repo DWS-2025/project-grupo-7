@@ -10,4 +10,4 @@ public class CommentController {
     public String getCommentsPage() {
         return "comments";
     }
-    }
+}

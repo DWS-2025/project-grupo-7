@@ -18,8 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Controller
 public class CourseController {
@@ -81,6 +85,38 @@ public class CourseController {
         return "courses/new_course";
     }
 
+    @PostMapping("/courses/saved")
+    public String createSubject(Model model, @ModelAttribute @Validated Course course, BindingResult result,
+                                @RequestParam("image") MultipartFile image,
+                                @RequestParam("subjects") List<Long> subjectIds) throws IOException, SQLException {
+        try {
+            // Get subjects from IDs and add them to course
+            List<Subject> subjects = subjectIds.stream()
+                    .map(id -> subjectRepository.findById(id).orElse(null))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+            course.setSubjects(subjects);
+
+            if (!image.isEmpty()) {
+                course.setImage(image.getOriginalFilename());
+                courseService.save(course, image);
+            } else {
+                courseService.createCourse(course);
+            }
+
+            model.addAttribute("course", course);
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            model.addAttribute("error", "Error creating course: " + e.getMessage());
+            return "courses/new_course";
+        }
+
+        userSession.incNumCourses();
+        model.addAttribute("numCourses", userSession.getNumCourses());
+
+        return "courses/saved_course";
+    }
+
     // Display course with ID
     @GetMapping("/course/{id}")
     public String showCourse(@PathVariable Long id, Model model) {
@@ -132,6 +168,7 @@ public class CourseController {
     public String editCourseForm(Model model, @PathVariable long id) {
         Course course = courseService.getCourseById(id);
         model.addAttribute("course", course); // adds the edit course to the model
+        model.addAttribute("subjects", subjectService.getAllSubjects());
         return "courses/edit_course";
     }
 
@@ -141,9 +178,10 @@ public class CourseController {
         Course existingCourse = courseService.getCourseById(id);
         existingCourse.setTitle(updatedCourse.getTitle()); // updates the title
         existingCourse.setDescription(updatedCourse.getDescription()); // updates description
+        existingCourse.setSubjects(updatedCourse.getSubjects()); // updates subjects
 
         try {
-            courseService.createCourse(existingCourse, image); // saves updated course
+            courseService.save(existingCourse, image); // saves updated course
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
@@ -175,7 +213,7 @@ public class CourseController {
         Course course = courseService.getCourseById(id);
 
         if (course == null) {
-            return "errorScreens/Error404";
+            return "Error404.html";
         }
 
         model.addAttribute("course", course);
@@ -202,27 +240,19 @@ public class CourseController {
         if (course != null) {
 
             User defaultUser = userRepository.findByUsername("defaultUser")
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));;
+                    .orElse(new User(
+                                    "defaultUser", // username
+                                    "Juan",        // firstName
+                                    "Pérez",       // lastName
+                                    "default.jpg",  // imageName,
+                                    "1234"
+                            )
+                    );
 
-
-            if (defaultUser == null) {
-
-                defaultUser = new User(
-                        "defaultUser", // username
-                        "Juan",        // firstName
-                        "Pérez",       // lastName
-                        "default.jpg",  // imageName,
-                        "1234"
-                );
-
-
-                userRepository.save(defaultUser);
-            }
-
+            userRepository.save(defaultUser);
 
             Comment comment = new Comment(text, defaultUser, course);
             commentService.addComment(comment);
-
 
             return "redirect:/course/{id}";
         }
@@ -239,15 +269,6 @@ public class CourseController {
         commentService.deleteComment(commentId);
         return "redirect:/course/{courseId}";
     }
-    /* @GetMapping("/courses/{id}")
-    public String getCourse(@PathVariable Long id, Model model) {
-        Course course = courseRepository.findById(id).orElseThrow();
-        List<Subject> allSubjects = subjectRepository.findAll();
-        model.addAttribute("course", course);
-        model.addAttribute("allSubjects", allSubjects);
-        model.addAttribute("subject", new Subject()); // para formulario
-        return "course_detail";
-    }*/
 
     @PostMapping("/courses/{id}/add-subject")
     public String addSubjectToCourse(@PathVariable Long id, @RequestParam Long subjectId) {
@@ -261,28 +282,4 @@ public class CourseController {
 
         return "redirect:/courses/" + id;
     }
-
-    @PostMapping("/courses/saved")
-    public String newCourse(@Validated Course course, Model model, @RequestParam(required = false) MultipartFile image) {
-
-        Long subjectId = course.getSubject().getId();
-
-        Subject selectedSubject = subjectService.getSubjectById(subjectId);
-
-        if (selectedSubject != null) {
-            course.setSubject(selectedSubject);
-        }
-
-        try {
-            courseService.createCourse(course, image);
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-        }
-
-        userSession.incNumCourses();
-        model.addAttribute("numCourses", userSession.getNumCourses());
-
-        return "courses/saved_course";
-    }
-
 }

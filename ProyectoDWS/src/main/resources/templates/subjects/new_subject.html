@@ -1,20 +1,18 @@
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout/layout :: head('Nueva Asignatura - AcademiaSaber', '/styles/new_subject.css')"></head>
 <body>
 <div th:replace="layout/layout :: header"></div>
 <main>
     <div class="container">
-        <form action="/subjects/new" method="post" enctype="multipart/form-data">
+        <form th:action="@{/subjects/new}" th:object="${subject}" method="post" enctype="multipart/form-data">
             <p>Title:</p>
             <input type='text' name='title' required/>
             <p>Text:</p>
             <textarea name='text' rows=5 cols=40></textarea>
             <p>Image file:</p>
-            <input type='file' name='image' accept=".jpg, .jpeg"/>
+            <input type='file' name='image' accept="image/*"/>
             <input type='submit' value='Save'/>
         </form>
-
     </div>
 </main>
 <div th:replace="layout/layout :: footer"></div>

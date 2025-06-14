@@ -14,6 +14,7 @@
             <div class="content-cards" id="subjects-list">
                 <th:block th:each="subject : ${subjects}">
                     <div class="card">
+                        <img class="card-image" th:if="${subject.imageFile != null}" th:src="@{/subject/{id}/image(id=${subject.id})}" th:alt="${subject.title}" alt="Subject Image">
                         <a th:href="@{/subject/{id}(id=${subject.id})}" th:text="${subject.title}">Asignatura</a>
                         <p><u>Descripción:</u> <span th:text="${subject.text}">Descripción</span></p>
                     </div>
@@ -50,4 +51,3 @@
 </body>
 <script th:src="@{/scripts/paginacion.js}"></script>
 </html>
-

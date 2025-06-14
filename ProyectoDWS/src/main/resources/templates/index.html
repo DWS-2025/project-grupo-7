@@ -7,7 +7,7 @@
     <section class="content-cards">
         <div th:each="course : ${featuredCourses}">
             <div class="card">
-                <img th:src="@{/course/{id}/image(id=${course.id})}" th:alt="${course.title}">
+                <img class="card-image" th:src="@{/course/{id}/image(id=${course.id})}" th:alt="${course.title}">
                 <h3 th:text="${course.title}">Course Title</h3>
                 <a th:href="@{'/course/' + ${course.id}}"><u>Ver más información</u></a>
             </div>

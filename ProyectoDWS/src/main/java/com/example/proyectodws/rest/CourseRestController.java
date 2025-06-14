@@ -34,26 +34,30 @@ public class CourseRestController {
         return course != null ? ResponseEntity.ok(course) : ResponseEntity.notFound().build();
     }
 
-    @PostMapping
+    @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<Course> createCourseByParams(
             @RequestParam String title,
             @RequestParam String description,
-            @RequestParam(required = false) Long subjectId,
-            @RequestParam(required = false) MultipartFile image) throws IOException, SQLException {
+            @RequestParam(required = false) List<Long> subjectIds,
+            @RequestPart(required = false) MultipartFile image) throws IOException, SQLException {
 
-        Course course = new Course();
-        course.setTitle(title);
-        course.setDescription(description);
+        Course course = new Course(title, description);
 
-        if (subjectId != null) {
-            Subject subject = subjectService.getSubjectById(subjectId);
-            if (subject == null) {
-                return ResponseEntity.badRequest().build();
+        if (subjectIds != null) {
+            for (Long subjectId : subjectIds) {
+                Subject subject = subjectService.getSubjectById(subjectId);
+                if (subject == null) {
+                    return ResponseEntity.badRequest().build();
+                }
+                course.addSubject(subject);
             }
-            course.setSubject(subject);
         }
 
-        Course saved = courseService.createCourse(course, image);
+        if (image != null && !image.isEmpty()) {
+            course.setImageData(image.getBytes());
+        }
+
+        Course saved = courseService.save(course, image);
         return ResponseEntity.ok(saved);
     }
 
@@ -70,7 +74,7 @@ public class CourseRestController {
         course.setTitle(title);
         course.setDescription(description);
 
-        Course updated = courseService.createCourse(course, image);
+        Course updated = courseService.save(course, image);
         return ResponseEntity.ok(updated);
     }
 

@@ -14,9 +14,6 @@ body {
 header {
     background-color: #ffffff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
 }
 
 .content {
@@ -27,6 +24,9 @@ header {
 
 .menu {
     display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 0;
@@ -112,4 +112,8 @@ footer {
     margin: 0 auto;
     text-align: center;
     padding: 0 20px;
+}
+
+.card-image {
+    width: 100%;
 }
