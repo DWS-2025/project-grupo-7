@@ -61,7 +61,7 @@ public class SampleDataService {
             // Check if users already exist
             if (userRepository.findAll().isEmpty()) {
                 // Crear algunos users (usuarios)
-                User user1 = new User("John", "Doe", "defaultUser", "profile1.png", "1234");
+                User user1 = new User("John", "Doe", "johndoe", "profile1.png", "1234");
                 User user2 = new User("Jane", "Doe", "janedoe", "profile2.png", "1234");
 
                 // Guardar los usuarios
