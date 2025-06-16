@@ -28,7 +28,7 @@ public class ClassController {
         return "index";
     }
 
-    @GetMapping("/aboutUS")
+    @GetMapping("/about-us")
     public String aboutUs() {
         return "about_us";
     }

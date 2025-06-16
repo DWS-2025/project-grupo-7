@@ -113,7 +113,7 @@ public class SecurityConfig {
                         .requestMatchers("/course/**").permitAll()
                         .requestMatchers("/subjects/**").permitAll()
                         .requestMatchers("/subject/**").permitAll()
-                        .requestMatchers("/aboutUS/**").permitAll()
+                        .requestMatchers("/about-us/**").permitAll()
                         .requestMatchers("/contact/**").permitAll()
                         .requestMatchers("/ds/**").permitAll()
                         .requestMatchers("/error").permitAll()

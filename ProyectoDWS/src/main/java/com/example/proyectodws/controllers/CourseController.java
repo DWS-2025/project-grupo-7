@@ -231,44 +231,6 @@ public class CourseController {
         return "courses/search_results";
     }
 
-
-    @PostMapping("/course/{id}/comments/new")
-    public String addComment(@PathVariable Long id, @RequestParam String text, Model model) {
-
-        Course course = courseService.getCourseById(id);
-        if (course != null) {
-
-            User defaultUser = userRepository.findByUsername("defaultUser")
-                    .orElse(new User(
-                                    "defaultUser", // username
-                                    "Juan",        // firstName
-                                    "Pérez",       // lastName
-                                    "default.jpg",  // imageName,
-                                    "1234"
-                            )
-                    );
-
-            userRepository.save(defaultUser);
-
-            Comment comment = new Comment(text, defaultUser, course);
-            commentService.addComment(comment);
-
-            return "redirect:/course/{id}";
-        }
-
-
-        return "errorPage";
-    }
-
-
-
-
-    @PostMapping("/course/{courseId}/comments/{commentId}/delete")
-    public String deleteComment(@PathVariable Long courseId, @PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
-        return "redirect:/course/{courseId}";
-    }
-
     @PostMapping("/courses/{id}/add-subject")
     public String addSubjectToCourse(@PathVariable Long id, @RequestParam Long subjectId) {
         Course course = courseRepository.findById(id).orElseThrow();
@@ -282,3 +244,4 @@ public class CourseController {
         return "redirect:/courses/" + id;
     }
 }
+
