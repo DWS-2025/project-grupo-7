@@ -3,7 +3,6 @@ package com.example.proyectodws.rest;
 import com.example.proyectodws.entities.User;
 import com.example.proyectodws.entities.Course;
 import com.example.proyectodws.service.UserService;
-import com.example.proyectodws.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
