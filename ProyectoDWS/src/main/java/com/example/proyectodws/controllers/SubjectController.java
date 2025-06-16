@@ -138,8 +138,9 @@ public class SubjectController {
         }
 
         model.addAttribute("subject", subject); // adds the language attribute to the model
-        return "subjects/show_courses_for_subject";
+        return "courses/show_courses_for_subject";
     }
+
     @GetMapping("/subject/{id}/edit")
     public String editSubjectForm(Model model, @PathVariable long id) {
         Subject subject = subjectService.getSubjectById(id);
@@ -149,6 +150,7 @@ public class SubjectController {
         model.addAttribute("subject", subject);
         return "subjects/edited_subject";
     }
+
     @PostMapping("/subject/{id}/edit")
     public String editSubject(@PathVariable long id, @ModelAttribute @Validated Subject subject, BindingResult result) {
         if (result.hasErrors()) {
@@ -168,8 +170,5 @@ public class SubjectController {
 
         return "redirect:/subject/" + id;
     }
-
-
-
 
 }

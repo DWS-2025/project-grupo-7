@@ -20,6 +20,9 @@ public class SubjectService {
     @Autowired
     private SubjectRepository subjectRepository;
 
+    @Autowired
+    private CourseService courseService;
+
     public Subject createSubject(Subject subject){
 
         return subjectRepository.save(subject);
@@ -36,8 +39,18 @@ public class SubjectService {
     }
 
     public void deleteSubject (Long id){
-
-        subjectRepository.deleteById(id);
+        Subject subject = subjectRepository.findById(id).orElse(null);
+        if (subject != null) {
+            subject.getAssociatedCourses().forEach(course -> {
+                course.getSubjects().remove(subject);
+                try {
+                    courseService.save(course, null);
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+            subjectRepository.deleteById(id);
+        }
     }
 
     public Subject save (Subject subject, MultipartFile imageFile) throws IOException, SQLException {

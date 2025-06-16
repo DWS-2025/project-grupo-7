@@ -47,7 +47,6 @@ public class CourseService {
         return courseRepository.findById(id).orElse(null);
     }
 
-
     public List<Course> getAllCourses(){
         return courseRepository.findAll();
     }

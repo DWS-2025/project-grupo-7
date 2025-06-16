@@ -4,12 +4,10 @@
 <body>
 <div th:replace="layout/layout :: header"></div>
 <main>
-    <h1>Cursos para la Asignatura: {{post.title}}</h1>
+    <h1>Cursos para la Asignatura: <span th:text="${subject.title}"></span></h1>
 
     <ul>
-        {{#post.associatedCourses}}
-        <li>{{title}}</li>
-        {{/post.associatedCourses}}
+        <li th:each="course : ${subject.associatedCourses}" th:text="${course.title}"></li>
     </ul>
 
     <a href="/">Volver a la página principal</a>

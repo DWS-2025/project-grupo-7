@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout/layout :: head('Asignatura - AcademiaSaber', '/styles/show_subject.css')"></head>
 <body>
@@ -11,9 +10,6 @@
         <div class="image">
             <img th:src="@{/subject/{id}/image(id=${subject.id})}" alt="Imagen de la asignatura">
         </div>
-        <form th:action="@{/subject/{id}/enroll(id=${subject.id})}" method="post">
-            <button type="submit">Unirse a la asignatura</button>
-        </form>
     </div>
 
     <div class="button">

@@ -30,7 +30,7 @@ public class ClassController {
 
     @GetMapping("/aboutUS")
     public String aboutUs() {
-        return "aboutUS";
+        return "about_us";
     }
 
     @GetMapping("/contact")
