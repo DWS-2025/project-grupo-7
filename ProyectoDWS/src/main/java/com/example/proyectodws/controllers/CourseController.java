@@ -1,24 +1,20 @@
 package com.example.proyectodws.controllers;
 
-import com.example.proyectodws.entities.Comment;
+import com.example.proyectodws.dto.CourseDTO;
+import com.example.proyectodws.dto.NewCourseRequestDTO;
+import com.example.proyectodws.dto.UserDTO;
+import com.example.proyectodws.dto.SubjectDTO;
+import com.example.proyectodws.dto.UpdateCourseRequestDTO;
 import com.example.proyectodws.entities.Course;
-import com.example.proyectodws.entities.Subject;
-import com.example.proyectodws.entities.User;
-import com.example.proyectodws.repository.CourseRepository;
-import com.example.proyectodws.repository.SubjectRepository;
-import com.example.proyectodws.repository.UserRepository;
 import com.example.proyectodws.service.*;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,26 +45,16 @@ public class CourseController {
     @Autowired
     private CommentService commentService;
 
-    @Autowired
-    private CourseRepository courseRepository;
-
-    @Autowired
-    private SubjectRepository subjectRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    //Display all courses
+    //display all courses
     @GetMapping("/courses")
     public String showCourses(Model model, HttpSession session) {
         model.addAttribute("courses", courseService.getAllCourses()); // add the list to the model
-        model.addAttribute("welcome", session.isNew()); // 'welcome' to indicates new session
         return "courses";
     }
+
     @GetMapping("/courses/manage")
     public String manageCourses(Model model, HttpSession session) {
         model.addAttribute("courses", courseService.getAllCourses()); // add the list to the model
-        model.addAttribute("welcome", session.isNew()); // 'welcome' for new session
         return "courses/manage_form";
     }
 
@@ -80,22 +66,29 @@ public class CourseController {
     }
 
     @PostMapping("/courses/saved")
-    public String createSubject(Model model, @ModelAttribute @Validated Course course, BindingResult result,
-                                @RequestParam("image") MultipartFile image,
-                                @RequestParam("subjects") List<Long> subjectIds) throws IOException, SQLException {
+    public String createCourse(Model model, @ModelAttribute NewCourseRequestDTO newCourseRequest) throws IOException, SQLException {
         try {
-            // Get subjects from IDs and add them to course
-            List<Subject> subjects = subjectIds.stream()
-                    .map(id -> subjectRepository.findById(id).orElse(null))
+            //get subjects from IDs and add them to course
+            List<SubjectDTO> subjects = newCourseRequest.subjects().stream()
+                    .map(id -> subjectService.getSubjectById(id))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
-            course.setSubjects(subjects);
 
+            CourseDTO course = new CourseDTO(
+                    null,
+                    newCourseRequest.title(),
+                    newCourseRequest.description(),
+                    newCourseRequest.image().getOriginalFilename(),
+                    false,
+                    subjects
+            );
+
+            MultipartFile image = newCourseRequest.image();
             if (!image.isEmpty()) {
-                course.setImage(image.getOriginalFilename());
-                courseService.save(course, image);
-            } else {
-                courseService.createCourse(course);
+                courseService.createWithImage(course, image);
+            }
+            else {
+                courseService.saveCourse(course);
             }
 
             model.addAttribute("course", course);
@@ -111,11 +104,12 @@ public class CourseController {
         return "courses/saved_course";
     }
 
-    // Display course with ID
+    //display course with ID
     @GetMapping("/course/{id}")
     public String showCourse(@PathVariable Long id, Model model) {
-        Course course = courseService.getCourseById(id);
+        CourseDTO course = courseService.getCourseById(id);
         model.addAttribute("course", course);
+        model.addAttribute("enrolledStudents", courseService.getEnrolledStudents(course));
         model.addAttribute("comments", commentService.getCommentsForCourse(id));
         model.addAttribute("user", userSession.getUser());
         return "courses/show_course";
@@ -123,34 +117,27 @@ public class CourseController {
 
     @GetMapping("/course/{id}/image")
     public ResponseEntity<Object> downloadImage(@PathVariable long id) throws SQLException {
-
-        Course course = courseService.getCourseById(id); // Supposing that `getLanguageById` returns an object `Post`
-
-        if (course.getImageFile() != null) {
-            Resource file = new InputStreamResource(course.getImageFile().getBinaryStream());
-
-            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
-                    .contentLength(course.getImageFile().length()).body(file);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Resource course = courseService.getCourseImage(id); // Supposing that `getLanguageById` returns an object `Post`
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
+                .body(course);
     }
 
 
-    // Delete course
+    //delete course
     @GetMapping("/course/{id}/delete")
     public String deleteCourse(Model model, @PathVariable long id) {
-        Course course = courseService.getCourseById(id);
+        CourseDTO course = courseService.getCourseById(id);
         if (course != null) {
             // Delete course
             courseService.deleteCourse(id);
             userSession.disNumCourses(); // Decrease the number of courses for the user session
 
             // Remove the course from the user's course list if it is associated
-            for (User user : userService.getAllUsers()) {
-                if (user.getCourses().contains(course)) {
-                    user.removeCourse(course);
-                    userService.createUser(user); // Save changes to the user
+            for (UserDTO user : userService.getAllUsers()) {
+                if (user.courses().contains(course)) {
+                    user.courses().remove(course);
+                    userService.saveUser(user); // Save changes to the user
                 }
             }
         }
@@ -158,49 +145,61 @@ public class CourseController {
     }
 
 
-    // Display edit course form
+    //display edit course form
     @GetMapping("/course/{id}/edit")
     public String editCourseForm(Model model, @PathVariable long id) {
-        Course course = courseService.getCourseById(id);
-        model.addAttribute("course", course); // adds the edit course to the model
+        CourseDTO course = courseService.getCourseById(id);
+
+        UpdateCourseRequestDTO updateCourseRequestDTO = new UpdateCourseRequestDTO(
+                course.id(),
+                course.title(),
+                course.description(),
+                course.subjects().stream().map(SubjectDTO::id).collect(Collectors.toList())
+        );
+
+        model.addAttribute("course", updateCourseRequestDTO); // adds the edit course to the model
         model.addAttribute("subjects", subjectService.getAllSubjects());
         return "courses/edit_course";
     }
 
-    // Save edited course
+    //save edited course
     @PostMapping("/course/{id}/edited_course")
-    public String editCourse (Model model, @PathVariable long id, Course updatedCourse, @RequestParam(required = false) MultipartFile image) {
-        Course existingCourse = courseService.getCourseById(id);
-        existingCourse.setTitle(updatedCourse.getTitle()); // updates the title
-        existingCourse.setDescription(updatedCourse.getDescription()); // updates description
-        existingCourse.setSubjects(updatedCourse.getSubjects()); // updates subjects
+    public String editCourse (Model model, @PathVariable long id, UpdateCourseRequestDTO updatedCourse) {
 
-        try {
-            courseService.save(existingCourse, image); // saves updated course
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-        }
+        List<SubjectDTO> subjects = updatedCourse.subjects().stream()
+                .map(subjectId -> subjectService.getSubjectById(subjectId))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
-        model.addAttribute("course", existingCourse);
+        CourseDTO updatedCourseDTO = new CourseDTO(
+                updatedCourse.id(),
+                updatedCourse.title(),
+                updatedCourse.description(),
+                null,
+                false,
+                subjects
+        );
+
+        courseService.updateCourse(id, updatedCourseDTO);
+        model.addAttribute("course", updatedCourseDTO);
         return "courses/edited_course";
     }
 
-    // Enroll in a course
+    //enroll in a course
     @PostMapping("/course/{id}/enroll")
     public String enrollInCourse(Model model, @PathVariable long id) {
-        Course course = courseService.getCourseById(id);
+        CourseDTO course = courseService.getCourseById(id);
 
         if (course == null) {
             return "errorScreens/error404.html";
         }
 
         // TODO: Change to the user logged in
-        User user = userRepository.findByUsername("johndoe")
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        UserDTO user = userService.getUserByUsername("johndoe");
 
 
-        if (!user.getCourses().contains(course)) {
-            userService.enrollUserInCourse(user.getId(), course.getId());
+        if (!user.courses().contains(course)) {
+            userService.enrollUserInCourse(user.id(), course.id());
         }
         else {
             return "courses/already_enrolled";
@@ -209,29 +208,28 @@ public class CourseController {
         return "courses/enrolled_courses";
     }
 
-    // Display enrolled students
+    //display enrolled students
     @GetMapping("/enrolled_courses")
     public String showEnrolledCourses(Model model) {
 
         // TODO: Change to the user logged in
-        User user = userRepository.findByUsername("johndoe")
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        UserDTO user = userService.getUserByUsername("johndoe");
 
         model.addAttribute("enrolledCourses", userService.getEnrolledCourses(user));
         return "courses/my_courses";
     }
 
-    // Display enrolled students in a determinated course
+    //display enrolled students in a determinated course
     @GetMapping("/course/{id}/enrolledStudents")
     public String showEnrolledStudents(Model model, @PathVariable long id) {
-        Course course = courseService.getCourseById(id);
+        CourseDTO course = courseService.getCourseById(id);
 
         if (course == null) {
             return "errorScreens/error404.html";
         }
 
         model.addAttribute("course", course);
-        model.addAttribute("enrolledStudents", course.getEnrolledStudents());
+        model.addAttribute("enrolledStudents", courseService.getEnrolledStudents(course));
         return "courses/enrolled_students";
     }
 
@@ -242,21 +240,22 @@ public class CourseController {
 
     @GetMapping("/courses/results")
     public String searchCoursesByTitles(@RequestParam("subjectTitle") String subjectTitle, @RequestParam("courseTitle") String courseTitle, Model model) {
-        List<Course> courses = courseService.findCoursesByTitles(subjectTitle, courseTitle);
+        List<CourseDTO> courses = courseService.findCoursesByTitles(subjectTitle, courseTitle);
         model.addAttribute("courses", courses);
         return "courses/search_results";
     }
 
     @PostMapping("/courses/{id}/add-subject")
     public String addSubjectToCourse(@PathVariable Long id, @RequestParam Long subjectId) {
-        Course course = courseRepository.findById(id).orElseThrow();
-        Subject subject = subjectRepository.findById(subjectId).orElseThrow();
+        CourseDTO course = courseService.getCourseById(id);
+        SubjectDTO subject = subjectService.getSubjectById(subjectId);
 
-        if (!course.getSubjects().contains(subject)) {
-            course.getSubjects().add(subject);
-            courseRepository.save(course);
+        if (!course.subjects().contains(subject)) {
+            course.subjects().add(subject);
+            courseService.saveCourse(course);
         }
 
         return "redirect:/courses/" + id;
     }
 }
+

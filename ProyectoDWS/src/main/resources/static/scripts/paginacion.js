@@ -14,6 +14,7 @@ $(document).ready(function() {
                 data.subjects.forEach(function(subject) {
                     htmlContent += `
                         <div class="card">
+                            <img class="card-image" src="/subject/${subject.id}/image" alt="${subject.title}">
                             <a href="/subject/${subject.id}">${subject.title}</a>
                             <p><u>Descripción:</u> ${subject.text}</p>
                         </div>

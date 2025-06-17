@@ -5,9 +5,10 @@
 <div th:replace="layout/layout :: header"></div>
 <main>
     <h1>Curso guardado correctamente</h1>
-    <p>Número total de cursos: <span th:text="${numCourses}"></span></p>
+    <p>Número total de cursos que has creado en esta sesión: <span th:text="${numCourses}"></span></p>
     <a href="/courses">Volver a la lista de cursos</a>
 </main>
 <div th:replace="layout/layout :: footer"></div>
 </body>
 </html>
+

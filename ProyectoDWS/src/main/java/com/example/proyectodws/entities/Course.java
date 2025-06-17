@@ -151,6 +151,11 @@ public class Course {
         this.imageData = imageData;
     }
 
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+        comment.setCourse(this);
+    }
+
     @Override
     public String toString() {
         return "Course{" +
@@ -160,4 +165,3 @@ public class Course {
                 '}';
     }
 }
-

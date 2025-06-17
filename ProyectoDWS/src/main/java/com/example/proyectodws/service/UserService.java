@@ -1,5 +1,9 @@
 package com.example.proyectodws.service;
 
+import com.example.proyectodws.dto.CourseDTO;
+import com.example.proyectodws.dto.CourseMapper;
+import com.example.proyectodws.dto.UserDTO;
+import com.example.proyectodws.dto.UserMapper;
 import com.example.proyectodws.entities.Course;
 import com.example.proyectodws.entities.User;
 import com.example.proyectodws.repository.CourseRepository;
@@ -20,18 +24,29 @@ public class UserService {
     @Autowired
     private CourseRepository courseRepository;
 
-    public User createUser(User user){
+    @Autowired
+    private UserMapper userMapper;
 
-        return userRepository.save(user);
+    @Autowired
+    private CourseMapper courseMapper;
+
+    public UserDTO saveUser(UserDTO userDTO){
+        User user = userMapper.toDomain(userDTO);
+        return userMapper.toDTO(userRepository.save(user));
     }
 
-    public User getUserById(Long id){
+    public UserDTO getUserById(Long id){
         Optional<User> optionalUser = userRepository.findById(id);
-        return optionalUser.get();
+        return userMapper.toDTO(optionalUser.orElse(null));
     }
 
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
+    public UserDTO getUserByUsername(String username){
+        User user = userRepository.findByUsername(username).orElse(null);
+        return userMapper.toDTO(user);
+    }
+
+    public List<UserDTO> getAllUsers(){
+        return userMapper.toDTOs(userRepository.findAll());
     }
 
     public void deleteUser (Long id){
@@ -48,8 +63,18 @@ public class UserService {
         }
     }
 
-    public Set<Course> getEnrolledCourses(User user) {
-        return user.getCourses();
+    public Set<CourseDTO> getEnrolledCourses(UserDTO userDTO) {
+        User user = userRepository.findById(userDTO.id())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return courseMapper.toDTOs(user.getCourses());
+    }
+
+    public int getNumCourses(UserDTO userDTO) {
+        User user = userRepository.findById(userDTO.id())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return user.getCourses().size();
     }
 
 

@@ -135,7 +135,7 @@ public class SampleDataService {
                 System.err.println("Image matematicas.jpg not found or unreadable");
             }
 
-            // Guardar los subjects
+            // save subjects
             subjectRepository.saveAll(Arrays.asList(subject1, subject2, subject3, subject4, subject5, subject6, subject7, subject8,subject9, subject10, subject11, subject12));
 
             // Check if users already exist
@@ -144,12 +144,12 @@ public class SampleDataService {
                 User user1 = new User("John", "Doe", "johndoe", "profile1.png", "1234");
                 User user2 = new User("Jane", "Doe", "janedoe", "profile2.png", "1234");
 
-                // Guardar los usuarios
+                //save users
                 userRepository.saveAll(Arrays.asList(user1, user2));
 
                 // Check if courses already exist
                 if (courseRepository.findAll().isEmpty()) {
-                    // Crear algunos cursos (courses)
+                    //create some courses
                     Course course1 = new Course("Algebra", "Introduction to algebra.", true);
                     Course course2 = new Course("Java Programming", "Learn the basics of Java.", true);
 
@@ -174,16 +174,16 @@ public class SampleDataService {
                         System.err.println("Image images.jpeg not found or unreadable");
                     }
 
-                    // Guardar los cursos
+                    //save courses
                     courseRepository.saveAll(Arrays.asList(course1, course2));
 
-                    // Asociar usuarios a los cursos (inscribir estudiantes)
-                    course1.getEnrolledStudents().add(user1);  // John Doe se inscribe en el curso de Algebra
-                    course1.getEnrolledStudents().add(user2);  // Jane Doe se inscribe en el curso de Algebra
+                    //associated users-courses
+                    course1.getEnrolledStudents().add(user1);  // John -> Algebra
+                    course1.getEnrolledStudents().add(user2);  // Jane -> Algebra
 
-                    course2.getEnrolledStudents().add(user2);  // Jane Doe se inscribe en el curso de Java Programming
+                    course2.getEnrolledStudents().add(user2);  // Jane Doe -> Java Programming
 
-                    // Guardar los cambios en los cursos
+                    //save changes in courses
                     courseRepository.saveAll(Arrays.asList(course1, course2));
                 }
             }

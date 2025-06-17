@@ -11,19 +11,17 @@ public class Comment {
     private String text;
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
-    private User author;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
 
-
-    public Comment(String text, User author, Course course) {
+    public Comment(String text, User user, Course course) {
         this.text = text;
-        this.author = author;
+        this.user = user;
         this.course = course;
     }
-
 
     public long getId() {
         return id;
@@ -42,12 +40,12 @@ public class Comment {
         this.text = text;
     }
 
-    public User getAuthor() {
-        return author;
+    public User getUser() {
+        return user;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public void setUser(User user) {
+        this.user = user;
     }
     public Course getCourse() {
         return course;
@@ -56,7 +54,6 @@ public class Comment {
     public void setCourse(Course course) {
         this.course = course;
     }
-
 
     @Override
     public String toString() {

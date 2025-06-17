@@ -14,7 +14,7 @@
     <div class="content">
       <div class="content-cards">
         <div class="card" th:each="course : ${courses}">
-          <img class="card-image" th:if="${course.imageFile != null}" th:src="@{/course/{id}/image(id=${course.id})}" th:alt="${course.title}" alt="Course Image">
+          <img class="card-image" th:src="@{/course/{id}/image(id=${course.id})}" th:alt="${course.title}" alt="Course Image">
           <a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.title}">Título del curso</a>
           <p><u>Asignaturas:</u></p>
           <ul>
@@ -37,4 +37,5 @@
 <div th:replace="layout/layout :: footer"></div>
 </body>
 </html>
+
 

@@ -1,10 +1,16 @@
 package com.example.proyectodws.service;
 
+import com.example.proyectodws.dto.CourseDTO;
+import com.example.proyectodws.dto.CourseMapper;
+import com.example.proyectodws.dto.UserDTO;
+import com.example.proyectodws.dto.UserMapper;
 import com.example.proyectodws.entities.Course;
 import com.example.proyectodws.entities.User;
 import com.example.proyectodws.repository.CourseRepository;
 import com.example.proyectodws.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import javax.sql.rowset.serial.SerialBlob;
@@ -13,6 +19,7 @@ import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -23,32 +30,48 @@ public class CourseService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CourseMapper courseMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     // Look for and return all courses
-    public Course save(Course course, MultipartFile image) throws IOException, SQLException {
+    public CourseDTO createWithImage(CourseDTO courseDTO, MultipartFile image) throws IOException, SQLException {
+        Course course = courseMapper.toDomain(courseDTO);
+
         if (image != null && !image.isEmpty()) {
             byte[] imageBytes = image.getBytes();
             Blob blob = new SerialBlob(imageBytes);
             course.setImageFile(blob);
         }
 
-        return courseRepository.save(course);
+        Course saved = courseRepository.save(course);
+
+        return courseMapper.toDTO(saved);
     }
 
-    public Course createCourse(Course course) {
-        return courseRepository.save(course);
+    public CourseDTO saveCourse(CourseDTO courseDTO) {
+        Course course = courseMapper.toDomain(courseDTO);
+        return courseMapper.toDTO(courseRepository.save(course));
     }
 
-    /*public Course getCourseById(Long id){
-        Optional<Course> optionalCourse = courseRepository.findById(id);
-        return optionalCourse.orElse(null);
-    }*/
-    public Course getCourseById(Long id) {
-        return courseRepository.findById(id).orElse(null);
+    public CourseDTO updateCourse(Long id, CourseDTO courseDTO) {
+        Course oldCourse = courseRepository.findById(id).orElse(null);
+        Course newCourse = courseMapper.toDomain(courseDTO);
+        oldCourse.setTitle(newCourse.getTitle());
+        oldCourse.setDescription(newCourse.getDescription());
+        oldCourse.setSubjects(newCourse.getSubjects());
+        return courseMapper.toDTO(courseRepository.save(oldCourse));
     }
 
-    public List<Course> getAllCourses(){
-        return courseRepository.findAll();
+    public CourseDTO getCourseById(Long id) {
+        Course course = courseRepository.findById(id).orElse(null);
+        return courseMapper.toDTO(course);
+    }
+
+    public List<CourseDTO> getAllCourses(){
+        return courseMapper.toDTOs(courseRepository.findAll());
     }
 
     public void deleteCourse (Long id){
@@ -65,12 +88,32 @@ public class CourseService {
         }
     }
 
-    public List<Course> findCoursesByTitles(String languageTitle, String courseTitle) {
-        return courseRepository.findCoursesByTitles(languageTitle, courseTitle);
+    public List<CourseDTO> findCoursesByTitles(String languageTitle, String courseTitle) {
+        return courseMapper.toDTOs(courseRepository.findCoursesByTitles(languageTitle, courseTitle));
     }
 
-    public List<Course> getFeaturedCourses() {
-        return courseRepository.findByIsFeaturedTrue();
+    public List<CourseDTO> getFeaturedCourses() {
+        return courseMapper.toDTOs(courseRepository.findByIsFeaturedTrue());
+    }
+
+    public Resource getCourseImage(Long id) throws SQLException {
+        Course course = courseRepository.findById(id).orElse(null);
+        if (course.getImageFile() != null) {
+            Resource file = new InputStreamResource(course.getImageFile().getBinaryStream());
+
+            return file;
+        } else {
+            throw new NoSuchElementException("Image not found");
+        }
+    }
+
+    public List<UserDTO> getEnrolledStudents(CourseDTO courseDTO) {
+        Course course = courseMapper.toDomain(courseDTO);
+        return userMapper.toDTOs(course.getEnrolledStudents());
+    }
+
+    public int getNumCourses() {
+        return courseRepository.findAll().size();
     }
 }
 

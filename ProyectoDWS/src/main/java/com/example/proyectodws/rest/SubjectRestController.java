@@ -1,15 +1,15 @@
 package com.example.proyectodws.rest;
 
-import com.example.proyectodws.entities.Subject;
+import com.example.proyectodws.dto.SubjectDTO;
 import com.example.proyectodws.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -22,59 +22,57 @@ public class SubjectRestController {
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> getSubjects(@RequestParam int page, @RequestParam int size) {
-        Page<Subject> subjectPage = subjectService.getSubjects(PageRequest.of(page -1, size));
-        int totalPages = subjectPage.getTotalPages();
-        return ResponseEntity.ok(Map.of("subjects", subjectPage.getContent(), "totalPages", totalPages, "subjectsPerPage", size));
+        List<SubjectDTO> subjects = subjectService.getSubjects(PageRequest.of(page -1, size));
+        return ResponseEntity.ok(Map.of("subjects", subjects, "currentPage", page, "totalPages", (int) Math.ceil(subjectService.getAllSubjects().size() / (double) size), "subjectsPerPage", size));
     }
 
 
     @GetMapping("/all")
-    public ResponseEntity<List<Subject>> getAllSubjects() {
+    public ResponseEntity<List<SubjectDTO>> getAllSubjects() {
         return ResponseEntity.ok(subjectService.getAllSubjects());
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Subject> getSubjectById(@PathVariable Long id) {
-        Subject subject = subjectService.getSubjectById(id);
+    public ResponseEntity<SubjectDTO> getSubjectById(@PathVariable Long id) {
+        SubjectDTO subject = subjectService.getSubjectById(id);
         return subject != null ? ResponseEntity.ok(subject) : ResponseEntity.notFound().build();
     }
 
 
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<Subject> createSubjectWithImage(
+    public ResponseEntity<SubjectDTO> createSubjectWithImage(
             @RequestParam String title,
             @RequestParam String text,
-            @RequestPart(required = false) MultipartFile image) throws IOException {
+            @RequestPart(required = false) MultipartFile image) throws IOException, SQLException {
 
-        Subject subject = new Subject();
-        subject.setTitle(title);
-        subject.setText(text);
+        SubjectDTO subject = new SubjectDTO(
+                null,
+                title,
+                text,
+                image.getOriginalFilename()
+        );
 
+        SubjectDTO saved = null;
         if (image != null && !image.isEmpty()) {
-            subject.setImageData(image.getBytes());
+            saved = subjectService.createWithImage(subject, image);
+        }
+        else {
+            saved = subjectService.saveSubject(subject);
         }
 
-        Subject saved = subjectService.createSubject(subject);
         return ResponseEntity.ok(saved);
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Subject> updateSubject(
+    public ResponseEntity<SubjectDTO> updateSubject(
             @PathVariable Long id,
             @RequestParam String title,
             @RequestParam String text) {
 
-        Subject existing = subjectService.getSubjectById(id);
-        if (existing == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        existing.setTitle(title);
-        existing.setText(text);
-        subjectService.updateSubject(existing);
-        return ResponseEntity.ok(existing);
+        subjectService.updateSubject(id, new SubjectDTO(id, title, text, null));
+        return ResponseEntity.ok(subjectService.getSubjectById(id));
     }
 
 

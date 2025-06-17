@@ -14,16 +14,16 @@
     <!-- Botones de acción -->
     <a th:href="@{/course/{id}/edit(id=${course.id})}">Editar</a> |
     <a th:href="@{/course/{id}/delete(id=${course.id})}">Eliminar</a> |
-    <form th:if="${!course.enrolledStudents.contains(user)}" th:action="@{/course/{id}/enroll(id=${course.id})}" method="post">
+    <form th:if="${!enrolledStudents.contains(user)}" th:action="@{/course/{id}/enroll(id=${course.id})}" method="post">
         <button type="submit">Inscribirse</button>
     </form>
 
     <h2>Comentarios</h2>
     <ul>
-        <li th:each="comment : ${course.comments}">
-            <!-- Mostrar el nombre del autor y el comentario -->
-            <p><strong th:text="${comment.author.username}">Usuario</strong>: <span th:text="${comment.text}"></span></p>
-            <!-- Botón para eliminar el comentario -->
+        <li th:each="comment : ${comments}">
+
+            <p><strong th:text="${comment.user.username}">Usuario</strong>: <span th:text="${comment.text}"></span></p>
+
             <form th:action="@{/course/{courseId}/comments/{commentId}/delete(courseId=${course.id}, commentId=${comment.id})}" method="post">
                 <button type="submit">Eliminar</button>
             </form>
@@ -31,7 +31,7 @@
     </ul>
 
     <h3>Añadir comentario</h3>
-    <!-- Formulario para añadir nuevos comentarios -->
+
     <form th:action="@{/course/{id}/comments/new(id=${course.id})}" method="post">
         <textarea name="text" rows="3" cols="40" required></textarea><br/>
         <button type="submit">Enviar comentario</button>
@@ -43,3 +43,4 @@
 <div th:replace="layout/layout :: footer"></div>
 </body>
 </html>
+

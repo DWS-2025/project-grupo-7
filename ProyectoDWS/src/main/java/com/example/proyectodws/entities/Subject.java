@@ -20,12 +20,7 @@ public class Subject {
 
     @ManyToMany(mappedBy = "subjects")
     @JsonBackReference
-    private List<Course> associatedCourses = new ArrayList<>();
-
-
-   /* @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Course> associatedCourses = new ArrayList<>();*/
+    private List<Course> courses = new ArrayList<>();
 
     @Lob
     @JsonIgnore
@@ -39,12 +34,12 @@ public class Subject {
     public Subject() {
     }
 
-    public List<Course> getAssociatedCourses() {
-        return associatedCourses;
+    public List<Course> getCourses() {
+        return courses;
     }
 
-    public void setAssociatedCourses(List<Course> associatedCourses) {
-        this.associatedCourses = associatedCourses;
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 
     public Long getId() {

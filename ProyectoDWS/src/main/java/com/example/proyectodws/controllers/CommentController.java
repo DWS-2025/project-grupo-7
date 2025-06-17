@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.proyectodws.entities.Comment;
-import com.example.proyectodws.entities.Course;
-import com.example.proyectodws.entities.User;
-import com.example.proyectodws.repository.UserRepository;
+import com.example.proyectodws.dto.CommentDTO;
+import com.example.proyectodws.dto.CourseDTO;
+import com.example.proyectodws.dto.UserDTO;
 import com.example.proyectodws.service.CommentService;
 import com.example.proyectodws.service.CourseService;
+import com.example.proyectodws.service.UserService;
 
 @Controller
 public class CommentController {
@@ -25,7 +25,7 @@ public class CommentController {
     private CommentService commentService;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @GetMapping("/comments")
     public String getCommentsPage() {
@@ -35,14 +35,13 @@ public class CommentController {
     @PostMapping("/course/{id}/comments/new")
     public String addComment(@PathVariable Long id, @RequestParam String text, Model model) {
 
-        Course course = courseService.getCourseById(id);
+        CourseDTO course = courseService.getCourseById(id);
         if (course != null) {
             // TODO: Change to the user logged in
-            User defaultUser = userRepository.findByUsername("johndoe")
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+            UserDTO defaultUser = userService.getUserByUsername("johndoe");
 
-            Comment comment = new Comment(text, defaultUser, course);
-            commentService.addComment(comment);
+            CommentDTO comment = new CommentDTO(null, text);
+            commentService.addComment(defaultUser.id(), id, comment);
 
             return "redirect:/course/{id}";
         }

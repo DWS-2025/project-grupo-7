@@ -3,7 +3,6 @@ package com.example.proyectodws.entities;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +21,9 @@ public class User {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles;
+
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments;
 
     @ManyToMany
     @JoinTable(
@@ -119,6 +121,19 @@ public class User {
 
     public void setEncodedPassword(String encodedPassword) {
         this.encodedPassword = encodedPassword;
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+        comment.setUser(this);
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
 }

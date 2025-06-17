@@ -1,6 +1,6 @@
 package com.example.proyectodws.controllers;
 
-import com.example.proyectodws.entities.Course;
+import com.example.proyectodws.dto.CourseDTO;
 import com.example.proyectodws.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +21,7 @@ public class ClassController {
     public String home(Model model) {
 
         // Obtener los cursos destacados
-        List<Course> featuredCourses = courseService.getFeaturedCourses();
+        List<CourseDTO> featuredCourses = courseService.getFeaturedCourses();
 
         model.addAttribute("featuredCourses", featuredCourses);
 
@@ -42,5 +42,4 @@ public class ClassController {
     public String ds() {
         return "ds";
     }
-
 }
