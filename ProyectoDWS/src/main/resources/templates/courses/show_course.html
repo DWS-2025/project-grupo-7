@@ -14,7 +14,7 @@
     <!-- Botones de acción -->
     <a th:href="@{/course/{id}/edit(id=${course.id})}">Editar</a> |
     <a th:href="@{/course/{id}/delete(id=${course.id})}">Eliminar</a> |
-    <form th:action="@{/course/{id}/enroll(id=${course.id})}" method="post">
+    <form th:if="${!course.enrolledStudents.contains(user)}" th:action="@{/course/{id}/enroll(id=${course.id})}" method="post">
         <button type="submit">Inscribirse</button>
     </form>
 

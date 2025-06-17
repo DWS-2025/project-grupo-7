@@ -51,10 +51,13 @@ public class CourseController {
 
     @Autowired
     private CourseRepository courseRepository;
+
     @Autowired
     private SubjectRepository subjectRepository;
+
     @Autowired
     private UserRepository userRepository;
+
     //Display all courses
     @GetMapping("/courses")
     public String showCourses(Model model, HttpSession session) {
@@ -69,14 +72,6 @@ public class CourseController {
         return "courses/manage_form";
     }
 
-    // Display form for new course
-    /* @GetMapping("/course/new")
-    public String newCourseForm(Model model) {
-        Collection<Subject> subjects = subjectService.getAllSubjects();
-        model.addAttribute("subjects", subjects);
-        model.addAttribute("user", userSession.getUser());
-        return "new_course";
-    }*/
     @GetMapping("/courses/new")
     public String newCourseForm(Model model) {
         model.addAttribute("subjects", subjectService.getAllSubjects());
@@ -122,6 +117,7 @@ public class CourseController {
         Course course = courseService.getCourseById(id);
         model.addAttribute("course", course);
         model.addAttribute("comments", commentService.getCommentsForCourse(id));
+        model.addAttribute("user", userSession.getUser());
         return "courses/show_course";
     }
 
@@ -193,16 +189,35 @@ public class CourseController {
     @PostMapping("/course/{id}/enroll")
     public String enrollInCourse(Model model, @PathVariable long id) {
         Course course = courseService.getCourseById(id);
-        User user = new User();
-        user.setUsername("Equipo de administración");
-        userSession.enrollInCourse(course,user); // enrolls the user in the course
+
+        if (course == null) {
+            return "errorScreens/error404.html";
+        }
+
+        // TODO: Change to the user logged in
+        User user = userRepository.findByUsername("johndoe")
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+
+        if (!user.getCourses().contains(course)) {
+            userService.enrollUserInCourse(user.getId(), course.getId());
+        }
+        else {
+            return "courses/already_enrolled";
+        }
+
         return "courses/enrolled_courses";
     }
 
     // Display enrolled students
     @GetMapping("/enrolled_courses")
     public String showEnrolledCourses(Model model) {
-        model.addAttribute("enrolledCourses", userSession.getEnrolledCourses());
+
+        // TODO: Change to the user logged in
+        User user = userRepository.findByUsername("johndoe")
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        model.addAttribute("enrolledCourses", userService.getEnrolledCourses(user));
         return "courses/my_courses";
     }
 
@@ -212,13 +227,14 @@ public class CourseController {
         Course course = courseService.getCourseById(id);
 
         if (course == null) {
-            return "Error404.html";
+            return "errorScreens/error404.html";
         }
 
         model.addAttribute("course", course);
         model.addAttribute("enrolledStudents", course.getEnrolledStudents());
         return "courses/enrolled_students";
     }
+
     @GetMapping("/courses/search")
     public String searchCoursesForm() {
         return "courses/search_courses";
@@ -244,4 +260,3 @@ public class CourseController {
         return "redirect:/courses/" + id;
     }
 }
-

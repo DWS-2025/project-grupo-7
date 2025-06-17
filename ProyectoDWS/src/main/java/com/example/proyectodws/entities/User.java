@@ -32,10 +32,6 @@ public class User {
     @JsonManagedReference
     private Set<Course> courses = new HashSet<>();
 
-    @ManyToMany(mappedBy = "enrolledStudents")
-    private List<Course> enrolledCourses = new ArrayList<>();
-
-
     @Column(name = "image_name")
     private String imageName;
 
@@ -91,6 +87,11 @@ public class User {
         this.courses = courses;
     }
 
+    public void addCourse(Course course) {
+        this.courses.add(course);
+        course.getEnrolledStudents().add(this);
+    }
+
     public void removeCourse(Course course) {
         this.courses.remove(course);
         course.getEnrolledStudents().remove(this);
@@ -121,3 +122,4 @@ public class User {
     }
 
 }
+

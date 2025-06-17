@@ -37,6 +37,7 @@ public class CommentController {
 
         Course course = courseService.getCourseById(id);
         if (course != null) {
+            // TODO: Change to the user logged in
             User defaultUser = userRepository.findByUsername("johndoe")
                     .orElseThrow(() -> new RuntimeException("User not found"));
 

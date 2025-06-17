@@ -22,12 +22,12 @@ public class CustomErrorController implements ErrorController {
             if (statusCode == HttpStatus.NOT_FOUND.value()) {
                 model.addAttribute("errorCode", "404");
                 model.addAttribute("errorMessage", "Página no encontrada.");
-                return "errorScreens/Error404.html"; // Redirige a tu página personalizada
+                return "errorScreens/error404.html"; // Redirige a tu página personalizada
             }
         }
         model.addAttribute("errorCode", "500");
         model.addAttribute("errorMessage", "Error interno del servidor.");
-        return "errorScreens/Error500.html"; // Otra página de error si es necesario
+        return "errorScreens/error500.html"; // Otra página de error si es necesario
     }
 
 }

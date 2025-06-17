@@ -75,14 +75,6 @@ public class UserController {
         return "users/deleted_user";
     }
 
-    // Add user with 'userId' to the course with 'courseId'
-    @PostMapping("/{id}/enroll")
-    public String enrollUserInCourse(@PathVariable("id") Long userId, @RequestParam("courseId") Long courseId) {
-        userService.enrollUserInCourse(userId, courseId);
-        return "redirect:/users/{id}";
-    }
-
-
     @GetMapping("/{id}/courses")
     public String showUserCourses(@PathVariable("id") Long id, Model model) {
         // Get the courses associated with the user with the ID userId
@@ -98,4 +90,3 @@ public class UserController {
         return "courses/my_courses";
     }
 }
-

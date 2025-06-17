@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -41,9 +43,13 @@ public class UserService {
         User user = userRepository.findById(userId).orElse(null);
         Course course = courseRepository.findById(courseId).orElse(null);
         if (user != null && course != null) {
-            user.getCourses().add(course);
+            user.addCourse(course);
             userRepository.save(user);
         }
+    }
+
+    public Set<Course> getEnrolledCourses(User user) {
+        return user.getCourses();
     }
 
 

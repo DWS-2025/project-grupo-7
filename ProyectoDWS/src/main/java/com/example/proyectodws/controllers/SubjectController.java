@@ -89,7 +89,7 @@ public class SubjectController {
         Subject subject = subjectService.getSubjectById(id);
         // if doesn't find the subject throws the error page
         if (subject == null) {
-            return "errorScreens/Error404";
+            return "errorScreens/error404";
         }
         // if finds the subject add to the model
         model.addAttribute("subject", subject);
@@ -117,7 +117,7 @@ public class SubjectController {
         Subject subject = subjectService.getSubjectById(id);
 
         if (subject == null) {
-            return "errorScreens/Error404";
+            return "errorScreens/error404";
         }
 
         subjectService.deleteSubject(id);
@@ -134,7 +134,7 @@ public class SubjectController {
 
         //404
         if (subject == null) {
-            return "errorScreens/Error404";
+            return "errorScreens/error404";
         }
 
         model.addAttribute("subject", subject); // adds the language attribute to the model
@@ -145,7 +145,7 @@ public class SubjectController {
     public String editSubjectForm(Model model, @PathVariable long id) {
         Subject subject = subjectService.getSubjectById(id);
         if (subject == null) {
-            return "errorScreens/Error404";
+            return "errorScreens/error404";
         }
         model.addAttribute("subject", subject);
         return "subjects/edited_subject";
@@ -159,7 +159,7 @@ public class SubjectController {
 
         Subject existingSubject = subjectService.getSubjectById(id);
         if (existingSubject == null) {
-            return "errorScreens/Error404";
+            return "errorScreens/error404";
         }
 
         existingSubject.setTitle(subject.getTitle());
@@ -172,3 +172,4 @@ public class SubjectController {
     }
 
 }
+
