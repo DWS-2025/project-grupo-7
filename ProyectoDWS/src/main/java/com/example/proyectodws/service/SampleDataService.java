@@ -36,8 +36,18 @@ public class SampleDataService {
         // Crear algunos subjects (asignaturas)
         // Check if subjects already exist
         if (subjectRepository.findAll().isEmpty()) {
-            Subject subject1 = new Subject("Matemáticas", "Un curso sobre matemáticas.");
-            Subject subject2 = new Subject("Programación", "Un curso sobre programación.");
+            Subject subject1 = new Subject("Matemáticas", "Veremos la asignatura de matemáticas.");
+            Subject subject2 = new Subject("Programación", "Veremos la asignatura de programación.");
+            Subject subject3 = new Subject("Lengua", "Veremos la asignatura de lengua.");
+            Subject subject4 = new Subject("Historia", "Veremos la asignatura de historia.");
+            Subject subject5 = new Subject("Geografia", "Veremos la asignatura de geografia.");
+            Subject subject6 = new Subject("Musica", "Veremos la asignatura de musica.");
+            Subject subject7 = new Subject("Ingenieria del Software", "Veremos la asignatura de IS.");
+            Subject subject8 = new Subject("Estructuras de datos", "Veremos la asignatura de ED.");
+            Subject subject9 = new Subject("Calculo", "Veremos la asignatura de calculo.");
+            Subject subject10 = new Subject("Desarrollo de Web Seguro", "Veremos la asignatura de DWS.");
+            Subject subject11 = new Subject("Conocimiento del medio", "Veremos la asignatura de conocimiento del medio.");
+            Subject subject12 = new Subject("Educacion a la ciudadania", "Veremos la asignatura de EC.");
 
             try {
                 Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
@@ -54,9 +64,79 @@ public class SampleDataService {
             } catch (IOException e) {
                 System.err.println("Image images.jpeg not found or unreadable");
             }
+            try {
+                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                subject3.setImageFile(mathImage);
+                subject3.setImage("matematicas.jpg");
+            } catch (IOException e) {
+                System.err.println("Image matematicas.jpg not found or unreadable");
+            }
+            try {
+                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                subject4.setImageFile(mathImage);
+                subject4.setImage("matematicas.jpg");
+            } catch (IOException e) {
+                System.err.println("Image matematicas.jpg not found or unreadable");
+            }
+            try {
+                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                subject5.setImageFile(mathImage);
+                subject5.setImage("matematicas.jpg");
+            } catch (IOException e) {
+                System.err.println("Image matematicas.jpg not found or unreadable");
+            }
+            try {
+                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                subject6.setImageFile(mathImage);
+                subject6.setImage("matematicas.jpg");
+            } catch (IOException e) {
+                System.err.println("Image matematicas.jpg not found or unreadable");
+            }
+            try {
+                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                subject7.setImageFile(mathImage);
+                subject7.setImage("matematicas.jpg");
+            } catch (IOException e) {
+                System.err.println("Image matematicas.jpg not found or unreadable");
+            }
+            try {
+                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                subject8.setImageFile(mathImage);
+                subject8.setImage("matematicas.jpg");
+            } catch (IOException e) {
+                System.err.println("Image matematicas.jpg not found or unreadable");
+            }
+            try {
+                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                subject9.setImageFile(mathImage);
+                subject9.setImage("matematicas.jpg");
+            } catch (IOException e) {
+                System.err.println("Image matematicas.jpg not found or unreadable");
+            }
+            try {
+                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                subject10.setImageFile(mathImage);
+                subject10.setImage("matematicas.jpg");
+            } catch (IOException e) {
+                System.err.println("Image matematicas.jpg not found or unreadable");
+            }
+            try {
+                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                subject11.setImageFile(mathImage);
+                subject11.setImage("matematicas.jpg");
+            } catch (IOException e) {
+                System.err.println("Image matematicas.jpg not found or unreadable");
+            }
+            try {
+                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                subject12.setImageFile(mathImage);
+                subject12.setImage("matematicas.jpg");
+            } catch (IOException e) {
+                System.err.println("Image matematicas.jpg not found or unreadable");
+            }
 
             // Guardar los subjects
-            subjectRepository.saveAll(Arrays.asList(subject1, subject2));
+            subjectRepository.saveAll(Arrays.asList(subject1, subject2, subject3, subject4, subject5, subject6, subject7, subject8,subject9, subject10, subject11, subject12));
 
             // Check if users already exist
             if (userRepository.findAll().isEmpty()) {
