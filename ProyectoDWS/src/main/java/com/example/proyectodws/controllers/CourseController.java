@@ -68,7 +68,7 @@ public class CourseController {
         model.addAttribute("welcome", session.isNew()); // 'welcome' for new session
         return "courses/manage_form";
     }
-    //Prueba
+
     // Display form for new course
     /* @GetMapping("/course/new")
     public String newCourseForm(Model model) {
