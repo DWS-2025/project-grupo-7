@@ -22,9 +22,31 @@ public class CustomErrorController implements ErrorController {
             if (statusCode == HttpStatus.NOT_FOUND.value()) {
                 model.addAttribute("errorCode", "404");
                 model.addAttribute("errorMessage", "Página no encontrada.");
-                return "errorScreens/error404.html"; // Redirige a tu página personalizada
+                return "errorScreens/error404.html";
+            }
+            else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+                model.addAttribute("errorCode", "500");
+                model.addAttribute("errorMessage", "Error interno del servidor.");
+                return "errorScreens/error500.html";
+            }
+            else if (statusCode == HttpStatus.BAD_REQUEST.value()) {
+                model.addAttribute("errorCode", "400");
+                model.addAttribute("errorMessage", "Solicitud incorrecta.");
+                return "errorScreens/error400.html";
+            }
+            else if (statusCode == HttpStatus.UNAUTHORIZED.value()) {
+                model.addAttribute("errorCode", "401");
+                model.addAttribute("errorMessage", "No autorizado.");
+                return "errorScreens/error401.html";
+            }
+            else if (statusCode == HttpStatus.FORBIDDEN.value()) {
+                model.addAttribute("errorCode", "403");
+                model.addAttribute("errorMessage", "Acceso denegado.");
+                return "errorScreens/error403.html";
             }
         }
+
+        // Default error to 500.
         model.addAttribute("errorCode", "500");
         model.addAttribute("errorMessage", "Error interno del servidor.");
         return "errorScreens/error500.html"; // Otra página de error si es necesario

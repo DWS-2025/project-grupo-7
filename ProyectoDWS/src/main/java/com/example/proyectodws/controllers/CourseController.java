@@ -45,7 +45,6 @@ public class CourseController {
     @Autowired
     private CommentService commentService;
 
-    //display all courses
     @GetMapping("/courses")
     public String showCourses(Model model, HttpSession session) {
         model.addAttribute("courses", courseService.getAllCourses()); // add the list to the model
@@ -68,7 +67,7 @@ public class CourseController {
     @PostMapping("/courses/saved")
     public String createCourse(Model model, @ModelAttribute NewCourseRequestDTO newCourseRequest) throws IOException, SQLException {
         try {
-            //get subjects from IDs and add them to course
+            // Get subjects from IDs and add them to course
             List<SubjectDTO> subjects = newCourseRequest.subjects().stream()
                     .map(id -> subjectService.getSubjectById(id))
                     .filter(Objects::nonNull)
@@ -104,7 +103,6 @@ public class CourseController {
         return "courses/saved_course";
     }
 
-    //display course with ID
     @GetMapping("/course/{id}")
     public String showCourse(@PathVariable Long id, Model model) {
         CourseDTO course = courseService.getCourseById(id);
@@ -123,29 +121,6 @@ public class CourseController {
                 .body(course);
     }
 
-
-    //delete course
-    @GetMapping("/course/{id}/delete")
-    public String deleteCourse(Model model, @PathVariable long id) {
-        CourseDTO course = courseService.getCourseById(id);
-        if (course != null) {
-            // Delete course
-            courseService.deleteCourse(id);
-            userSession.disNumCourses(); // Decrease the number of courses for the user session
-
-            // Remove the course from the user's course list if it is associated
-            for (UserDTO user : userService.getAllUsers()) {
-                if (user.courses().contains(course)) {
-                    user.courses().remove(course);
-                    userService.saveUser(user); // Save changes to the user
-                }
-            }
-        }
-        return "courses/deleted_course";
-    }
-
-
-    //display edit course form
     @GetMapping("/course/{id}/edit")
     public String editCourseForm(Model model, @PathVariable long id) {
         CourseDTO course = courseService.getCourseById(id);
@@ -162,7 +137,6 @@ public class CourseController {
         return "courses/edit_course";
     }
 
-    //save edited course
     @PostMapping("/course/{id}/edited_course")
     public String editCourse (Model model, @PathVariable long id, UpdateCourseRequestDTO updatedCourse) {
 
@@ -185,7 +159,6 @@ public class CourseController {
         return "courses/edited_course";
     }
 
-    //enroll in a course
     @PostMapping("/course/{id}/enroll")
     public String enrollInCourse(Model model, @PathVariable long id) {
         CourseDTO course = courseService.getCourseById(id);
@@ -208,7 +181,6 @@ public class CourseController {
         return "courses/enrolled_courses";
     }
 
-    //display enrolled students
     @GetMapping("/enrolled_courses")
     public String showEnrolledCourses(Model model) {
 
@@ -219,7 +191,6 @@ public class CourseController {
         return "courses/my_courses";
     }
 
-    //display enrolled students in a determinated course
     @GetMapping("/course/{id}/enrolledStudents")
     public String showEnrolledStudents(Model model, @PathVariable long id) {
         CourseDTO course = courseService.getCourseById(id);
@@ -231,18 +202,6 @@ public class CourseController {
         model.addAttribute("course", course);
         model.addAttribute("enrolledStudents", courseService.getEnrolledStudents(course));
         return "courses/enrolled_students";
-    }
-
-    @GetMapping("/courses/search")
-    public String searchCoursesForm() {
-        return "courses/search_courses";
-    }
-
-    @GetMapping("/courses/results")
-    public String searchCoursesByTitles(@RequestParam("subjectTitle") String subjectTitle, @RequestParam("courseTitle") String courseTitle, Model model) {
-        List<CourseDTO> courses = courseService.findCoursesByTitles(subjectTitle, courseTitle);
-        model.addAttribute("courses", courses);
-        return "courses/search_results";
     }
 
     @PostMapping("/courses/{id}/add-subject")
@@ -257,5 +216,23 @@ public class CourseController {
 
         return "redirect:/courses/" + id;
     }
-}
 
+    @PostMapping("/course/{id}/delete")
+    public String deleteCourse(Model model, @PathVariable long id) {
+        CourseDTO course = courseService.getCourseById(id);
+        if (course != null) {
+            // Delete course
+            courseService.deleteCourse(id);
+            userSession.disNumCourses(); // Decrease the number of courses for the user session
+
+            // Remove the course from the user's course list if it is associated
+            for (UserDTO user : userService.getAllUsers()) {
+                if (user.courses().contains(course)) {
+                    user.courses().remove(course);
+                    userService.saveUser(user); // Save changes to the user
+                }
+            }
+        }
+        return "courses/deleted_course";
+    }
+}

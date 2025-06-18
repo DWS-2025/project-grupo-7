@@ -68,8 +68,8 @@ public class UserController {
         return "users/user_details";
     }
 
-    //delete user with 'id'
-    @GetMapping("/{id}/deleted")
+    //delete user by 'id'
+    @PostMapping("/{id}/deleted")
     public String deleteUserById(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return "users/deleted_user";

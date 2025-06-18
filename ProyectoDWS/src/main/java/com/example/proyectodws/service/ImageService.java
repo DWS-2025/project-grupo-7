@@ -97,12 +97,6 @@ public class ImageService {
         return fileName;
     }
 
-    /*public Blob filePathToBlob (String filePath) throws IOException, SQLException {
-        byte[]bytes= Files.readAllBytes(Paths.get(filePath));
-        Blob imageBlob = new SerialBlob(bytes);
-        return imageBlob;
-    }*/
-
     public Blob filePathToBlob(String resourcePath) throws IOException, SQLException {
         ClassPathResource resource = new ClassPathResource(resourcePath);
         try (InputStream is = resource.getInputStream()) {

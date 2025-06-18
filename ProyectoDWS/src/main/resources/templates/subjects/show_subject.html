@@ -13,7 +13,9 @@
     </div>
 
     <div class="button">
-        <a th:href="@{/subject/{id}/delete(id=${subject.id})}">Eliminar asignatura</a>
+        <form th:action="@{/subject/{id}/delete(id=${subject.id})}" method="post">
+            <button type="submit">Eliminar asignatura</button>
+        </form>
         <br>
         <a th:href="@{/subject/{id}/edit(id=${subject.id})}">Editar asignatura</a>
         <br>
