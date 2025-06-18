@@ -30,7 +30,6 @@ public class UserController {
         return "users/create_user";
     }
 
-    //create new user
     @PostMapping("/create")
     public String createUser(NewUserRequestDTO newUserRequest, @RequestParam("image") MultipartFile image) throws IOException {
 
@@ -50,7 +49,6 @@ public class UserController {
         return "redirect:/users/" + user.id();
     }
 
-    //show all the users in the model
     @GetMapping
     public String showUsers(Model model) {
         List<UserDTO> users = userService.getAllUsers();
@@ -58,7 +56,6 @@ public class UserController {
         return "users/show_users";
     }
 
-    //show info from user with 'id'
     @GetMapping("/{id}")
     public String showUserDetails(@PathVariable("id") Long id, Model model) {
         UserDTO user = userService.getUserById(id);
@@ -68,7 +65,6 @@ public class UserController {
         return "users/user_details";
     }
 
-    //delete user by 'id'
     @PostMapping("/{id}/deleted")
     public String deleteUserById(@PathVariable("id") Long id) {
         userService.deleteUser(id);
@@ -81,7 +77,6 @@ public class UserController {
         UserDTO user = userService.getUserById(id);
         List<CourseDTO> userCourses = user.courses();
 
-        //add courses to the model
         model.addAttribute("enrolledCourses", userCourses);
         model.addAttribute("nombre", user.first_name());
         model.addAttribute("apellido", user.last_name());

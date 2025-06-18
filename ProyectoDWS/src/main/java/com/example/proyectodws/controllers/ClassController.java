@@ -9,14 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-//this code is for subjects
 @Controller
 public class ClassController {
 
     @Autowired
     private CourseService courseService;
 
-    // Return all courses
     @GetMapping("/")
     public String home(Model model) {
 

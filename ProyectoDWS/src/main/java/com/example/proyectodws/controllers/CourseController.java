@@ -47,13 +47,13 @@ public class CourseController {
 
     @GetMapping("/courses")
     public String showCourses(Model model, HttpSession session) {
-        model.addAttribute("courses", courseService.getAllCourses()); // add the list to the model
+        model.addAttribute("courses", courseService.getAllCourses());
         return "courses";
     }
 
     @GetMapping("/courses/manage")
     public String manageCourses(Model model, HttpSession session) {
-        model.addAttribute("courses", courseService.getAllCourses()); // add the list to the model
+        model.addAttribute("courses", courseService.getAllCourses());
         return "courses/manage_form";
     }
 
@@ -67,7 +67,6 @@ public class CourseController {
     @PostMapping("/courses/saved")
     public String createCourse(Model model, @ModelAttribute NewCourseRequestDTO newCourseRequest) throws IOException, SQLException {
         try {
-            // Get subjects from IDs and add them to course
             List<SubjectDTO> subjects = newCourseRequest.subjects().stream()
                     .map(id -> subjectService.getSubjectById(id))
                     .filter(Objects::nonNull)
@@ -115,7 +114,7 @@ public class CourseController {
 
     @GetMapping("/course/{id}/image")
     public ResponseEntity<Object> downloadImage(@PathVariable long id) throws SQLException {
-        Resource course = courseService.getCourseImage(id); // Supposing that `getLanguageById` returns an object `Post`
+        Resource course = courseService.getCourseImage(id);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
                 .body(course);
@@ -132,7 +131,7 @@ public class CourseController {
                 course.subjects().stream().map(SubjectDTO::id).collect(Collectors.toList())
         );
 
-        model.addAttribute("course", updateCourseRequestDTO); // adds the edit course to the model
+        model.addAttribute("course", updateCourseRequestDTO);
         model.addAttribute("subjects", subjectService.getAllSubjects());
         return "courses/edit_course";
     }
@@ -223,13 +222,12 @@ public class CourseController {
         if (course != null) {
             // Delete course
             courseService.deleteCourse(id);
-            userSession.disNumCourses(); // Decrease the number of courses for the user session
+            userSession.disNumCourses();
 
-            // Remove the course from the user's course list if it is associated
             for (UserDTO user : userService.getAllUsers()) {
                 if (user.courses().contains(course)) {
                     user.courses().remove(course);
-                    userService.saveUser(user); // Save changes to the user
+                    userService.saveUser(user);
                 }
             }
         }

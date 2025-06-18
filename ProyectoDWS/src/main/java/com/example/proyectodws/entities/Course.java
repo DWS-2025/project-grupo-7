@@ -142,11 +142,6 @@ public class Course {
     @Lob
     private byte[] imageData;
 
-    // Getters y setters
-   /* public byte[] getImageData() {
-        return imageData;
-    }*/
-
     public void setImageData(byte[] imageData) {
         this.imageData = imageData;
     }

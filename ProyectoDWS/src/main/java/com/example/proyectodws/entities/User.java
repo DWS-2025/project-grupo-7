@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+// Entity for users.
 @Entity
 @Table(name = "users")
 public class User {
@@ -46,6 +47,15 @@ public class User {
         this.username = username;
         this.imageName = imageName;
         this.encodedPassword = encodedPassword;
+    }
+
+    public User(String first_name, String last_name, String username, String imageName, String encodedPassword, List<String> roles) {
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.username = username;
+        this.imageName = imageName;
+        this.encodedPassword = encodedPassword;
+        this.roles = roles;
     }
 
     public long getId() {
@@ -137,4 +147,3 @@ public class User {
     }
 
 }
-
