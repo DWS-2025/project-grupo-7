@@ -1,6 +1,8 @@
 package com.example.proyectodws.service;
 
 import com.example.proyectodws.dto.CommentDTO;
+import com.example.proyectodws.dto.CommentMapper;
+import com.example.proyectodws.dto.CommentWithIdsDTO;
 import com.example.proyectodws.dto.CommentWithRelationsDTO;
 import com.example.proyectodws.dto.CourseDTO;
 import com.example.proyectodws.dto.CourseMapper;
@@ -37,8 +39,10 @@ public class CommentService {
     @Autowired
     private CourseMapper courseMapper;
 
-    // add comment
-    public Comment addComment(Long userId, Long courseId, CommentDTO commentDTO) {
+    @Autowired
+    private CommentMapper commentMapper;
+
+    public CommentDTO addComment(Long userId, Long courseId, CommentDTO commentDTO) {
         Comment comment = new Comment();
 
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -54,12 +58,15 @@ public class CommentService {
         userRepository.save(user);
         courseRepository.save(course);
 
-        return comment;
+        return commentMapper.toDTO(comment);
     }
 
-    // get comments
     public List<CommentWithRelationsDTO> getCommentsForCourse(Long courseId) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+        Course course = courseRepository.findById(courseId)
+                .orElse(null);
+        if (course == null) {
+            return null;
+        }
 
         List<Comment> comments = course.getComments();
 
@@ -70,7 +77,31 @@ public class CommentService {
         return commentDTOs;
     }
 
-    // delete comment
+    // get comments for course without related information.
+    public List<CommentWithIdsDTO> getCommentsForCourseCompact(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElse(null);
+        if (course == null) {
+            return null;
+        }
+
+        List<Comment> comments = course.getComments();
+        List<CommentWithIdsDTO> commentDTOs = new ArrayList<>();
+        comments.forEach(comment -> {
+            commentDTOs.add(new CommentWithIdsDTO(comment.getId(), comment.getText(), comment.getUser().getId(), comment.getCourse().getId()));
+        });
+        return commentDTOs;
+    }
+
+    public CommentDTO getCommentById(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElse(null);
+        if (comment == null) {
+            return null;
+        }
+        return commentMapper.toDTO(comment);
+    }
+
     public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
     }
