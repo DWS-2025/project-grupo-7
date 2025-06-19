@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Cursos - AcademiaSaber', '/styles/courses/enrolled_courses.css', '')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-body text-center">
+          <p class="mb-4">No estás matriculado en este curso</p>
+          <a href="/profile" class="btn btn-secondary">Volver a tu perfil</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>

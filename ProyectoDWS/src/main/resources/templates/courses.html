@@ -1,41 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/layout :: head('Cursos - AcademiaSaber', '/styles/courses.css')"></head>
+<head th:replace="layout/layout :: head('Cursos - AcademiaSaber', '/styles/courses.css', '')"></head>
 <body>
 <div th:replace="layout/layout :: header"></div>
 
-<main>
-  <section id="curso-content">
-    <h2>Nuestros Cursos</h2>
-    <p>Explora nuestra variedad de cursos para aprender diferentes asignaturas.</p>
+<main class="container py-4">
+  <section id="curso-content" class="mb-4">
+    <h2 class="display-4">Nuestros Cursos</h2>
+    <p class="lead">Explora nuestra variedad de cursos para aprender diferentes asignaturas.</p>
   </section>
 
   <section id="cards">
-    <div class="content">
-      <div class="content-cards">
-        <div class="card" th:each="course : ${courses}">
-          <img class="card-image" th:src="@{/course/{id}/image(id=${course.id})}" th:alt="${course.title}" alt="Course Image">
-          <a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.title}">Título del curso</a>
-          <p><u>Asignaturas:</u></p>
-          <ul>
-            <li th:each="subject : ${course.subjects}" th:text="${subject.title}">Nombre asignatura</li>
-          </ul>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      <div th:each="course : ${courses}" class="col">
+        <div class="card h-100">
+          <img class="card-img-top" th:src="@{/course/{id}/image(id=${course.id})}" th:alt="${course.title}" alt="Course Image">
+          <div class="card-body">
+            <h5 class="card-title">
+              <a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.title}" class="text-decoration-none">Título del curso</a>
+            </h5>
+            <p class="card-text"><strong>Asignaturas:</strong></p>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item" th:each="subject : ${course.subjects}" th:text="${subject.title}">Nombre asignatura</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Si no hay cursos -->
-  <div th:if="${#lists.isEmpty(courses)}">
-    <p style="text-align: center;">No subjects yet.</p>
+  <div th:if="${#lists.isEmpty(courses)}" class="alert alert-info text-center">
+    <p class="mb-0">No subjects yet.</p>
   </div>
 
-  <div class="contenedor-botones">
-    <button class="botones" onclick="window.location.href='/courses/new'">AGREGAR CURSO</button>
+  <div th:if="${admin}" class="text-center mt-4">
+    <a th:href="@{/courses/new}" class="btn btn-primary">AGREGAR CURSO</a>
   </div>
 </main>
 <div th:replace="layout/layout :: footer"></div>
 </body>
 </html>
-
-

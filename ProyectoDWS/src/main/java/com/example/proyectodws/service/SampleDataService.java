@@ -9,6 +9,7 @@ import com.example.proyectodws.repository.UserRepository;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class SampleDataService {
     private CourseRepository courseRepository;
 
     @Autowired
-    private ImageService imageService;
+    private MediaService mediaService;
     @Autowired
     private SubjectRepository subjectRepository;
 
@@ -51,7 +52,7 @@ public class SampleDataService {
             Subject subject12 = new Subject("Educacion a la ciudadania", "Veremos la asignatura de EC.");
 
             try {
-                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
                 subject1.setImageFile(mathImage);
                 subject1.setImage("matematicas.jpg");
             } catch (IOException e) {
@@ -59,77 +60,77 @@ public class SampleDataService {
             }
 
             try {
-                Blob csImage = imageService.filePathToBlob("images\\images.jpeg");
+                Blob csImage = mediaService.filePathToBlob("images\\images.jpeg");
                 subject2.setImageFile(csImage);
                 subject2.setImage("images.jpeg");
             } catch (IOException e) {
                 System.err.println("Image images.jpeg not found or unreadable");
             }
             try {
-                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
                 subject3.setImageFile(mathImage);
                 subject3.setImage("matematicas.jpg");
             } catch (IOException e) {
                 System.err.println("Image matematicas.jpg not found or unreadable");
             }
             try {
-                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
                 subject4.setImageFile(mathImage);
                 subject4.setImage("matematicas.jpg");
             } catch (IOException e) {
                 System.err.println("Image matematicas.jpg not found or unreadable");
             }
             try {
-                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
                 subject5.setImageFile(mathImage);
                 subject5.setImage("matematicas.jpg");
             } catch (IOException e) {
                 System.err.println("Image matematicas.jpg not found or unreadable");
             }
             try {
-                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
                 subject6.setImageFile(mathImage);
                 subject6.setImage("matematicas.jpg");
             } catch (IOException e) {
                 System.err.println("Image matematicas.jpg not found or unreadable");
             }
             try {
-                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
                 subject7.setImageFile(mathImage);
                 subject7.setImage("matematicas.jpg");
             } catch (IOException e) {
                 System.err.println("Image matematicas.jpg not found or unreadable");
             }
             try {
-                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
                 subject8.setImageFile(mathImage);
                 subject8.setImage("matematicas.jpg");
             } catch (IOException e) {
                 System.err.println("Image matematicas.jpg not found or unreadable");
             }
             try {
-                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
                 subject9.setImageFile(mathImage);
                 subject9.setImage("matematicas.jpg");
             } catch (IOException e) {
                 System.err.println("Image matematicas.jpg not found or unreadable");
             }
             try {
-                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
                 subject10.setImageFile(mathImage);
                 subject10.setImage("matematicas.jpg");
             } catch (IOException e) {
                 System.err.println("Image matematicas.jpg not found or unreadable");
             }
             try {
-                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
                 subject11.setImageFile(mathImage);
                 subject11.setImage("matematicas.jpg");
             } catch (IOException e) {
                 System.err.println("Image matematicas.jpg not found or unreadable");
             }
             try {
-                Blob mathImage = imageService.filePathToBlob("images\\matematicas.jpg");
+                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
                 subject12.setImageFile(mathImage);
                 subject12.setImage("matematicas.jpg");
             } catch (IOException e) {
@@ -147,12 +148,12 @@ public class SampleDataService {
                 String user2Image = null;
                 try {
                     // Convert profile1.png to MultipartFile and save it
-                    Blob profile1Blob = imageService.filePathToBlob("images\\profile1.png");
-                    user1Image = imageService.saveImage(profile1Blob);
+                    Blob profile1Blob = mediaService.filePathToBlob("images\\profile1.png");
+                    user1Image = mediaService.saveImage(profile1Blob);
 
                     // Convert profile2.png to MultipartFile and save it
-                    Blob profile2Blob = imageService.filePathToBlob("images\\profile2.png");
-                    user2Image = imageService.saveImage(profile2Blob);
+                    Blob profile2Blob = mediaService.filePathToBlob("images\\profile2.png");
+                    user2Image = mediaService.saveImage(profile2Blob);
                 } catch (IOException e) {
                     System.err.println("Error saving user profile images");
                 }
@@ -162,8 +163,9 @@ public class SampleDataService {
                 List<String> user2Roles = new ArrayList<>(Arrays.asList("USER"));
 
                 // Create some users
-                User user1 = new User("John", "Doe", "johndoe", user1Image, "1234", user1Roles);
-                User user2 = new User("Jane", "Doe", "janedoe", user2Image, "1234", user2Roles);
+                User user1 = new User("John", "Doe", "johndoe", user1Image, new BCryptPasswordEncoder().encode("1234"), user1Roles);
+                User user2 = new User("Jane", "Doe", "janedoe", user2Image, new BCryptPasswordEncoder().encode("1234"), user2Roles);
+
 
                 // Save the users
                 userRepository.saveAll(Arrays.asList(user1, user2));
@@ -173,8 +175,8 @@ public class SampleDataService {
                 // Check if courses already exist
                 if (courseRepository.findAll().isEmpty()) {
                     //create some courses
-                    Course course1 = new Course("Algebra", "Introduction to algebra.", true);
-                    Course course2 = new Course("Java Programming", "Learn the basics of Java.", true);
+                    Course course1 = new Course("Algebra", "Introduction to algebra.", true, "/videos/course_sample.mp4");
+                    Course course2 = new Course("Java Programming", "Learn the basics of Java.", true, "/videos/course_sample.mp4");
 
                     course1.addSubject(subject1);
                     course1.addSubject(subject2);
@@ -182,7 +184,7 @@ public class SampleDataService {
                     course2.addSubject(subject2);
 
                     try {
-                        Blob course1Image = imageService.filePathToBlob("images\\matematicas.jpg");
+                        Blob course1Image = mediaService.filePathToBlob("images\\matematicas.jpg");
                         course1.setImageFile(course1Image);
                         course1.setImage("matematicas.jpg");
                     } catch (IOException e) {
@@ -190,7 +192,7 @@ public class SampleDataService {
                     }
 
                     try {
-                        Blob course2Image = imageService.filePathToBlob("images\\images.jpeg");
+                        Blob course2Image = mediaService.filePathToBlob("images\\images.jpeg");
                         course2.setImageFile(course2Image);
                         course2.setImage("images.jpeg");
                     } catch (IOException e) {

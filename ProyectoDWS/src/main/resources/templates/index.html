@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/layout :: head('Inicio - AcademiaSaber', '/styles/index.css')"></head>
+<head th:replace="layout/layout :: head('Inicio - AcademiaSaber', '/styles/index.css', '')"></head>
 <body>
 <div th:replace="layout/layout :: header"></div>
-<main>
-    <section class="content-cards">
-        <div th:each="course : ${featuredCourses}">
-            <div class="card">
-                <img class="card-image" th:src="@{/course/{id}/image(id=${course.id})}" th:alt="${course.title}">
-                <h3 th:text="${course.title}">Course Title</h3>
-                <a th:href="@{'/course/' + ${course.id}}"><u>Ver más información</u></a>
+<main class="container py-4">
+    <section class="row row-cols-1 row-cols-md-3 g-4">
+        <div th:each="course : ${featuredCourses}" class="col">
+            <div class="card h-100">
+                <img class="card-img-top" th:src="@{/course/{id}/image(id=${course.id})}" th:alt="${course.title}">
+                <div class="card-body">
+                    <h3 class="card-title" th:text="${course.title}">Course Title</h3>
+                    <a class="btn btn-primary" th:href="@{'/course/' + ${course.id}}">Ver más información</a>
+                </div>
             </div>
         </div>
     </section>

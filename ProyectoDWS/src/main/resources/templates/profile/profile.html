@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Mi perfil - AcademiaSaber', '/styles/profile/profile.css', '')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-body">
+          <h1 class="card-title text-center mb-4">Mi perfil</h1>
+
+          <div class="profile-info mb-4">
+            <div class="row mb-3">
+              <div class="col-md-4 fw-bold">Nombre:</div>
+              <div class="col-md-8">
+                <span th:text="${user.first_name}"></span> <span th:text="${user.last_name}"></span>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4 fw-bold">Nombre de usuario:</div>
+              <div class="col-md-8" th:text="${user.username}"></div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4 fw-bold">Roles:</div>
+              <div class="col-md-8">
+                <ul class="list-group">
+                  <li class="list-group-item role" th:each="role : ${user.roles}" th:text="${role}"></li>
+                </ul>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4 fw-bold">Cursos inscritos:</div>
+              <div class="col-md-8">
+                <div th:if="${enrolledCourses.size() > 0}">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                      <tr>
+                        <th>Curso</th>
+                        <th>Acciones</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr th:each="course : ${enrolledCourses}">
+                        <td>
+                          <a th:href="@{/course/{id}(id=${course.id})}" class="text-decoration-none">
+                            <span th:text="${course.name}"></span>
+                          </a>
+                        </td>
+                        <td>
+                          <form method="post" th:action="@{/profile/unenroll/{id}(id=${course.id})}" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm">Darse de baja</button>
+                          </form>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <p th:if="${enrolledCourses.size() == 0}" class="text-muted">No estás inscrito en ningún curso</p>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4 fw-bold">Imagen de perfil:</div>
+              <div class="col-md-8">
+                <img th:src="${user.imageName}" alt="Imagen de perfil" class="img-thumbnail" style="max-width: 200px;">
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-actions text-center">
+            <a href="/profile/edit" class="btn btn-primary me-2">Editar Perfil</a>
+            <a href="/profile/delete" class="btn btn-danger">Eliminar Perfil</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+<script th:src="@{/scripts/functions.js}"></script>
+</body>
+</html>

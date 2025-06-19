@@ -2,6 +2,7 @@ package com.example.proyectodws.service;
 
 import com.example.proyectodws.dto.CourseMapper;
 import com.example.proyectodws.dto.SubjectDTO;
+import com.example.proyectodws.dto.SubjectDTOWithCourses;
 import com.example.proyectodws.dto.SubjectMapper;
 import com.example.proyectodws.entities.Subject;
 import com.example.proyectodws.repository.SubjectRepository;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+// Service for subjects.
 @Service
 public class SubjectService {
     @Autowired
@@ -43,6 +45,11 @@ public class SubjectService {
     public SubjectDTO getSubjectById(Long id){
         Optional<Subject> optionalSubject = subjectRepository.findById(id);
         return subjectMapper.toDTO(optionalSubject.orElse(null));
+    }
+
+    public SubjectDTOWithCourses getSubjectByIdWithCourses(Long id){
+        Optional<Subject> optionalSubject = subjectRepository.findById(id);
+        return subjectMapper.toDTOWithCourses(optionalSubject.orElse(null));
     }
 
     public List<SubjectDTO> getAllSubjects(){

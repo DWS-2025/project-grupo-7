@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/layout :: head('Contacto - AcademiaSaber', '/styles/contact.css')"></head>
+<head th:replace="layout/layout :: head('Contacto - AcademiaSaber', '/styles/contact.css', '')"></head>
 <body>
 <div th:replace="layout/layout :: header"></div>
-<main>
-    <section class="contact-info">
-        <h2>Puedes contactarnos en:</h2>
-        <p><strong>Correo:</strong> academia@tusitio.com</p>
-        <p><strong>Teléfono:</strong> +34 622 456 789</p>
-        <p><strong>Dirección:</strong> Calle Sabiduria 45, Madrid, España</p>
+<main class="container py-4">
+    <section class="contact-info card">
+        <div class="card-body">
+            <h2 class="card-title mb-4">Puedes contactarnos en:</h2>
+            <div class="list-group">
+                <p class="list-group-item"><strong>Correo:</strong> academia@tusitio.com</p>
+                <p class="list-group-item"><strong>Teléfono:</strong> +34 622 456 789</p>
+                <p class="list-group-item"><strong>Dirección:</strong> Calle Sabiduria 45, Madrid, España</p>
+            </div>
+        </div>
     </section>
 </main>
 <div th:replace="layout/layout :: footer"></div>

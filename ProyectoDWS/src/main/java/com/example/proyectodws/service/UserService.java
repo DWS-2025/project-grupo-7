@@ -9,12 +9,14 @@ import com.example.proyectodws.entities.User;
 import com.example.proyectodws.repository.CourseRepository;
 import com.example.proyectodws.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+// Service for users.
 @Service
 public class UserService {
 
@@ -84,6 +86,15 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return user.getCourses().size();
+    }
+
+    public User getLoggedUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByUsername(username).get();
+    }
+
+    public UserDTO getLoggedUserDTO() {
+        return userMapper.toDTO(getLoggedUser());
     }
 
 

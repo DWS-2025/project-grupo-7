@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+// Rest controller for courses.
 @RestController
 @RequestMapping("/api/courses")
 public class CourseRestController {
@@ -82,40 +83,55 @@ public class CourseRestController {
             @RequestParam String title,
             @RequestParam String description,
             @RequestParam List<Long> subjectIds,
-            @RequestPart MultipartFile image) throws IOException, SQLException {
+            @RequestPart MultipartFile image,
+            @RequestPart MultipartFile video) throws IOException, SQLException {
 
+        // Validate title
         if (title == null || title.trim().isEmpty()) {
             return ResponseEntity.badRequest()
                     .body(new CourseResponse(new GenericResponse("El título es obligatorio", 400), null));
         }
 
+        // Validate description
         if (description == null || description.trim().isEmpty()) {
             return ResponseEntity.badRequest()
                     .body(new CourseResponse(new GenericResponse("La descripción es obligatoria", 400), null));
         }
 
+        // Validate subject IDs
         if (subjectIds == null || subjectIds.isEmpty()) {
             return ResponseEntity.badRequest()
                     .body(new CourseResponse(new GenericResponse("Debe seleccionar al menos una asignatura", 400), null));
         }
 
+        // Validate image
         if (image == null || image.isEmpty()) {
             return ResponseEntity.badRequest()
                     .body(new CourseResponse(new GenericResponse("Debe proporcionar una imagen", 400), null));
         }
 
+        // Validate video
+        if (video == null || video.isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(new CourseResponse(new GenericResponse("Debe proporcionar un video", 400), null));
+        }
+
+        // Validate subject IDs if provided
         if (subjectIds != null) {
+            // Check if any subject ID is null or negative
             if (subjectIds.stream().anyMatch(id -> id == null || id < 0)) {
                 return ResponseEntity.badRequest().body(new CourseResponse(new GenericResponse("Las asignaturas deben ser válidas", 400), null));
             }
         }
 
+        // Validate image if provided
         if (image != null && !image.isEmpty()) {
             // Check file size (e.g., max 5MB)
             if (image.getSize() > 5_000_000) {
                 return ResponseEntity.badRequest().body(new CourseResponse(new GenericResponse("La imagen debe tener un tamaño menor a 5MB", 400), null));
             }
 
+            // Check content type
             String contentType = image.getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
                 return ResponseEntity.badRequest().body(new CourseResponse(new GenericResponse("La imagen debe ser un archivo de imagen", 400), null));
@@ -133,15 +149,18 @@ public class CourseRestController {
                 description,
                 image.getOriginalFilename(),
                 false,
-                subjects
+                subjects,
+                video.getOriginalFilename()
         );
+
         CourseDTO saved = null;
-        if (image != null && !image.isEmpty()) {
-            saved = courseService.createWithImage(course, image);
+        if ((image != null && !image.isEmpty()) || (video != null && !video.isEmpty())) {
+            saved = courseService.createWithMedia(course, image, video);
         }
         else {
             saved = courseService.saveCourse(course);
         }
+
         return ResponseEntity.ok(new CourseResponse(new GenericResponse("Curso creado correctamente", 200), saved));
     }
 
@@ -152,23 +171,33 @@ public class CourseRestController {
             @RequestParam String description,
             @RequestParam List<Long> subjectIds) throws IOException, SQLException {
 
+        // Check if course exists
         CourseDTO existingCourse = courseService.getCourseById(id);
         if (existingCourse == null) {
             return ResponseEntity.status(404).body(new CourseResponse(new GenericResponse("Curso no encontrado", 404), null));
         }
+
+        // Validate title
         if (title == null || title.trim().isEmpty()) {
             return ResponseEntity.badRequest()
                     .body(new CourseResponse(new GenericResponse("El título es obligatorio", 400), null));
         }
+
+        // Validate description
         if (description == null || description.trim().isEmpty()) {
             return ResponseEntity.badRequest()
                     .body(new CourseResponse(new GenericResponse("La descripción es obligatoria", 400), null));
         }
+
+        // Validate subject IDs
         if (subjectIds == null || subjectIds.isEmpty()) {
             return ResponseEntity.badRequest()
                     .body(new CourseResponse(new GenericResponse("Debe seleccionar al menos una asignatura", 400), null));
         }
+
+        // Validate subject IDs if provided
         if (subjectIds != null) {
+            // Check if any subject ID is null or negative
             if (subjectIds.stream().anyMatch(subjectId -> subjectId == null || subjectId < 0)) {
                 return ResponseEntity.badRequest().body(new CourseResponse(new GenericResponse("Las asignaturas deben ser válidas", 400), null));
             }
@@ -185,7 +214,8 @@ public class CourseRestController {
                 description,
                 null,
                 false,
-                subjects
+                subjects,
+                null
         );
 
         CourseDTO updated = courseService.updateCourse(id, newCourse);
@@ -195,12 +225,14 @@ public class CourseRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<GenericResponse> deleteCourse(@PathVariable Long id) {
+
+        // Check if course exists
         CourseDTO existingCourse = courseService.getCourseById(id);
         if (existingCourse == null) {
             return ResponseEntity.status(404).body(new GenericResponse("Curso no encontrado", 404));
         }
 
-        //delete course
+        // Delete course
         courseService.deleteCourse(id);
         return ResponseEntity.ok(new GenericResponse("Curso eliminado correctamente", 200));
     }

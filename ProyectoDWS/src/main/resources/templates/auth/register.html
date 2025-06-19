@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Crear Cuenta - AcademiaSaber', '/styles/auth/register.css', '')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow">
+        <div class="card-body">
+          <h1 class="card-title text-center mb-4">Crear Cuenta</h1>
+          <form th:action="@{/register}" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+              <input type="text" name="first_name" class="form-control" placeholder="Nombre" required />
+            </div>
+            <div class="mb-3">
+              <input type="text" name="last_name" class="form-control" placeholder="Apellido" required />
+            </div>
+            <div class="mb-3">
+              <input type="text" name="username" class="form-control" placeholder="Username" required />
+            </div>
+            <div class="mb-3">
+              <input type="password" name="password" class="form-control" placeholder="Password" required />
+            </div>
+            <div class="mb-3">
+              <label for="image" class="form-label">Foto de Perfil</label>
+              <input type="file" name="image" id="image" class="form-control" accept="image/*" required />
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Crear Cuenta</button>
+            </div>
+          </form>
+          <div th:if="${error}" class="alert alert-danger mt-3">
+            <p class="mb-0" th:text="${error}"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>

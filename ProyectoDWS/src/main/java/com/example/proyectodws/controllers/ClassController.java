@@ -35,9 +35,4 @@ public class ClassController {
     public String contact() {
         return "contact";
     }
-
-    @GetMapping("/ds")
-    public String ds() {
-        return "ds";
-    }
 }

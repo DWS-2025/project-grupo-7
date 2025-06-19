@@ -1,33 +1,18 @@
 package com.example.proyectodws.service;
 
-import com.example.proyectodws.entities.Course;
-import com.example.proyectodws.entities.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
-import java.util.HashSet;
-import java.util.Set;
-
+// Session for users.
 @Component
 @SessionScope
 public class UserSession {
 
-    private String user;
-    private Set<Course> enrolledCourses = new HashSet<>();
-
     private int numCourses;
     private int numSubjects;
 
-
     public UserSession(){
-        this.user="Equipo de administracion";
-    }
-    public void setUser(String user) {
-        this.user = user;
-    }
 
-    public String getUser() {
-        return user;
     }
 
     public int getNumCourses() {
@@ -55,18 +40,5 @@ public class UserSession {
     public void disNumSubject() {
         this.numSubjects--;
     }
-
-    public Set <Course> getEnrolledCourses() {
-
-        return enrolledCourses;
-    }
-
-    public void enrollInCourse(Course course, User user) {
-
-        enrolledCourses.add(course);
-        course.enrollStudent(user);
-    }
-
-
 
 }

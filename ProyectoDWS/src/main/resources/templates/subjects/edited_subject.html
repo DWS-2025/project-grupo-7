@@ -1,20 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/layout :: head('Editar Asignatura - AcademiaSaber', '/styles/subjects/edited_subject.css')"></head>
+<head th:replace="layout/layout :: head('Editar Asignatura - AcademiaSaber', '/styles/subjects/edited_subject.css', '')"></head>
 <body>
 <div th:replace="layout/layout :: header"></div>
-<main>
-    <h1>Editar Asignatura</h1>
-    <form action="#" method="POST" th:action="@{/subject/{id}/edit(id=${subject.id})}">
-        <label for="title">Título:</label>
-        <input type="text" id="title" name="title" th:value="${subject.title}" required><br><br>
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Editar Asignatura</h2>
 
-        <label for="text">Descripción:</label>
-        <textarea id="text" name="text" required th:text="${subject.text}"></textarea><br><br>
+                    <form action="#" method="POST" th:action="@{/subject/{id}/edit(id=${subject.id})}">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Título:</label>
+                            <input type="text" class="form-control" id="title" name="title" th:value="${subject.title}" required>
+                        </div>
 
-        <button type="submit">Guardar Cambios</button>
-    </form>
-    <a href="/subjects">Volver a Asignaturas</a>
+                        <div class="mb-3">
+                            <label for="text" class="form-label">Descripción:</label>
+                            <textarea class="form-control" id="text" name="text" rows="5" required th:text="${subject.text}"></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            <a href="/subjects" class="btn btn-secondary">Volver a Asignaturas</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 <div th:replace="layout/layout :: footer"></div>
 </body>

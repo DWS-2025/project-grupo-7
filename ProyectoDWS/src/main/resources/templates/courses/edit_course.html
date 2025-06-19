@@ -1,29 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/layout :: head('Editar Curso - AcademiaSaber', '/styles/courses/edit_course.css')"></head>
+<head th:replace="layout/layout :: head('Editar Curso - AcademiaSaber', '/styles/courses/edit_course.css', '')"></head>
 <body>
 <div th:replace="layout/layout :: header"></div>
-<main>
-    <h1>Editar Curso</h1>
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4">Editar Curso</h1>
 
-    <form th:action="@{/course/{id}/edited_course(id=${course.id})}" method="post" th:object="${course}">
-        <label for="title">Título:</label>
-        <input type="text" id="title" th:field="*{title}" required/><br/>
+                    <form th:action="@{/course/{id}/edited_course(id=${course.id})}" method="post" th:object="${course}">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Título:</label>
+                            <input type="text" id="title" th:field="*{title}" class="form-control" required/>
+                        </div>
 
-        <label for="description">Descripción:</label>
-        <textarea id="description" th:field="*{description}" rows="5" cols="40"></textarea><br/>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Descripción:</label>
+                            <textarea id="description" th:field="*{description}" class="form-control" rows="5" required></textarea>
+                        </div>
 
-        <label for="subjects">Asignaturas:</label>
-        <select id="subjects" th:field="*{subjects}" multiple required>
-            <option value="" disabled>Selecciona una o más asignaturas</option>
-            <option th:each="subject : ${subjects}" th:value="${subject.id}" th:text="${subject.title}"></option>
-        </select><br/>
+                        <div class="mb-3">
+                            <label for="subjects" class="form-label">Asignaturas:</label>
+                            <select id="subjects" th:field="*{subjects}" class="form-select" multiple required>
+                                <option value="" disabled>Selecciona una o más asignaturas</option>
+                                <option th:each="subject : ${subjects}" th:value="${subject.id}" th:text="${subject.title}"></option>
+                            </select>
+                        </div>
 
-        <button type="submit">Guardar cambios</button>
-    </form>
-
-    <br/>
-    <a th:href="@{/course/{id}(id=${course.id})}">Cancelar</a>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                            <a th:href="@{/course/{id}(id=${course.id})}" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 <div th:replace="layout/layout :: footer"></div>
 </body>

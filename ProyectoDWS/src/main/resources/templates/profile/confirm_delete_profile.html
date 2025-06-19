@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Mi perfil - AcademiaSaber', '/styles/profile/profile.css', '')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-body text-center">
+          <h1 class="card-title mb-4">Confirmar Eliminación de Perfil</h1>
+          <p class="mb-4">¿Estás seguro de querer eliminar tu perfil?</p>
+
+          <form th:action="@{/profile/delete}" method="post" class="d-inline">
+            <button type="submit" class="btn btn-danger me-2">Eliminar Perfil</button>
+          </form>
+          <a href="/profile" class="btn btn-secondary">Cancelar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>

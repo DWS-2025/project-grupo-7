@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/layout :: head('Sobre nosotros - AcademiaSaber', '/styles/about_us.css')"></head>
+<head th:replace="layout/layout :: head('Sobre nosotros - AcademiaSaber', '/styles/about_us.css', '')"></head>
 <body>
 <div th:replace="layout/layout :: header"></div>
-<main>
+<main class="container py-4">
     <section class="about-us">
-        <p>
-            Somos un grupo de alumnos que queremos ayudar a los estudiantes más nuevos en el programa de ingeniería en ciberseguridad.
-            Todos sabemos que es una asignatura difícil, pero también sabemos que, si estudias y tienes una buena preparación
-            para tus exámenes, no tendrás ningún problema para aprobarla.
-            Somos:<br>
-        <div class="centered-list">
-            <ul>
-                <li>Erika Illarionov</li>
-                <li>Adrián Inarejos</li>
-                <li>Miguel Iglesias</li>
-            </ul>
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title mb-4">Sobre nosotros</h2>
+                <p class="card-text">
+                    Somos un grupo de alumnos que queremos ayudar a los estudiantes más nuevos en el programa de ingeniería en ciberseguridad.
+                    Todos sabemos que es una asignatura difícil, pero también sabemos que, si estudias y tienes una buena preparación
+                    para tus exámenes, no tendrás ningún problema para aprobarla.
+                    Somos:
+                </p>
+                <div class="text-center">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">Erika Illarionov</li>
+                        <li class="mb-2">Adrián Inarejos</li>
+                        <li class="mb-2">Miguel Iglesias</li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        </p>
     </section>
 </main>
 <div th:replace="layout/layout :: footer"></div>

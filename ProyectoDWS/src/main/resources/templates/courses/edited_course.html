@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/layout :: head('Cursos - AcademiaSaber', '/styles/courses/edited_course.css')"></head>
+<head th:replace="layout/layout :: head('Cursos - AcademiaSaber', '/styles/courses/edited_course.css', '')"></head>
 <body>
 <div th:replace="layout/layout :: header"></div>
-<main>
-    <div class="wrapper">
-        <p>Course Edited Successfully.</p>
-        <p>Details of the edited course:</p>
-        <div class="container">
-            <p><u>Title</u><br><span th:text="${course.title}"></span></p>
-            <br>
-            <p><u>Description</u><br><span th:text="${course.description}"></span></p>
-            <p><u>Asignaturas</u></p>
-            <ul>
-                <li th:each="subject : ${course.subjects}" th:text="${subject.title}"></li>
-            </ul>
-        </div>
-        <div class="button">
-            <a href="/courses">Back to Courses</a>
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <p class="mb-2">Course Edited Successfully.</p>
+                    <p class="mb-4">Details of the edited course:</p>
+                    <div class="mb-4">
+                        <p><u>Title</u><br><span th:text="${course.title}"></span></p>
+                        <p><u>Description</u><br><span th:text="${course.description}"></span></p>
+                        <p><u>Asignaturas</u></p>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item" th:each="subject : ${course.subjects}" th:text="${subject.title}"></li>
+                        </ul>
+                    </div>
+                    <a href="/courses" class="btn btn-secondary">Back to Courses</a>
+                </div>
+            </div>
         </div>
     </div>
 </main>

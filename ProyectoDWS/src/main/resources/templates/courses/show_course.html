@@ -1,47 +1,83 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/layout :: head('Detalles del Curso - AcademiaSaber', '/styles/courses/show_course.css')"></head>
+<head th:replace="layout/layout :: head('Detalles del Curso - AcademiaSaber', '/styles/courses/show_course.css', 'https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css')"></head>
 <body>
 <div th:replace="layout/layout :: header"></div>
-<main>
-    <h1 th:text="${course.title}"></h1>
-    <p th:text="${course.description}"></p>
-    <p><strong>Asignaturas:</strong></p>
-    <ul>
-        <li th:each="subject : ${course.subjects}" th:text="${subject.title}"></li>
-    </ul>
+<main class="container py-5">
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h1 class="card-title" th:text="${course.title}"></h1>
+            <p class="card-text" th:text="${course.description}"></p>
 
-    <!-- Action buttons -->
-    <a th:href="@{/course/{id}/edit(id=${course.id})}">Editar</a> |
-    <form th:action="@{/course/{id}/delete(id=${course.id})}" method="post">
-        <button type="submit">Eliminar</button>
-    </form> |
-    <form th:if="${!enrolledStudents.contains(user)}" th:action="@{/course/{id}/enroll(id=${course.id})}" method="post">
-        <button type="submit">Inscribirse</button>
-    </form>
+            <div class="mb-4">
+                <h5 class="card-subtitle mb-2">Asignaturas:</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" th:each="subject : ${course.subjects}" th:text="${subject.title}"></li>
+                </ul>
+            </div>
 
-    <h2>Comentarios</h2>
-    <ul>
-        <li th:each="comment : ${comments}">
-            <!-- Show the author's name and comment -->
-            <p><strong th:text="${comment.user.username}">Usuario</strong>: <span th:text="${comment.text}"></span></p>
-            <!-- Button to delete the comment -->
-            <form th:action="@{/course/{courseId}/comments/{commentId}/delete(courseId=${course.id}, commentId=${comment.id})}" method="post">
-                <button type="submit">Eliminar</button>
+            <div class="mb-4">
+                <h5 class="card-subtitle mb-2">Video:</h5>
+                <div class="ratio ratio-16x9">
+                    <video th:src="${course.video}" controls class="rounded">
+                        <source th:src="${course.video}" th:type="${'video/' + #strings.toLowerCase(#strings.substringAfter(course.video, '.'))}">
+                        Tu navegador no soporta el elemento de video.
+                    </video>
+                </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="btn-group mb-4" role="group">
+                <a th:if="${admin}" th:href="@{/course/{id}/edit(id=${course.id})}" class="btn btn-primary">Editar</a>
+                <form th:if="${admin}" th:action="@{/course/{id}/delete(id=${course.id})}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+                <form th:if="${!enrolledStudents.contains(user) && logged}" th:action="@{/course/{id}/enroll(id=${course.id})}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-success">Inscribirse</button>
+                </form>
+            </div>
+
+            <div th:if="${enrolledStudents.contains(user)}" class="alert alert-success" role="alert">
+                Estás inscrito en este curso
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h2 class="card-title mb-4">Comentarios</h2>
+            <div class="list-group mb-4">
+                <div class="list-group-item" th:each="comment : ${comments}">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">
+                            <strong th:text="${comment.user.username}">Usuario</strong>
+                            <small class="text-muted ms-2" th:text="${comment.createdAt}"></small>
+                        </h6>
+                        <form th:if="${comment.user.username == userName}" th:action="@{/course/{courseId}/comments/{commentId}/delete(courseId=${course.id}, commentId=${comment.id})}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                        </form>
+                    </div>
+                    <div class="comment-content" th:utext="${comment.text}"></div>
+                </div>
+            </div>
+
+            <h3 class="card-subtitle mb-3">Añadir comentario</h3>
+            <form th:action="@{/course/{id}/comments/new(id=${course.id})}" method="post">
+                <div id="editor" class="mb-3"></div>
+                <textarea id="commentBody" style="display: none;" name="text" required></textarea>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Enviar comentario</button>
+                </div>
             </form>
-        </li>
-    </ul>
+        </div>
+    </div>
 
-    <h3>Añadir comentario</h3>
-    <!-- Form to add new comments -->
-    <form th:action="@{/course/{id}/comments/new(id=${course.id})}" method="post">
-        <textarea name="text" rows="3" cols="40" required></textarea><br/>
-        <button type="submit">Enviar comentario</button>
-    </form>
-
-    <br/>
-    <a href="/courses">Volver a cursos</a>
+    <div class="text-center">
+        <a href="/courses" class="btn btn-secondary">Volver a cursos</a>
+    </div>
 </main>
 <div th:replace="layout/layout :: footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+<script th:src="@{/scripts/initializeQuill.js}"></script>
 </body>
 </html>

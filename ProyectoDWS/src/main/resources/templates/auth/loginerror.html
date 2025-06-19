@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Iniciar Sesión - AcademiaSaber', '/styles/auth/login.css', '')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow">
+        <div class="card-body">
+          <h1 class="card-title text-center mb-4">Iniciar Sesión</h1>
+          <div class="alert alert-danger mb-3">
+            <p class="mb-0">Usuario o contraseña incorrectos</p>
+          </div>
+          <div class="d-grid">
+            <a href="/login" class="btn btn-primary">Intentar de nuevo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>

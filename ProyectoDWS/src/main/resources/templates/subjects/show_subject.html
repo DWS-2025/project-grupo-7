@@ -1,29 +1,36 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/layout :: head('Asignatura - AcademiaSaber', '/styles/subjects/show_subject.css')"></head>
+<head th:replace="layout/layout :: head('Asignatura - AcademiaSaber', '/styles/subjects/show_subject.css', '')"></head>
 <body>
 <div th:replace="layout/layout :: header"></div>
-<main>
-    <div class="container">
-        <p><u>Asignatura</u><br th:text="${subject.title}"></p>
-        <br>
-        <p><u>Descripción</u><br th:text="${subject.text}"></p>
-        <div class="image">
-            <img th:src="@{/subject/{id}/image(id=${subject.id})}" alt="Imagen de la asignatura">
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4" th:text="${subject.title}"></h1>
+
+                    <div class="mb-4">
+                        <h5 class="card-subtitle mb-2">Descripción</h5>
+                        <p class="card-text" th:text="${subject.text}"></p>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <img th:src="@{/subject/{id}/image(id=${subject.id})}" alt="Imagen de la asignatura" class="img-fluid rounded" style="max-height: 300px;">
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <form th:if="${admin}" th:action="@{/subject/{id}/delete(id=${subject.id})}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger w-100">Eliminar asignatura</button>
+                        </form>
+                        <a th:if="${admin}" th:href="@{/subject/{id}/edit(id=${subject.id})}" class="btn btn-primary">Editar asignatura</a>
+                        <a th:href="@{/subject/{id}/courses(id=${subject.id})}" class="btn btn-info">Lista de cursos que incluye esta asignatura</a>
+                        <a href="/subjects" class="btn btn-secondary">Volver</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div class="button">
-        <form th:action="@{/subject/{id}/delete(id=${subject.id})}" method="post">
-            <button type="submit">Eliminar asignatura</button>
-        </form>
-        <br>
-        <a th:href="@{/subject/{id}/edit(id=${subject.id})}">Editar asignatura</a>
-        <br>
-        <a th:href="@{/subject/{id}/courses(id=${subject.id})}">Lista de cursos que incluye esta asignatura</a>
-    </div>
-
-    <br>
-    <a href="/subjects">Volver</a>
 </main>
 <div th:replace="layout/layout :: footer"></div>
 </body>

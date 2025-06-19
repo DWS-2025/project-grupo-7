@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/layout :: head('Asignatura Guardada - AcademiaSaber', '/styles/subjects/saved_subject.css')"></head>
+<head th:replace="layout/layout :: head('Asignatura Guardada - AcademiaSaber', '/styles/subjects/saved_subject.css', '')"></head>
 <body>
 <div th:replace="layout/layout :: header"></div>
-<main>
-    <div class="container">
-        <h1>Asignatura Guardada</h1>
-        <p>La asignatura ha sido guardada exitosamente.</p>
-        <a href="/subjects"><button>Volver a Asignaturas</button></a>
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <h2 class="card-title mb-4">Asignatura Guardada</h2>
+                    <p class="card-text">La asignatura ha sido guardada exitosamente.</p>
+                    <div class="mt-4">
+                        <a href="/subjects" class="btn btn-primary">Volver a Asignaturas</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 <div th:replace="layout/layout :: footer"></div>

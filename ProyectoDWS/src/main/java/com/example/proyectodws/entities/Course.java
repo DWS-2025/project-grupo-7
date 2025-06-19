@@ -10,15 +10,18 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// Entity for courses.
 @Entity
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private String title;
     private String description;
     private String imagePath;
     private Boolean isFeatured = false;
+    private String video;
 
     @Lob
     @JsonIgnore
@@ -51,11 +54,12 @@ public class Course {
         this.description = description;
     }
 
-    public Course(String title, String description, Boolean isFeatured) {
+    public Course(String title, String description, Boolean isFeatured, String video) {
         super();
         this.title = title;
         this.description = description;
         this.isFeatured = isFeatured;
+        this.video = video;
     }
 
     public List<Subject> getSubjects() {
@@ -139,8 +143,21 @@ public class Course {
         this.imageFile = imageFile;
     }
 
+    public String getVideo() {
+        return video;
+    }
+
+    public void setVideo(String video) {
+        this.video = video;
+    }
+
     @Lob
     private byte[] imageData;
+
+    // Getters y setters
+   /* public byte[] getImageData() {
+        return imageData;
+    }*/
 
     public void setImageData(byte[] imageData) {
         this.imageData = imageData;

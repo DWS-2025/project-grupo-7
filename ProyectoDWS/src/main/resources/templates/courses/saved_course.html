@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/layout :: head('Curso Guardado - AcademiaSaber', '/styles/courses/saved_course.css')"></head>
+<head th:replace="layout/layout :: head('Curso Guardado - AcademiaSaber', '/styles/courses/saved_course.css', '')"></head>
 <body>
 <div th:replace="layout/layout :: header"></div>
-<main>
-    <h1>Curso guardado correctamente</h1>
-    <p>Número total de cursos que has creado en esta sesión: <span th:text="${numCourses}"></span></p>
-    <a href="/courses">Volver a la lista de cursos</a>
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <h1 class="card-title mb-4">Curso guardado correctamente</h1>
+                    <p>Número total de cursos que has creado en esta sesión: <span th:text="${numCourses}"></span></p>
+                    <a href="/courses" class="btn btn-secondary mt-3">Volver a la lista de cursos</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 <div th:replace="layout/layout :: footer"></div>
 </body>

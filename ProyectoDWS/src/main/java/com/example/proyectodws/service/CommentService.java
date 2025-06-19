@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+// Service for comments.
 @Service
 public class CommentService {
 
@@ -42,6 +43,7 @@ public class CommentService {
     @Autowired
     private CommentMapper commentMapper;
 
+    // add comment
     public CommentDTO addComment(Long userId, Long courseId, CommentDTO commentDTO) {
         Comment comment = new Comment();
 
@@ -51,6 +53,7 @@ public class CommentService {
         comment.setText(commentDTO.text());
         comment.setUser(user);
         comment.setCourse(course);
+        comment.setCreatedAt(commentDTO.createdAt());
 
         user.addComment(comment);
         course.addComment(comment);
@@ -61,6 +64,7 @@ public class CommentService {
         return commentMapper.toDTO(comment);
     }
 
+    // Get comments for course
     public List<CommentWithRelationsDTO> getCommentsForCourse(Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElse(null);
@@ -77,7 +81,7 @@ public class CommentService {
         return commentDTOs;
     }
 
-    // get comments for course without related information.
+    // Get comments for course without related information.
     public List<CommentWithIdsDTO> getCommentsForCourseCompact(Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElse(null);
@@ -88,11 +92,12 @@ public class CommentService {
         List<Comment> comments = course.getComments();
         List<CommentWithIdsDTO> commentDTOs = new ArrayList<>();
         comments.forEach(comment -> {
-            commentDTOs.add(new CommentWithIdsDTO(comment.getId(), comment.getText(), comment.getUser().getId(), comment.getCourse().getId()));
+            commentDTOs.add(new CommentWithIdsDTO(comment.getId(), comment.getText(), comment.getUser().getId(), comment.getCourse().getId(), comment.getCreatedAt()));
         });
         return commentDTOs;
     }
 
+    // get comment by id
     public CommentDTO getCommentById(Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElse(null);
@@ -102,15 +107,27 @@ public class CommentService {
         return commentMapper.toDTO(comment);
     }
 
+    // get user from comment id
+    public UserDTO getUserFromCommentId(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElse(null);
+        if (comment == null) {
+            return null;
+        }
+        return userMapper.toDTO(comment.getUser());
+    }
+
+    // delete comment
     public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
     }
 
+    // convert comment to dto with relations
     public CommentWithRelationsDTO convertCommentToDTO(Comment comment) {
 
         UserDTO userDTO = userMapper.toDTO(comment.getUser());
         CourseDTO courseDTO = courseMapper.toDTO(comment.getCourse());
 
-        return new CommentWithRelationsDTO(comment.getId(), comment.getText(), userDTO, courseDTO);
+        return new CommentWithRelationsDTO(comment.getId(), comment.getText(), userDTO, courseDTO, comment.getCreatedAt());
     }
 }

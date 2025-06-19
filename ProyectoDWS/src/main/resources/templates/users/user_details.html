@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Detalles del usuario - AcademiaSaber', '/styles/users/users.css', '')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-body">
+          <h1 class="card-title text-center mb-4">Detalles del usuario</h1>
+
+          <div class="row mb-3">
+            <div class="col-md-4 fw-bold">Nombre de usuario:</div>
+            <div class="col-md-8" th:text="${user.username}"></div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4 fw-bold">Nombre:</div>
+            <div class="col-md-8" th:text="${user.first_name}"></div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4 fw-bold">Apellido:</div>
+            <div class="col-md-8" th:text="${user.last_name}"></div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4 fw-bold">Roles:</div>
+            <div class="col-md-8">
+              <ul class="list-group">
+                <li class="list-group-item role" th:each="role : ${user.roles}" th:text="${role}"></li>
+              </ul>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4 fw-bold">Imagen de perfil:</div>
+            <div class="col-md-8">
+              <img th:src="${user.imageName}" alt="Imagen del usuario" class="img-thumbnail" style="max-width: 200px;">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4 fw-bold">Cursos inscritos:</div>
+            <div class="col-md-8">
+              <div th:if="${enrolledCourses.size() > 0}">
+                <ul class="list-group">
+                  <li class="list-group-item" th:each="course : ${enrolledCourses}" th:text="${course.name}"></li>
+                </ul>
+              </div>
+              <p th:if="${enrolledCourses.size() == 0}" class="text-muted">No estás inscrito en ningún curso</p>
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <form th:if="${user.username != userName}" method="post" th:action="@{/users/{id}/delete(id=${user.id})}" class="d-inline">
+              <button type="submit" class="btn btn-danger me-2">Eliminar usuario</button>
+            </form>
+            <a href="/users" class="btn btn-secondary">Volver a la lista de usuarios</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+<script th:src="@{/scripts/functions.js}"></script>
+</body>
+</html>

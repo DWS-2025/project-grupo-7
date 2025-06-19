@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+// Service for courses.
 @Service
 public class CourseService {
     @Autowired
@@ -36,8 +37,11 @@ public class CourseService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private MediaService mediaService;
+
     // Look for and return all courses
-    public CourseDTO createWithImage(CourseDTO courseDTO, MultipartFile image) throws IOException, SQLException {
+    public CourseDTO createWithMedia(CourseDTO courseDTO, MultipartFile image, MultipartFile video) throws IOException, SQLException {
         Course course = courseMapper.toDomain(courseDTO);
 
         if (image != null && !image.isEmpty()) {
@@ -47,6 +51,12 @@ public class CourseService {
         }
 
         Course saved = courseRepository.save(course);
+
+        if (video != null && !video.isEmpty()) {
+            saved.setVideo(mediaService.saveVideo(saved.getId(), video));
+        }
+
+        saved = courseRepository.save(saved);
 
         return courseMapper.toDTO(saved);
     }
@@ -62,6 +72,7 @@ public class CourseService {
         oldCourse.setTitle(newCourse.getTitle());
         oldCourse.setDescription(newCourse.getDescription());
         oldCourse.setSubjects(newCourse.getSubjects());
+
         return courseMapper.toDTO(courseRepository.save(oldCourse));
     }
 
@@ -107,8 +118,8 @@ public class CourseService {
         }
     }
 
-    public List<UserDTO> getEnrolledStudents(CourseDTO courseDTO) {
-        Course course = courseMapper.toDomain(courseDTO);
+    public List<UserDTO> getEnrolledStudents(Long id) {
+        Course course = courseRepository.findById(id).orElse(null);
         return userMapper.toDTOs(course.getEnrolledStudents());
     }
 
@@ -116,4 +127,3 @@ public class CourseService {
         return courseRepository.findAll().size();
     }
 }
-

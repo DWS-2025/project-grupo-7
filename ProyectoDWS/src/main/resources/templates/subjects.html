@@ -1,50 +1,65 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/layout :: head('Asignaturas - AcademiaSaber', '/styles/subjects.css')"></head>
+<head th:replace="layout/layout :: head('Asignaturas - AcademiaSaber', '/styles/subjects.css', '')"></head>
 <body>
 <div th:replace="layout/layout :: header"></div>
-<main>
-    <section id="subject-content">
-        <h2>Nuestras Asignaturas</h2>
-        <p>Explora nuestra variedad de asignaturas disponibles.</p>
+<main class="container py-4">
+    <section id="subject-content" class="mb-4">
+        <h2 class="display-4">Nuestras Asignaturas</h2>
+        <p class="lead">Explora nuestra variedad de asignaturas disponibles.</p>
     </section>
 
     <section id="cards">
-        <div class="content">
-            <div class="content-cards" id="subjects-list">
-                <th:block th:each="subject : ${subjects}">
-                    <div class="card">
-                        <img class="card-image" th:src="@{/subject/{id}/image(id=${subject.id})}" th:alt="${subject.title}" alt="Subject Image">
-                        <a th:href="@{/subject/{id}(id=${subject.id})}" th:text="${subject.title}">Asignatura</a>
-                        <p><u>Descripción:</u> <span th:text="${subject.text}">Descripción</span></p>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <th:block th:each="subject : ${subjects}">
+                <div class="col">
+                    <div class="card h-100">
+                        <img class="card-img-top" th:src="@{/subject/{id}/image(id=${subject.id})}" th:alt="${subject.title}" alt="Subject Image">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a th:href="@{/subject/{id}(id=${subject.id})}" th:text="${subject.title}" class="text-decoration-none">Asignatura</a>
+                            </h5>
+                            <p class="card-text"><strong>Descripción:</strong> <span th:text="${subject.text}">Descripción</span></p>
+                        </div>
                     </div>
-                </th:block>
-            </div>
+                </div>
+            </th:block>
         </div>
     </section>
 
-    <div th:if="${#lists.isEmpty(subjects)}">
-        <p style="text-align: center;">No hay asignaturas disponibles aún.</p>
+    <div th:if="${#lists.isEmpty(subjects)}" class="alert alert-info text-center">
+        <p class="mb-0">No hay asignaturas disponibles aún.</p>
     </div>
 
-    <div class="pagination">
-        <button th:if="${currentPage > 0}" id="prev-page">Anterior</button>
-        <span> Página <span id="currentPage" th:text="${currentPage + 1}">1</span> de <span id="totalPages" th:text="${totalPages}">1</span> </span>
-        <button th:if="${currentPage < totalPages - 1}" id="next-page">Siguiente</button>
+    <div class="d-flex justify-content-center align-items-center my-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item" th:if="${currentPage > 0}">
+                    <button class="page-link" id="prev-page">Anterior</button>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">Página <span id="currentPage" th:text="${currentPage + 1}">1</span> de <span id="totalPages" th:text="${totalPages}">1</span></span>
+                </li>
+                <li class="page-item" th:if="${currentPage < totalPages - 1}">
+                    <button class="page-link" id="next-page">Siguiente</button>
+                </li>
+            </ul>
+        </nav>
     </div>
 
-    <div class="pageSizes">
-        <button id="pageSize10">10</button>
-        <button id="pageSize20">20</button>
-        <button id="pageSize50">50</button>
-        <button id="pageSize100">100</button>
+    <div class="btn-group mb-3 pageSizes" role="group" aria-label="Page size options">
+        <button type="button" class="btn btn-outline-primary" id="pageSize10">10</button>
+        <button type="button" class="btn btn-outline-primary" id="pageSize20">20</button>
+        <button type="button" class="btn btn-outline-primary" id="pageSize50">50</button>
+        <button type="button" class="btn btn-outline-primary" id="pageSize100">100</button>
     </div>
 
-    <div class="elementsShown">
+    <div class="text-muted mb-3">
         <span id="elementsShown" th:text="'Mostrando ' + ${subjects.size()} + ' asignaturas'">0</span>
     </div>
-    <div class="contenedor-botones">
-        <button class="botones" onclick="window.location.href='/subjects/new'">AGREGAR ASIGNATURA</button>
+
+    <div class="text-center" th:if="${admin}">
+        <a th:href="@{/subjects/new}" class="btn btn-primary">AGREGAR ASIGNATURA</a>
     </div>
 </main>
 <div th:replace="layout/layout :: footer"></div>

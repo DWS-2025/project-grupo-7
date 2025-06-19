@@ -1,18 +1,39 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/layout :: head('Nueva Asignatura - AcademiaSaber', '/styles/subjects/new_subject.css')"></head>
+<head th:replace="layout/layout :: head('Nueva Asignatura - AcademiaSaber', '/styles/subjects/new_subject.css', '')"></head>
 <body>
 <div th:replace="layout/layout :: header"></div>
-<main>
-    <div class="container">
-        <form th:action="@{/subjects/new}" th:object="${subject}" method="post" enctype="multipart/form-data">
-            <p>Title:</p>
-            <input type='text' name='title' required/>
-            <p>Text:</p>
-            <textarea name='text' rows=5 cols=40></textarea>
-            <p>Image file:</p>
-            <input type='file' name='image' accept="image/*"/>
-            <input type='submit' value='Save'/>
-        </form>
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Nueva Asignatura</h2>
+
+                    <form th:action="@{/subjects/new}" th:object="${subject}" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Título:</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="text" class="form-label">Descripción:</label>
+                            <textarea class="form-control" id="text" name="text" rows="5" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Imagen:</label>
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <a href="/subjects" class="btn btn-secondary">Volver</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 <div th:replace="layout/layout :: footer"></div>
