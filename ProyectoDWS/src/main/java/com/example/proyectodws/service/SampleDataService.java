@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class SampleDataService {
@@ -33,8 +35,7 @@ public class SampleDataService {
     // Este método se ejecutará cuando la aplicación se inicie
     @PostConstruct
     public void init() throws SQLException, IOException {
-        // Crear algunos subjects (asignaturas)
-        // Check if subjects already exist
+
         if (subjectRepository.findAll().isEmpty()) {
             Subject subject1 = new Subject("Matemáticas", "Veremos la asignatura de matemáticas.");
             Subject subject2 = new Subject("Programación", "Veremos la asignatura de programación.");
@@ -140,12 +141,34 @@ public class SampleDataService {
 
             // Check if users already exist
             if (userRepository.findAll().isEmpty()) {
-                // Crear algunos users (usuarios)
-                User user1 = new User("John", "Doe", "johndoe", "profile1.png", "1234");
-                User user2 = new User("Jane", "Doe", "janedoe", "profile2.png", "1234");
 
-                //save users
+                // Create images for users
+                String user1Image = null;
+                String user2Image = null;
+                try {
+                    // Convert profile1.png to MultipartFile and save it
+                    Blob profile1Blob = imageService.filePathToBlob("images\\profile1.png");
+                    user1Image = imageService.saveImage(profile1Blob);
+
+                    // Convert profile2.png to MultipartFile and save it
+                    Blob profile2Blob = imageService.filePathToBlob("images\\profile2.png");
+                    user2Image = imageService.saveImage(profile2Blob);
+                } catch (IOException e) {
+                    System.err.println("Error saving user profile images");
+                }
+
+                // Set roles for users
+                List<String> user1Roles = new ArrayList<>(Arrays.asList("USER", "ADMIN"));
+                List<String> user2Roles = new ArrayList<>(Arrays.asList("USER"));
+
+                // Create some users
+                User user1 = new User("John", "Doe", "johndoe", user1Image, "1234", user1Roles);
+                User user2 = new User("Jane", "Doe", "janedoe", user2Image, "1234", user2Roles);
+
+                // Save the users
                 userRepository.saveAll(Arrays.asList(user1, user2));
+
+
 
                 // Check if courses already exist
                 if (courseRepository.findAll().isEmpty()) {

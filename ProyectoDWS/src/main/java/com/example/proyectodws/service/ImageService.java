@@ -26,19 +26,45 @@ public class ImageService {
     private static final Path FILES_FOLDER = Paths.get(System.getProperty("user.dir"), "images");
 
     private static final String IMAGE_FOLDER = ".\\images";
-    // Return a new path for a image
     private Path createFilePath(long imageId, Path folder) {
 
         return folder.resolve("image-" + imageId + ".jpg");
     }
-    // Keep the image in a folder
-    public void saveImage(MultipartFile image) throws IOException {
-        Path directory = Paths.get(IMAGE_FOLDER);
+
+    public String saveImage(MultipartFile image) throws IOException {
+
+        Path directory = Paths.get(System.getProperty("user.dir"), "src", "main", "resources", "static", "images");
+
         if (!Files.exists(directory)) {
             Files.createDirectories(directory);
         }
-        Path filePath = directory.resolve(image.getOriginalFilename());
+
+        String originalFilename = image.getOriginalFilename();
+
+        String newFilename = "image_" + UUID.randomUUID() + "_" + originalFilename;
+
+        Path filePath = directory.resolve(newFilename);
+
         Files.write(filePath, image.getBytes());
+
+        return "/images/" + newFilename;
+    }
+
+    //save an image from a blob.
+    public String saveImage(Blob image) throws IOException, SQLException {
+        Path directory = Paths.get(System.getProperty("user.dir"), "src", "main", "resources", "static", "images");
+
+        if (!Files.exists(directory)) {
+            Files.createDirectories(directory);
+        }
+
+        String newFilename = "image_" + UUID.randomUUID() + ".jpg";
+
+        Path filePath = directory.resolve(newFilename);
+
+        Files.write(filePath, image.getBytes(1, (int) image.length()));
+
+        return "/images/" + newFilename;
     }
 
     // Return a image to the user

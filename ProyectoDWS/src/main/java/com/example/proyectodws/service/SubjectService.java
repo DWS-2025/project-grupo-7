@@ -77,12 +77,12 @@ public class SubjectService {
         return subjectMapper.toDTO(subjectRepository.save(subject));
     }
 
-    public void updateSubject(Long id, SubjectDTO subjectDTO) {
+    public SubjectDTO updateSubject(Long id, SubjectDTO subjectDTO) {
         Subject oldSubject = subjectRepository.findById(id).orElse(null);
         Subject newSubject = subjectMapper.toDomain(subjectDTO);
         oldSubject.setTitle(newSubject.getTitle());
         oldSubject.setText(newSubject.getText());
-        subjectRepository.save(oldSubject);
+        return subjectMapper.toDTO(subjectRepository.save(oldSubject));
     }
 
     public List<SubjectDTO> getSubjects(PageRequest pageRequest) {

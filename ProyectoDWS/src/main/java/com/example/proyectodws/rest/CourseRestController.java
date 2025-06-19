@@ -1,16 +1,22 @@
 package com.example.proyectodws.rest;
 
+import com.example.proyectodws.api.CourseResponse;
+import com.example.proyectodws.api.CoursesResponse;
+import com.example.proyectodws.api.GenericResponse;
+import com.example.proyectodws.api.ImageResponse;
 import com.example.proyectodws.dto.CourseDTO;
 import com.example.proyectodws.dto.SubjectDTO;
 import com.example.proyectodws.service.CourseService;
 import com.example.proyectodws.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -26,22 +32,95 @@ public class CourseRestController {
     private SubjectService subjectService;
 
     @GetMapping
-    public ResponseEntity<List<CourseDTO>> getAllCourses() {
-        return ResponseEntity.ok(courseService.getAllCourses());
+    public ResponseEntity<CoursesResponse> getAllCourses() {
+        List<CourseDTO> courses = courseService.getAllCourses();
+
+        GenericResponse genericResponse = new GenericResponse("Cursos obtenidos correctamente", 200);
+        return ResponseEntity.ok(new CoursesResponse(genericResponse, courses));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CourseDTO> getCourseById(@PathVariable Long id) {
+    public ResponseEntity<CourseResponse> getCourseById(@PathVariable Long id) {
         CourseDTO course = courseService.getCourseById(id);
-        return course != null ? ResponseEntity.ok(course) : ResponseEntity.notFound().build();
+
+        ResponseEntity<CourseResponse> response = null;
+        if (course != null) {
+            response = ResponseEntity.ok(new CourseResponse(new GenericResponse("Curso obtenido correctamente", 200), course));
+        } else {
+            response = ResponseEntity.status(404).body(new CourseResponse(new GenericResponse("Curso no encontrado", 404), null));
+        }
+
+        return response;
+    }
+
+    @GetMapping("/{id}/image")
+    public ResponseEntity<ImageResponse> getCourseImage(@PathVariable Long id) throws SQLException {
+        Resource image = courseService.getCourseImage(id);
+        byte[] imageBytes = null;
+
+        ResponseEntity<ImageResponse> response = null;
+
+        try {
+            imageBytes = image.getInputStream().readAllBytes();
+        } catch (IOException e) {
+            return ResponseEntity
+                    .status(404)
+                    .body(new ImageResponse(new GenericResponse("Imagen del curso no encontrada", 404), ""));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(500)
+                    .body(new ImageResponse(new GenericResponse("Error interno del servidor", 500), ""));
+        }
+        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+        response = ResponseEntity.ok(new ImageResponse(new GenericResponse("Imagen del curso obtenida correctamente", 200), base64Image));
+
+        return response;
     }
 
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<CourseDTO> createCourseByParams(
+    public ResponseEntity<CourseResponse> createCourseByParams(
             @RequestParam String title,
             @RequestParam String description,
-            @RequestParam(required = false) List<Long> subjectIds,
-            @RequestPart(required = false) MultipartFile image) throws IOException, SQLException {
+            @RequestParam List<Long> subjectIds,
+            @RequestPart MultipartFile image) throws IOException, SQLException {
+
+        if (title == null || title.trim().isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(new CourseResponse(new GenericResponse("El título es obligatorio", 400), null));
+        }
+
+        if (description == null || description.trim().isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(new CourseResponse(new GenericResponse("La descripción es obligatoria", 400), null));
+        }
+
+        if (subjectIds == null || subjectIds.isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(new CourseResponse(new GenericResponse("Debe seleccionar al menos una asignatura", 400), null));
+        }
+
+        if (image == null || image.isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(new CourseResponse(new GenericResponse("Debe proporcionar una imagen", 400), null));
+        }
+
+        if (subjectIds != null) {
+            if (subjectIds.stream().anyMatch(id -> id == null || id < 0)) {
+                return ResponseEntity.badRequest().body(new CourseResponse(new GenericResponse("Las asignaturas deben ser válidas", 400), null));
+            }
+        }
+
+        if (image != null && !image.isEmpty()) {
+            // Check file size (e.g., max 5MB)
+            if (image.getSize() > 5_000_000) {
+                return ResponseEntity.badRequest().body(new CourseResponse(new GenericResponse("La imagen debe tener un tamaño menor a 5MB", 400), null));
+            }
+
+            String contentType = image.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                return ResponseEntity.badRequest().body(new CourseResponse(new GenericResponse("La imagen debe ser un archivo de imagen", 400), null));
+            }
+        }
 
         List<SubjectDTO> subjects = subjectIds.stream()
                 .map(id -> subjectService.getSubjectById(id))
@@ -56,7 +135,6 @@ public class CourseRestController {
                 false,
                 subjects
         );
-
         CourseDTO saved = null;
         if (image != null && !image.isEmpty()) {
             saved = courseService.createWithImage(course, image);
@@ -64,34 +142,67 @@ public class CourseRestController {
         else {
             saved = courseService.saveCourse(course);
         }
-
-        return ResponseEntity.ok(saved);
+        return ResponseEntity.ok(new CourseResponse(new GenericResponse("Curso creado correctamente", 200), saved));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CourseDTO> updateCourseByParams(
+    public ResponseEntity<CourseResponse> updateCourseByParams(
             @PathVariable Long id,
             @RequestParam String title,
             @RequestParam String description,
-            @RequestParam(required = false) MultipartFile image) throws IOException, SQLException {
+            @RequestParam List<Long> subjectIds) throws IOException, SQLException {
+
+        CourseDTO existingCourse = courseService.getCourseById(id);
+        if (existingCourse == null) {
+            return ResponseEntity.status(404).body(new CourseResponse(new GenericResponse("Curso no encontrado", 404), null));
+        }
+        if (title == null || title.trim().isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(new CourseResponse(new GenericResponse("El título es obligatorio", 400), null));
+        }
+        if (description == null || description.trim().isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(new CourseResponse(new GenericResponse("La descripción es obligatoria", 400), null));
+        }
+        if (subjectIds == null || subjectIds.isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(new CourseResponse(new GenericResponse("Debe seleccionar al menos una asignatura", 400), null));
+        }
+        if (subjectIds != null) {
+            if (subjectIds.stream().anyMatch(subjectId -> subjectId == null || subjectId < 0)) {
+                return ResponseEntity.badRequest().body(new CourseResponse(new GenericResponse("Las asignaturas deben ser válidas", 400), null));
+            }
+        }
+
+        List<SubjectDTO> subjects = subjectIds.stream()
+                .map(subjectId -> subjectService.getSubjectById(subjectId))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
         CourseDTO newCourse = new CourseDTO(
                 id,
                 title,
                 description,
-                image.getOriginalFilename(),
+                null,
                 false,
-                null
+                subjects
         );
 
         CourseDTO updated = courseService.updateCourse(id, newCourse);
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok(new CourseResponse(new GenericResponse("Curso actualizado correctamente", 200), updated));
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
+    public ResponseEntity<GenericResponse> deleteCourse(@PathVariable Long id) {
+        CourseDTO existingCourse = courseService.getCourseById(id);
+        if (existingCourse == null) {
+            return ResponseEntity.status(404).body(new GenericResponse("Curso no encontrado", 404));
+        }
+
+        //delete course
         courseService.deleteCourse(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new GenericResponse("Curso eliminado correctamente", 200));
     }
 }
+

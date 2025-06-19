@@ -64,6 +64,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         // PRIVATE ENDPOINTS
+                        /*
                         .requestMatchers(HttpMethod.GET, "/api/users/me").hasRole("USER")
                         .requestMatchers(HttpMethod.POST,"/api/courses/").hasRole("USER")
                         .requestMatchers(HttpMethod.PUT,"/api/courses/**").hasRole("USER")
@@ -74,6 +75,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/comments/").hasRole("USER")
                         .requestMatchers(HttpMethod.PUT,"/api/comments/**").hasRole("USER")
                         .requestMatchers(HttpMethod.DELETE,"/api/comments/**").hasRole("ADMIN")
+                        */
                         // PUBLIC ENDPOINTS
                         .anyRequest().permitAll()
                 );

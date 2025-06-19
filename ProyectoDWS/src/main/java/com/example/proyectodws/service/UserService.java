@@ -70,6 +70,15 @@ public class UserService {
         return courseMapper.toDTOs(user.getCourses());
     }
 
+    public void unenrollUserFromCourse(Long userId, Long courseId) {
+        User user = userRepository.findById(userId).orElse(null);
+        Course course = courseRepository.findById(courseId).orElse(null);
+        if (user != null && course != null) {
+            user.removeCourse(course);
+            userRepository.save(user);
+        }
+    }
+
     public int getNumCourses(UserDTO userDTO) {
         User user = userRepository.findById(userDTO.id())
                 .orElseThrow(() -> new RuntimeException("User not found"));
