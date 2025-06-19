@@ -25,7 +25,6 @@ public class ImageService {
 
     private static final Path FILES_FOLDER = Paths.get(System.getProperty("user.dir"), "images");
 
-    private static final String IMAGE_FOLDER = ".\\images";
     private Path createFilePath(long imageId, Path folder) {
 
         return folder.resolve("image-" + imageId + ".jpg");
