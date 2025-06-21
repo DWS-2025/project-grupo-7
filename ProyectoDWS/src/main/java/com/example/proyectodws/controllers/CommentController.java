@@ -18,7 +18,6 @@ import com.example.proyectodws.service.CommentService;
 import com.example.proyectodws.service.CourseService;
 import com.example.proyectodws.service.UserService;
 
-// Controller for managing comments.
 @Controller
 public class CommentController {
 
@@ -31,13 +30,11 @@ public class CommentController {
     @Autowired
     private UserService userService;
 
-    // Get comments page
     @GetMapping("/comments")
     public String getCommentsPage() {
         return "comments";
     }
 
-    // Add a new comment
     @PostMapping("/course/{id}/comments/new")
     public String addComment(@PathVariable Long id, @RequestParam String text, Model model) {
 
@@ -54,7 +51,6 @@ public class CommentController {
         return "errorScreens/error404";
     }
 
-    // Delete a comment
     @PostMapping("/course/{courseId}/comments/{commentId}/delete")
     public String deleteComment(@PathVariable Long courseId, @PathVariable Long commentId) {
 
@@ -64,10 +60,9 @@ public class CommentController {
         }
 
         UserDTO currentUser = userService.getLoggedUserDTO();
-        if (!commentUser.id().equals(currentUser.id())) {
+        if (!currentUser.roles().contains("ADMIN") && !commentUser.id().equals(currentUser.id())) {
             return "errorScreens/error403";
         }
-
         commentService.deleteComment(commentId);
         return "redirect:/course/{courseId}";
     }

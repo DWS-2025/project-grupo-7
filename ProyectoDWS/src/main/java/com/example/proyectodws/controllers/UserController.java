@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-// Controller for managing users.
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -26,7 +25,6 @@ public class UserController {
     private MediaService mediaService;
 
 
-    // Display all the users
     @GetMapping
     public String showUsers(Model model) {
         List<UserDTO> users = userService.getAllUsers();
@@ -34,7 +32,6 @@ public class UserController {
         return "users/users";
     }
 
-    // Display info from user by 'id'
     @GetMapping("/{id}")
     public String showUserDetails(@PathVariable("id") Long id, Model model) {
         UserDTO user = userService.getUserById(id);
@@ -44,7 +41,6 @@ public class UserController {
         return "users/user_details";
     }
 
-    // Display the user's courses
     @GetMapping("/{id}/courses")
     public String showUserCourses(@PathVariable("id") Long id, Model model) {
         // Get the courses associated with the user with the ID userId
@@ -56,17 +52,14 @@ public class UserController {
         model.addAttribute("nombre", user.first_name());
         model.addAttribute("apellido", user.last_name());
 
-        // Return name of the HTML template
         return "courses/my_courses";
     }
 
-    // Display the create user form.
     @GetMapping("/create")
     public String showCreateUserForm() {
         return "users/create_user";
     }
 
-    // Create new user
     @PostMapping("/create")
     public String createUser(NewUserRequestDTO newUserRequest, @RequestParam("image") MultipartFile image) throws IOException {
 
@@ -86,9 +79,13 @@ public class UserController {
         return "redirect:/users/" + user.id();
     }
 
-    // Delete user by 'id'
     @PostMapping("/{id}/delete")
     public String deleteUserById(@PathVariable("id") Long id) {
+        UserDTO loggedUser = userService.getLoggedUserDTO();
+        if (loggedUser.id().equals(id)) {
+            return "errorScreens/error403";
+        }
+
         userService.deleteUser(id);
         return "users/user_deleted";
     }
