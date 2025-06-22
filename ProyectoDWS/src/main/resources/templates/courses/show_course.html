@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/layout :: head('Detalles del Curso - AcademiaSaber', '/styles/courses/show_course.css', 'https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css')"></head>
+<head th:replace="layout/layout :: head('Detalles del Curso - AcademiaSaber', '/styles/courses/show_course.css', '/styles/quill/quill.snow.css')"></head>
 <body>
 <div th:replace="layout/layout :: header"></div>
 <main class="container py-5">
@@ -64,7 +64,7 @@
             <h3 class="card-subtitle mb-3">Añadir comentario</h3>
             <form th:action="@{/course/{id}/comments/new(id=${course.id})}" method="post">
                 <div id="editor" class="mb-3"></div>
-                <textarea id="commentBody" style="display: none;" name="text" required></textarea>
+                <textarea id="commentBody" name="text" required></textarea>
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Enviar comentario</button>
                 </div>
@@ -77,7 +77,7 @@
     </div>
 </main>
 <div th:replace="layout/layout :: footer"></div>
-<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-<script th:src="@{/scripts/initializeQuill.js}"></script>
+<script th:src="@{/scripts/quill/quill.js}"></script>
+<script th:src="@{/scripts/quill/initializeQuill.js}"></script>
 </body>
 </html>

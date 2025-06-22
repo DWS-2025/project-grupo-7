@@ -33,7 +33,7 @@
           <div class="row mb-3">
             <div class="col-md-4 fw-bold">Imagen de perfil:</div>
             <div class="col-md-8">
-              <img th:src="${user.imageName}" alt="Imagen del usuario" class="img-thumbnail" style="max-width: 200px;">
+              <img id="userDetailsImage" th:src="${user.imageName}" alt="Imagen del usuario" class="img-thumbnail">
             </div>
           </div>
           <div class="row mb-3">
@@ -41,10 +41,13 @@
             <div class="col-md-8">
               <div th:if="${enrolledCourses.size() > 0}">
                 <ul class="list-group">
-                  <li class="list-group-item" th:each="course : ${enrolledCourses}" th:text="${course.name}"></li>
+                  <li class="list-group-item" th:each="course : ${enrolledCourses}">
+                    <span th:text="${course.title}"></span>
+                    <img th:src="@{/course/{id}/image(id=${course.id})}" alt="Imagen del curso" class="img-thumbnail courseImage">
+                  </li>
                 </ul>
               </div>
-              <p th:if="${enrolledCourses.size() == 0}" class="text-muted">No estás inscrito en ningún curso</p>
+              <p th:if="${enrolledCourses.size() == 0}" class="text-muted">No está inscrito en ningún curso.</p>
             </div>
           </div>
 

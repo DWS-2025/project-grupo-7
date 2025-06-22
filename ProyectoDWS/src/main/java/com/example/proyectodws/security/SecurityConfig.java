@@ -1,5 +1,6 @@
 package com.example.proyectodws.security;
 
+import com.example.proyectodws.security.jwt.AccessDeniedHandlerJwt;
 import com.example.proyectodws.security.jwt.JwtRequestFilter;
 import com.example.proyectodws.security.jwt.UnauthorizedHandlerJwt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
+import org.springframework.security.web.header.HeaderWriter;
+import org.springframework.security.web.header.writers.DelegatingRequestMatcherHeaderWriter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import java.util.Base64;
+import java.security.SecureRandom;
 
 @Configuration
 @EnableWebSecurity
@@ -31,6 +38,34 @@ public class SecurityConfig {
     @Autowired
     private UnauthorizedHandlerJwt unauthorizedHandlerJwt;
 
+    @Autowired
+    private AccessDeniedHandlerJwt accessDeniedHandlerJwt;
+
+    private final SecureRandom secureRandom = new SecureRandom();
+
+    private String generateNonce() {
+        byte[] nonceBytes = new byte[32];
+        secureRandom.nextBytes(nonceBytes);
+        return Base64.getEncoder().encodeToString(nonceBytes);
+    }
+
+    //this part of code is to made difficult some attacks, for example XSS
+    private HeaderWriter cspHeaderWriter() {
+        return (request, response) -> {
+            String nonce = generateNonce();
+            request.setAttribute("cspNonce", nonce);
+            response.setHeader("Content-Security-Policy",
+                    "default-src 'self'; " +
+                            "script-src 'self' 'nonce-" + nonce + "'; " +
+                            "style-src 'self'; " +
+                            "img-src 'self' data:; " +
+                            "font-src 'self'; " +
+                            "frame-ancestors 'none'; " +
+                            "form-action 'self'; " +
+                            "base-uri 'self'; " +
+                            "object-src 'none'");
+        };
+    }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -54,18 +89,30 @@ public class SecurityConfig {
     @Bean
     @Order(1)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
-
         http.authenticationProvider(authenticationProvider());
 
+        // add HSTS and CSP headers for API endpoints and use https instead of http
+        http.headers(headers -> headers
+                .httpStrictTransportSecurity(hsts -> hsts
+                        .includeSubDomains(true)
+                        .preload(true)
+                        .maxAgeInSeconds(31536000)) // 1 year
+                .addHeaderWriter(cspHeaderWriter())
+        );
         http
                 .securityMatcher("/api/**")
-                .exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandlerJwt));
-
-        http
+                .exceptionHandling(handling -> handling
+                        .authenticationEntryPoint(unauthorizedHandlerJwt)
+                        .accessDeniedHandler(accessDeniedHandlerJwt))
                 .authorizeHttpRequests(authorize -> authorize
                         // PUBLIC ENDPOINTS
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/logout").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/courses").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/courses/all").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/courses/*/image").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/courses/*/video").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/subjects").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/subjects/all").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/subjects/*/image").permitAll()
@@ -73,9 +120,14 @@ public class SecurityConfig {
 
                         // USER ENDPOINTS
                         .requestMatchers(HttpMethod.GET, "/api/courses/*").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/courses/*/enroll").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/courses/*/unenroll").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/subjects/*").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/comments/course/*").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/comments").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/comments/*").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/profile").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/profile").hasAnyRole("USER", "ADMIN")
 
                         // ADMIN ENDPOINTS
                         .requestMatchers(HttpMethod.POST, "/api/courses").hasRole("ADMIN")
@@ -84,10 +136,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/subjects").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/subjects/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/subjects/*").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/comments/*").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/users/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/users/*").hasRole("ADMIN")
+
+                        // Deny all other API requests
+                        .anyRequest().denyAll()
                 );
 
         // Disable Form login Authentication
@@ -100,7 +156,9 @@ public class SecurityConfig {
         http.httpBasic(httpBasic -> httpBasic.disable());
 
         // Stateless session
-        http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.sessionManagement(management -> management
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        );
 
         // Add JWT Token filter
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
@@ -109,12 +167,20 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(1)
+    @Order(2)
     public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
-
-        http.authenticationProvider(authenticationProvider());
+        // Add HSTS and CSP headers for web endpoints
+        http.headers(headers -> headers
+                .httpStrictTransportSecurity(hsts -> hsts
+                        .includeSubDomains(true)
+                        .preload(true)
+                        .maxAgeInSeconds(31536000)) // 1 year
+                .addHeaderWriter(cspHeaderWriter())
+        );
 
         http
+                .securityMatcher("/**")
+                .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(authorize -> authorize
                         // PUBLIC PAGES
                         .requestMatchers("/").permitAll()
@@ -140,6 +206,7 @@ public class SecurityConfig {
                         .requestMatchers("/subject/*/courses").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/enrolled_courses").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/course/*/enroll").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/course/*/unenroll").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/course/*/comments/new").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/profile").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/profile/**").hasAnyRole("USER", "ADMIN")
@@ -170,6 +237,17 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .permitAll()
                 );
+
+        http.sessionManagement(management -> management
+                .sessionFixation().migrateSession()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+        );
+
+        // Configure cookie settings
+        http.rememberMe(remember -> remember
+                .alwaysRemember(false)
+                .useSecureCookie(true)
+        );
 
         return http.build();
     }

@@ -45,11 +45,12 @@
                       <tr th:each="course : ${enrolledCourses}">
                         <td>
                           <a th:href="@{/course/{id}(id=${course.id})}" class="text-decoration-none">
-                            <span th:text="${course.name}"></span>
+                            <span th:text="${course.title}"></span>
+                            <img th:src="@{/course/{id}/image(id=${course.id})}" alt="Imagen del curso" class="img-thumbnail courseImage">
                           </a>
                         </td>
                         <td>
-                          <form method="post" th:action="@{/profile/unenroll/{id}(id=${course.id})}" class="d-inline">
+                          <form method="post" th:action="@{/course/{id}/unenroll(id=${course.id})}" class="d-inline">
                             <button type="submit" class="btn btn-danger btn-sm">Darse de baja</button>
                           </form>
                         </td>
@@ -64,7 +65,7 @@
             <div class="row mb-3">
               <div class="col-md-4 fw-bold">Imagen de perfil:</div>
               <div class="col-md-8">
-                <img th:src="${user.imageName}" alt="Imagen de perfil" class="img-thumbnail" style="max-width: 200px;">
+                <img id="profileUserImage" th:src="${user.imageName}" alt="Imagen de perfil" class="img-thumbnail">
               </div>
             </div>
           </div>

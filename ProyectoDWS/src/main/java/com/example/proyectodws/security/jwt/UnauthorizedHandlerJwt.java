@@ -11,16 +11,26 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
+import com.example.proyectodws.api.GenericResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+//this code is for when an user doesnt autenticate
 @Component
 public class UnauthorizedHandlerJwt implements AuthenticationEntryPoint {
 
     private static final Logger logger = LoggerFactory.getLogger(UnauthorizedHandlerJwt.class);
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException {
         logger.info("Unauthorized error: {}", authException.getMessage());
 
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "message: %s, path: %s".formatted(authException.getMessage(), request.getServletPath()));
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+
+        var errorResponse = new GenericResponse("Necesitas estar autenticado para acceder a este recurso", 401);
+
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 }
