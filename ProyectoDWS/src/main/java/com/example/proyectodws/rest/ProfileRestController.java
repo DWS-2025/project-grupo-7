@@ -49,31 +49,34 @@ public class ProfileRestController {
         if (first_name == null || first_name.isBlank()) {
             return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("El nombre es requerido", 400), null));
         }
+
         if (last_name == null || last_name.isBlank()) {
             return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("El apellido es requerido", 400), null));
         }
+
         if (username == null || username.isBlank()) {
             return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("El nombre de usuario es requerido", 400), null));
         }
+
         if (image == null || image.isEmpty()) {
             return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("La imagen es requerida", 400), null));
         }
-        if (image.getSize() > 1024 * 1024 * 5) {
-            return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("La imagen no puede pesar más de 5MB", 400), null));
-        }
 
+        if (image.getSize() > 1024 * 1024 * 5) {
+            return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("La imagen no puede pesar mÃ¡s de 5MB", 400), null));
+        }
 
         UserDTO oldUser = userService.getLoggedUserDTO();
 
         if (oldUser == null) {
             return ResponseEntity.status(404).body(new UserResponse(new GenericResponse("Usuario no encontrado", 404), null));
         }
-        if (username != oldUser.username() && userService.getUserByUsername(username) != null) {
-            return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("El nombre de usuario ya existe", 400), null));
-        }
-        UserDTO existingUser = userService.getLoggedUserDTO();
-        if (existingUser == null) {
-            return ResponseEntity.status(404).body(new UserResponse(new GenericResponse("Usuario no encontrado", 404), null));
+
+        if (username != oldUser.username()) {
+            UserDTO existingUser = userService.getUserByUsername(username);
+            if (existingUser != null && existingUser.id() != oldUser.id()) {
+                return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("El nombre de usuario ya existe", 400), null));
+            }
         }
 
         String imageName = null;
@@ -87,9 +90,11 @@ public class ProfileRestController {
             imageName = oldUser.imageName();
         }
 
-        String encodedPassword = password != null ? new BCryptPasswordEncoder().encode(password) : oldUser.encodedPassword();
+        String encodedPassword = password != null && !password.isEmpty() ?
+                new BCryptPasswordEncoder().encode(password) :
+                null;
 
-        UserDTO userToUpdate = new UserDTO(
+        UserDTO newUser = new UserDTO(
                 oldUser.id(),
                 first_name,
                 last_name,
@@ -98,7 +103,7 @@ public class ProfileRestController {
                 imageName,
                 null, null);
 
-        UserDTO updatedUser = userService.saveUser(userToUpdate);
+        UserDTO updatedUser = userService.updateUser(oldUser.id(), newUser);
 
         UserWithoutPasswordDTO userWithoutPassword = new UserWithoutPasswordDTO(updatedUser.id(), updatedUser.first_name(), updatedUser.last_name(), updatedUser.username(), updatedUser.imageName());
 

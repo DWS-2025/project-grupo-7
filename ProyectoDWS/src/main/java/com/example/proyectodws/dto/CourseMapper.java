@@ -34,4 +34,8 @@ public interface CourseMapper {
     @Mapping(target = "course", ignore = true)
     @Mapping(target = "user", ignore = true)
     Comment toDomain(CommentDTO commentDTO);
+
+    List<Course> toDomains(List<CourseDTO> courseDTOs);
+
+    Set<Course> toDomains(Set<CourseDTO> courseDTOs);
 }

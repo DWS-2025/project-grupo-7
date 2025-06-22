@@ -27,7 +27,7 @@
             </div>
 
             <!-- Action buttons -->
-            <div class="btn-group mb-4" role="group">
+            <div th:if="${logged}" class="btn-group mb-4" role="group">
                 <a th:if="${admin}" th:href="@{/course/{id}/edit(id=${course.id})}" class="btn btn-primary">Editar</a>
                 <form th:if="${admin}" th:action="@{/course/{id}/delete(id=${course.id})}" method="post" class="d-inline">
                     <button type="submit" class="btn btn-danger">Eliminar</button>
@@ -37,7 +37,7 @@
                 </form>
             </div>
 
-            <div th:if="${enrolledStudents.contains(user)}" class="alert alert-success" role="alert">
+            <div th:if="${enrolledStudents.contains(user) && logged}" class="alert alert-success" role="alert">
                 Estás inscrito en este curso
             </div>
         </div>
@@ -61,14 +61,16 @@
                 </div>
             </div>
 
-            <h3 class="card-subtitle mb-3">Añadir comentario</h3>
-            <form th:action="@{/course/{id}/comments/new(id=${course.id})}" method="post">
-                <div id="editor" class="mb-3"></div>
-                <textarea id="commentBody" name="text" required></textarea>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Enviar comentario</button>
-                </div>
-            </form>
+            <div th:if="${logged}">
+                <h3 class="card-subtitle mb-3">Añadir comentario</h3>
+                <form th:action="@{/course/{id}/comments/new(id=${course.id})}" method="post">
+                    <div id="editor" class="mb-3"></div>
+                    <textarea id="commentBody" name="text" required></textarea>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Enviar comentario</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 

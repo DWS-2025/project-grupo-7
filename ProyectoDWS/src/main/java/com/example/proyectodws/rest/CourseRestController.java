@@ -10,6 +10,7 @@ import com.example.proyectodws.dto.UserDTO;
 import com.example.proyectodws.service.CourseService;
 import com.example.proyectodws.service.SubjectService;
 import com.example.proyectodws.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,13 @@ public class CourseRestController {
     public ResponseEntity<CoursesResponse> getAllCourses() {
         List<CourseDTO> courses = courseService.getAllCourses();
 
+        GenericResponse genericResponse = new GenericResponse("Cursos obtenidos correctamente", 200);
+        return ResponseEntity.ok(new CoursesResponse(genericResponse, courses));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<CoursesResponse> searchCourses(@RequestParam String search) {
+        List<CourseDTO> courses = courseService.findCoursesByTitles(search, search);
         GenericResponse genericResponse = new GenericResponse("Cursos obtenidos correctamente", 200);
         return ResponseEntity.ok(new CoursesResponse(genericResponse, courses));
     }
@@ -95,7 +103,6 @@ public class CourseRestController {
                     .body(new CourseResponse(new GenericResponse("El título es obligatorio", 400), null));
         }
 
-        // Validate description
         if (description == null || description.trim().isEmpty()) {
             return ResponseEntity.badRequest()
                     .body(new CourseResponse(new GenericResponse("La descripción es obligatoria", 400), null));
@@ -105,6 +112,7 @@ public class CourseRestController {
             return ResponseEntity.badRequest()
                     .body(new CourseResponse(new GenericResponse("Debe seleccionar al menos una asignatura", 400), null));
         }
+
         if (image == null || image.isEmpty()) {
             return ResponseEntity.badRequest()
                     .body(new CourseResponse(new GenericResponse("Debe proporcionar una imagen", 400), null));
@@ -169,6 +177,7 @@ public class CourseRestController {
         if (course == null) {
             return ResponseEntity.status(404).body(new CourseResponse(new GenericResponse("Curso no encontrado", 404), null));
         }
+
         if (user.courses().contains(course)) {
             return ResponseEntity.status(400).body(new CourseResponse(new GenericResponse("Ya estás inscrito en este curso", 400), null));
         }
@@ -190,15 +199,16 @@ public class CourseRestController {
             return ResponseEntity.status(404).body(new CourseResponse(new GenericResponse("Curso no encontrado", 404), null));
         }
 
-        //validations
         if (title == null || title.trim().isEmpty()) {
             return ResponseEntity.badRequest()
                     .body(new CourseResponse(new GenericResponse("El título es obligatorio", 400), null));
         }
+
         if (description == null || description.trim().isEmpty()) {
             return ResponseEntity.badRequest()
                     .body(new CourseResponse(new GenericResponse("La descripción es obligatoria", 400), null));
         }
+
         if (subjectIds == null || subjectIds.isEmpty()) {
             return ResponseEntity.badRequest()
                     .body(new CourseResponse(new GenericResponse("Debe seleccionar al menos una asignatura", 400), null));
@@ -240,6 +250,7 @@ public class CourseRestController {
         if (course == null) {
             return ResponseEntity.status(404).body(new CourseResponse(new GenericResponse("Curso no encontrado", 404), null));
         }
+
         if (!user.courses().contains(course)) {
             return ResponseEntity.status(400).body(new CourseResponse(new GenericResponse("No estás inscrito en este curso", 400), null));
         }

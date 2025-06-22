@@ -11,11 +11,11 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query("SELECT DISTINCT c FROM Course c " +
             "JOIN c.subjects s " +
-            "WHERE (s.title LIKE %:subjectTitle% OR c.title LIKE %:courseTitle%)")
+            "WHERE (lower(s.title) LIKE lower(concat('%', :subjectTitle, '%')) OR lower(c.title) LIKE lower(concat('%', :courseTitle, '%'))) " +
+            "ORDER BY c.title")
     List<Course> findCoursesByTitles(@Param("subjectTitle") String subjectTitle,
                                      @Param("courseTitle") String courseTitle);
 
     @Query("SELECT c FROM Course c WHERE c.isFeatured = true")
     List<Course> findByIsFeaturedTrue();
-
 }

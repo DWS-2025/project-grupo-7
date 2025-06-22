@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-// Service for users.
 @Service
 public class UserService {
 
@@ -32,8 +32,50 @@ public class UserService {
     @Autowired
     private CourseMapper courseMapper;
 
-    public UserDTO saveUser(UserDTO userDTO){
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private CourseService courseService;
+
+    public UserDTO createUser(UserDTO userDTO){
         User user = userMapper.toDomain(userDTO);
+        return userMapper.toDTO(userRepository.save(user));
+    }
+
+    public UserDTO updateUser(Long id, UserDTO userRequestDTO){
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        String currentPassword = user.getEncodedPassword();
+
+        if (userRequestDTO.username() != null) {
+            user.setUsername(userRequestDTO.username());
+        }
+        if (userRequestDTO.first_name() != null) {
+            user.setFirst_name(userRequestDTO.first_name());
+        }
+        if (userRequestDTO.last_name() != null) {
+            user.setLast_name(userRequestDTO.last_name());
+        }
+        if (userRequestDTO.imageName() != null) {
+            user.setImageName(userRequestDTO.imageName());
+        }
+        if (userRequestDTO.roles() != null) {
+            user.setRoles(userRequestDTO.roles());
+        }
+        if (userRequestDTO.courses() != null) {
+            user.setCourses(userRequestDTO.courses().stream().map(courseMapper::toDomain).collect(Collectors.toSet()));
+        }
+
+        if (userRequestDTO.encodedPassword() != null) {
+            user.setEncodedPassword(userRequestDTO.encodedPassword());
+        } else {
+            user.setEncodedPassword(currentPassword);
+        }
+
         return userMapper.toDTO(userRepository.save(user));
     }
 
@@ -52,7 +94,13 @@ public class UserService {
     }
 
     public void deleteUser (Long id){
-
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            commentService.deleteUserComments(id);
+            courseService.deleteUserCourses(id);
+            user.getRoles().clear();
+            userRepository.save(user);
+        }
         userRepository.deleteById(id);
     }
 
@@ -96,6 +144,4 @@ public class UserService {
     public UserDTO getLoggedUserDTO() {
         return userMapper.toDTO(getLoggedUser());
     }
-
-
 }

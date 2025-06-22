@@ -3,6 +3,7 @@ package com.example.proyectodws.rest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,6 +23,7 @@ import com.example.proyectodws.security.jwt.LoginRequest;
 import com.example.proyectodws.security.jwt.UserLoginService;
 import com.example.proyectodws.service.MediaService;
 import com.example.proyectodws.service.UserService;
+
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
@@ -54,25 +56,31 @@ public class LoginRestController {
             @RequestPart MultipartFile image,
             HttpServletResponse response
     ) {
-        //validations
+
         if (username == null || username.isBlank()) {
             return ResponseEntity.status(400).body(new AuthResponse(Status.FAILURE, "El nombre de usuario es requerido"));
         }
+
         if (password == null || password.isBlank()) {
             return ResponseEntity.status(400).body(new AuthResponse(Status.FAILURE, "La contraseña es requerida"));
         }
+
         if (first_name == null || first_name.isBlank()) {
             return ResponseEntity.status(400).body(new AuthResponse(Status.FAILURE, "El nombre es requerido"));
         }
+
         if (last_name == null || last_name.isBlank()) {
             return ResponseEntity.status(400).body(new AuthResponse(Status.FAILURE, "El apellido es requerido"));
         }
+
         if (image == null || image.isEmpty()) {
             return ResponseEntity.status(400).body(new AuthResponse(Status.FAILURE, "La imagen es requerida"));
         }
+
         if (image.getSize() > 1024 * 1024 * 5) {
             return ResponseEntity.status(400).body(new AuthResponse(Status.FAILURE, "La imagen no puede pesar más de 5MB"));
         }
+
         if (userService.getUserByUsername(username) != null) {
             return ResponseEntity.status(400).body(new AuthResponse(Status.FAILURE, "El nombre de usuario ya existe"));
         }
@@ -91,7 +99,7 @@ public class LoginRestController {
         rolesList.add("USER");
 
         UserDTO user = new UserDTO(null, first_name, last_name, username, hashedPassword, imageName, rolesList, null);
-        userService.saveUser(user);
+        userService.createUser(user);
 
         userLoginService.login(response, new LoginRequest(username, password));
 

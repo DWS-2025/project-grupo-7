@@ -45,7 +45,6 @@ public class SecurityConfig {
         secureRandom.nextBytes(nonceBytes);
         return Base64.getEncoder().encodeToString(nonceBytes);
     }
-
     //this part of code is to made difficult some attacks, for example XSS
     private HeaderWriter cspHeaderWriter() {
         return (request, response) -> {
@@ -63,6 +62,7 @@ public class SecurityConfig {
                             "object-src 'none'");
         };
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -96,6 +96,7 @@ public class SecurityConfig {
                         .maxAgeInSeconds(31536000)) // 1 year
                 .addHeaderWriter(cspHeaderWriter())
         );
+
         http
                 .securityMatcher("/api/**")
                 .exceptionHandling(handling -> handling
@@ -113,10 +114,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/subjects").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/subjects/all").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/subjects/*/image").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/courses/*").permitAll()
 
                         // USER ENDPOINTS
-                        .requestMatchers(HttpMethod.GET, "/api/courses/*").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/courses/*/enroll").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/courses/*/unenroll").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/subjects/*").hasAnyRole("USER", "ADMIN")
@@ -187,7 +188,10 @@ public class SecurityConfig {
                         .requestMatchers("/scripts/**").permitAll()
                         .requestMatchers("/courses").permitAll()
                         .requestMatchers("/subjects").permitAll()
+                        .requestMatchers("/subject/*").permitAll()
+                        .requestMatchers("/subject/*/courses").permitAll()
                         .requestMatchers("/course/*/image").permitAll()
+                        .requestMatchers("/course/*").permitAll()
                         .requestMatchers("/subject/*/image").permitAll()
                         .requestMatchers("/about-us").permitAll()
                         .requestMatchers("/contact").permitAll()
@@ -198,9 +202,6 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll()
 
                         // USER PAGES
-                        .requestMatchers("/course/*").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/subject/*").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/subject/*/courses").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/enrolled_courses").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/course/*/enroll").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/course/*/unenroll").hasAnyRole("USER", "ADMIN")

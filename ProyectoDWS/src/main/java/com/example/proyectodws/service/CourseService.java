@@ -21,8 +21,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 
-// Service for courses.
 @Service
 public class CourseService {
     @Autowired
@@ -40,7 +40,6 @@ public class CourseService {
     @Autowired
     private MediaService mediaService;
 
-    // Look for and return all courses
     public CourseDTO createWithMedia(CourseDTO courseDTO, MultipartFile image, MultipartFile video) throws IOException, SQLException {
         Course course = courseMapper.toDomain(courseDTO);
 
@@ -96,6 +95,19 @@ public class CourseService {
                 userRepository.save(user);
             }
             courseRepository.deleteById(id);
+        }
+    }
+
+    public void deleteUserCourses(Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            Set<Course> courses = user.getCourses();
+            for (Course course : courses) {
+                course.getEnrolledStudents().remove(user);
+                courseRepository.save(course);
+            }
+            user.getCourses().clear();
+            userRepository.save(user);
         }
     }
 

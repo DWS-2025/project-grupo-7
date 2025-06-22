@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.proyectodws.dto.CourseDTO;
 import com.example.proyectodws.dto.NewUserRequestDTO;
 import com.example.proyectodws.dto.UserDTO;
-import com.example.proyectodws.security.jwt.LoginRequest;
-import com.example.proyectodws.security.jwt.UserLoginService;
 import com.example.proyectodws.service.MediaService;
 import com.example.proyectodws.service.UserService;
 
@@ -30,9 +29,6 @@ public class ProfileController {
 
     @Autowired
     private MediaService mediaService;
-
-    @Autowired
-    private UserLoginService userLoginService;
 
     @GetMapping("/profile")
     public String getProfilePage(Model model) {
@@ -63,16 +59,16 @@ public class ProfileController {
 
         UserDTO oldUser = userService.getLoggedUserDTO();
 
-        // Check if username was changed
         if (!oldUser.username().equals(newUserRequest.username())) {
             // If username exists, throw exception
-            if (userService.getUserByUsername(newUserRequest.username()) != null) {
-                throw new IllegalArgumentException("Username already exists");
+            UserDTO existingUser = userService.getUserByUsername(newUserRequest.username());
+            if (existingUser != null && existingUser.id() != oldUser.id()) {
+                return "redirect:/profile/edit?error=username_taken";
             }
         }
 
         String hashedPassword = null;
-        if (newUserRequest.password() != null) {
+        if (newUserRequest.password() != null && !newUserRequest.password().isEmpty()) {
             hashedPassword = new BCryptPasswordEncoder().encode(newUserRequest.password());
         }
 
@@ -89,15 +85,13 @@ public class ProfileController {
                 newUserRequest.first_name(),
                 newUserRequest.last_name(),
                 newUserRequest.username(),
-                hashedPassword != null ? hashedPassword : oldUser.encodedPassword(),
+                hashedPassword,
                 imageName,
                 oldUser.roles(),
                 oldUser.courses()
         );
 
-        userService.saveUser(newUser);
-
-        userLoginService.login(response, new LoginRequest(newUser.username(), newUserRequest.password()));
+        userService.updateUser(oldUser.id(), newUser);
 
         return "profile/profile_edited";
     }
@@ -106,7 +100,7 @@ public class ProfileController {
     public String deleteProfile(HttpServletResponse response) {
 
         Long userId = userService.getLoggedUserDTO().id();
-        userLoginService.logout(response);
+        SecurityContextHolder.clearContext();
         userService.deleteUser(userId);
 
         return "profile/profile_deleted";

@@ -6,8 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,9 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.proyectodws.dto.NewUserRequestDTO;
 import com.example.proyectodws.dto.UserDTO;
-import com.example.proyectodws.security.jwt.AuthResponse;
-import com.example.proyectodws.security.jwt.LoginRequest;
-import com.example.proyectodws.security.jwt.UserLoginService;
 import com.example.proyectodws.service.MediaService;
 import com.example.proyectodws.service.UserService;
 
@@ -32,9 +27,6 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private UserLoginService userLoginService;
 
     @Autowired
     private MediaService mediaService;
@@ -54,7 +46,7 @@ public class AuthController {
         if (error != null) {
             switch (error) {
                 case "username_taken":
-                    model.addAttribute("error", "El nombre de usuario ya está en uso");
+                    model.addAttribute("error", "El nombre de usuario ya estÃ¡ en uso");
                     break;
                 default:
                     model.addAttribute("error", "Error al crear la cuenta");
@@ -91,16 +83,8 @@ public class AuthController {
                 null
         );
 
-        userService.saveUser(user);
+        userService.createUser(user);
 
-        LoginRequest loginRequest = new LoginRequest(user.username(), newUserRequest.password());
-
-        ResponseEntity<AuthResponse> responseEntity = userLoginService.login(response, loginRequest);
-
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            return "redirect:/";
-        } else {
-            return "redirect:/loginerror";
-        }
+        return "redirect:/login";
     }
 }
