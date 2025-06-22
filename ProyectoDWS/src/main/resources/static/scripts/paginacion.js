@@ -16,22 +16,25 @@ $(document).ready(function() {
                         <div class="card">
                             <img class="card-image" src="/subject/${subject.id}/image" alt="${subject.title}">
                             <a href="/subject/${subject.id}">${subject.title}</a>
-                            <p><u>Descripción:</u> ${subject.text}</p>
+                            <p><u>DescripciÃ³n:</u> ${subject.text}</p>
                         </div>
                     `;
                 });
 
                 if (page == 1) {
-                    $('#prev-page').css('display', 'none');
+                    $('#prev-page').addClass('disabled');
                 } else {
-                    $('#prev-page').css('display', 'inline');
+                    $('#prev-page').removeClass('disabled');
                 }
 
                 if (page == data.totalPages) {
-                    $('#next-page').css('display', 'none');
+                    $('#next-page').addClass('disabled');
                 } else {
-                    $('#next-page').css('display', 'inline');
+                    $('#next-page').removeClass('disabled');
                 }
+
+                console.log("page", page);
+                console.log("totalPages", data.totalPages);
 
                 $('#subjects-list').html(htmlContent);
                 $('#currentPage').text(page);
@@ -44,7 +47,7 @@ $(document).ready(function() {
         });
     }
 
-    //loadSubjects(currentPage);
+    loadSubjects(currentPage);
 
     $('#prev-page').click(function() {
         if (currentPage > 0) {
@@ -65,4 +68,3 @@ $(document).ready(function() {
         loadSubjects(currentPage);
     });
 });
-

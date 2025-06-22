@@ -33,23 +33,30 @@ public class SampleDataService {
     @Autowired
     private SubjectRepository subjectRepository;
 
-    // Este método se ejecutará cuando la aplicación se inicie
     @PostConstruct
     public void init() throws SQLException, IOException {
-
         if (subjectRepository.findAll().isEmpty()) {
-            Subject subject1 = new Subject("Matemáticas", "Veremos la asignatura de matemáticas.");
-            Subject subject2 = new Subject("Programación", "Veremos la asignatura de programación.");
-            Subject subject3 = new Subject("Lengua", "Veremos la asignatura de lengua.");
-            Subject subject4 = new Subject("Historia", "Veremos la asignatura de historia.");
-            Subject subject5 = new Subject("Geografia", "Veremos la asignatura de geografia.");
-            Subject subject6 = new Subject("Musica", "Veremos la asignatura de musica.");
-            Subject subject7 = new Subject("Ingenieria del Software", "Veremos la asignatura de IS.");
-            Subject subject8 = new Subject("Estructuras de datos", "Veremos la asignatura de ED.");
-            Subject subject9 = new Subject("Calculo", "Veremos la asignatura de calculo.");
-            Subject subject10 = new Subject("Desarrollo de Web Seguro", "Veremos la asignatura de DWS.");
-            Subject subject11 = new Subject("Conocimiento del medio", "Veremos la asignatura de conocimiento del medio.");
-            Subject subject12 = new Subject("Educacion a la ciudadania", "Veremos la asignatura de EC.");
+
+            Subject subject1 = new Subject("Matemáticas", "Curso sobre conceptos fundamentales de matemáticas, álgebra y cálculo.");
+            Subject subject2 = new Subject("Programación", "Introducción a la programación y desarrollo de software.");
+            Subject subject3 = new Subject("Física", "Estudio de las leyes fundamentales del universo y la materia.");
+            Subject subject4 = new Subject("Química", "Exploración de la composición y propiedades de la materia.");
+            Subject subject5 = new Subject("Biología", "Estudio de los seres vivos y sus procesos vitales.");
+            Subject subject6 = new Subject("Historia", "Análisis de eventos y civilizaciones a través del tiempo.");
+            Subject subject7 = new Subject("Literatura", "Estudio de obras literarias y técnicas de escritura.");
+            Subject subject8 = new Subject("Inglés", "Aprendizaje del idioma inglés y su cultura.");
+            Subject subject9 = new Subject("Francés", "Introducción al idioma francés y su cultura.");
+            Subject subject10 = new Subject("Alemán", "Bases del idioma alemán y aspectos culturales.");
+            Subject subject11 = new Subject("Economía", "Principios básicos de economía y finanzas.");
+            Subject subject12 = new Subject("Filosofía", "Exploración del pensamiento y razonamiento filosófico.");
+            Subject subject13 = new Subject("Arte", "Historia del arte y técnicas artísticas.");
+            Subject subject14 = new Subject("Música", "Teoría musical y apreciación musical.");
+            Subject subject15 = new Subject("Geografía", "Estudio de la Tierra y sus características.");
+            Subject subject16 = new Subject("Psicología", "Introducción a la mente y el comportamiento humano.");
+            Subject subject17 = new Subject("Sociología", "Estudio de la sociedad y las relaciones humanas.");
+            Subject subject18 = new Subject("Estadística", "Análisis y interpretación de datos.");
+            Subject subject19 = new Subject("Tecnología", "Avances tecnológicos y su impacto en la sociedad.");
+            Subject subject20 = new Subject("Educación Física", "Desarrollo físico y deportivo.");
 
             try {
                 Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
@@ -66,115 +73,36 @@ public class SampleDataService {
             } catch (IOException e) {
                 System.err.println("Image images.jpeg not found or unreadable");
             }
-            try {
-                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
-                subject3.setImageFile(mathImage);
-                subject3.setImage("matematicas.jpg");
-            } catch (IOException e) {
-                System.err.println("Image matematicas.jpg not found or unreadable");
-            }
-            try {
-                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
-                subject4.setImageFile(mathImage);
-                subject4.setImage("matematicas.jpg");
-            } catch (IOException e) {
-                System.err.println("Image matematicas.jpg not found or unreadable");
-            }
-            try {
-                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
-                subject5.setImageFile(mathImage);
-                subject5.setImage("matematicas.jpg");
-            } catch (IOException e) {
-                System.err.println("Image matematicas.jpg not found or unreadable");
-            }
-            try {
-                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
-                subject6.setImageFile(mathImage);
-                subject6.setImage("matematicas.jpg");
-            } catch (IOException e) {
-                System.err.println("Image matematicas.jpg not found or unreadable");
-            }
-            try {
-                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
-                subject7.setImageFile(mathImage);
-                subject7.setImage("matematicas.jpg");
-            } catch (IOException e) {
-                System.err.println("Image matematicas.jpg not found or unreadable");
-            }
-            try {
-                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
-                subject8.setImageFile(mathImage);
-                subject8.setImage("matematicas.jpg");
-            } catch (IOException e) {
-                System.err.println("Image matematicas.jpg not found or unreadable");
-            }
-            try {
-                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
-                subject9.setImageFile(mathImage);
-                subject9.setImage("matematicas.jpg");
-            } catch (IOException e) {
-                System.err.println("Image matematicas.jpg not found or unreadable");
-            }
-            try {
-                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
-                subject10.setImageFile(mathImage);
-                subject10.setImage("matematicas.jpg");
-            } catch (IOException e) {
-                System.err.println("Image matematicas.jpg not found or unreadable");
-            }
-            try {
-                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
-                subject11.setImageFile(mathImage);
-                subject11.setImage("matematicas.jpg");
-            } catch (IOException e) {
-                System.err.println("Image matematicas.jpg not found or unreadable");
-            }
-            try {
-                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
-                subject12.setImageFile(mathImage);
-                subject12.setImage("matematicas.jpg");
-            } catch (IOException e) {
-                System.err.println("Image matematicas.jpg not found or unreadable");
-            }
 
-            // save subjects
-            subjectRepository.saveAll(Arrays.asList(subject1, subject2, subject3, subject4, subject5, subject6, subject7, subject8,subject9, subject10, subject11, subject12));
+            subjectRepository.saveAll(Arrays.asList(subject1, subject2, subject3, subject4, subject5, subject6, subject7, subject8, subject9, subject10, subject11, subject12, subject13, subject14, subject15, subject16, subject17, subject18, subject19, subject20));
 
-            // Check if users already exist
             if (userRepository.findAll().isEmpty()) {
 
-                // Create images for users
+                //create images for users
                 String user1Image = null;
                 String user2Image = null;
                 try {
-                    // Convert profile1.png to MultipartFile and save it
+                    //convert profile1.png to MultipartFile and save it
                     Blob profile1Blob = mediaService.filePathToBlob("images\\profile1.png");
                     user1Image = mediaService.saveImage(profile1Blob);
 
-                    // Convert profile2.png to MultipartFile and save it
+                    //convert profile2.png to MultipartFile and save it
                     Blob profile2Blob = mediaService.filePathToBlob("images\\profile2.png");
                     user2Image = mediaService.saveImage(profile2Blob);
                 } catch (IOException e) {
                     System.err.println("Error saving user profile images");
                 }
 
-                // Set roles for users
                 List<String> user1Roles = new ArrayList<>(Arrays.asList("USER", "ADMIN"));
                 List<String> user2Roles = new ArrayList<>(Arrays.asList("USER"));
 
-                // Create some users
                 User user1 = new User("John", "Doe", "johndoe", user1Image, new BCryptPasswordEncoder().encode("1234"), user1Roles);
                 User user2 = new User("Jane", "Doe", "janedoe", user2Image, new BCryptPasswordEncoder().encode("1234"), user2Roles);
 
-
-                // Save the users
                 userRepository.saveAll(Arrays.asList(user1, user2));
 
-
-
-                // Check if courses already exist
+                //check if courses already exist
                 if (courseRepository.findAll().isEmpty()) {
-                    //create some courses
                     Course course1 = new Course("Algebra", "Introduction to algebra.", true, "/videos/course_sample.mp4");
                     Course course2 = new Course("Java Programming", "Learn the basics of Java.", true, "/videos/course_sample.mp4");
 
@@ -199,16 +127,14 @@ public class SampleDataService {
                         System.err.println("Image images.jpeg not found or unreadable");
                     }
 
-                    //save courses
                     courseRepository.saveAll(Arrays.asList(course1, course2));
 
-                    //associated users-courses
-                    course1.getEnrolledStudents().add(user1);  // John -> Algebra
-                    course1.getEnrolledStudents().add(user2);  // Jane -> Algebra
+                    //associate users to the courses (enroll students)
+                    course1.getEnrolledStudents().add(user1); //john-->algebra
+                    course1.getEnrolledStudents().add(user2);  //jane-->algebra
 
-                    course2.getEnrolledStudents().add(user2);  // Jane Doe -> Java Programming
+                    course2.getEnrolledStudents().add(user2);  //jane-->java programming
 
-                    //save changes in courses
                     courseRepository.saveAll(Arrays.asList(course1, course2));
                 }
             }
