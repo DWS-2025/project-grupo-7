@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.Base64;
 import java.util.List;
 
+// Rest controller for subjects.
 @RestController
 @RequestMapping("/api/subjects")
 public class SubjectRestController {
@@ -53,11 +54,13 @@ public class SubjectRestController {
     @GetMapping("/{id}/image")
     public ResponseEntity<ImageResponse> getSubjectImage(@PathVariable Long id) throws SQLException {
 
+        // Check if subject exists
         SubjectDTO subject = subjectService.getSubjectById(id);
         if (subject == null) {
             return ResponseEntity.status(404).body(new ImageResponse(new GenericResponse("Asignatura no encontrada", 404), null));
         }
 
+        // Convert image to base64 string for HTML
         Resource image = subjectService.getSubjectImage(id);
         if (image == null) {
             return ResponseEntity.status(404).body(new ImageResponse(new GenericResponse("Imagen no encontrada", 404), null));
@@ -79,15 +82,22 @@ public class SubjectRestController {
             @RequestParam String text,
             @RequestPart MultipartFile image) throws IOException, SQLException {
 
+        // Validate title
         if (title == null || title.trim().isEmpty()) {
             return ResponseEntity.badRequest().body(new SubjectResponse(new GenericResponse("El título es obligatorio", 400), null));
         }
+
+        // Validate text
         if (text == null || text.trim().isEmpty()) {
             return ResponseEntity.badRequest().body(new SubjectResponse(new GenericResponse("El texto es obligatorio", 400), null));
         }
+
+        // Validate image
         if (image == null || image.isEmpty()) {
             return ResponseEntity.badRequest().body(new SubjectResponse(new GenericResponse("La imagen es obligatoria", 400), null));
         }
+
+        // Validate image size
         if (image != null && !image.isEmpty()) {
             if (image.getSize() > 5_000_000) {
                 return ResponseEntity.badRequest().body(new SubjectResponse(new GenericResponse("La imagen debe tener un tamaño menor a 5MB", 400), null));
@@ -119,11 +129,13 @@ public class SubjectRestController {
             @RequestParam String title,
             @RequestParam String text) {
 
+        // Check if subject exists
         SubjectDTO existingSubject = subjectService.getSubjectById(id);
         if (existingSubject == null) {
             return ResponseEntity.status(404).body(new SubjectResponse(new GenericResponse("Asignatura no encontrada", 404), null));
         }
 
+        // Validate title
         if (title == null || title.trim().isEmpty()) {
             return ResponseEntity.badRequest().body(new SubjectResponse(new GenericResponse("El título es obligatorio", 400), null));
         }
@@ -142,11 +154,13 @@ public class SubjectRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<GenericResponse> deleteSubject(@PathVariable Long id) {
 
+        // Check if subject exists
         SubjectDTO existingSubject = subjectService.getSubjectById(id);
         if (existingSubject == null) {
             return ResponseEntity.status(404).body(new GenericResponse("Asignatura no encontrada", 404));
         }
 
+        // Delete subject
         subjectService.deleteSubject(id);
         return ResponseEntity.ok(new GenericResponse("Asignatura eliminada correctamente", 200));
     }

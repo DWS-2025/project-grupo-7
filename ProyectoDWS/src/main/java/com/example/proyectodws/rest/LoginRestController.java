@@ -39,6 +39,7 @@ public class LoginRestController {
     @Autowired
     private MediaService mediaService;
 
+    // Login a user.
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
             @RequestBody LoginRequest loginRequest,
@@ -47,6 +48,7 @@ public class LoginRestController {
         return userLoginService.login(response, loginRequest);
     }
 
+    // Register a new user.
     @PostMapping(consumes = "multipart/form-data", path = "/register")
     public ResponseEntity<AuthResponse> createUser(
             @RequestParam String username,
@@ -57,6 +59,7 @@ public class LoginRestController {
             HttpServletResponse response
     ) {
 
+        // Validate required fields
         if (username == null || username.isBlank()) {
             return ResponseEntity.status(400).body(new AuthResponse(Status.FAILURE, "El nombre de usuario es requerido"));
         }
@@ -73,31 +76,39 @@ public class LoginRestController {
             return ResponseEntity.status(400).body(new AuthResponse(Status.FAILURE, "El apellido es requerido"));
         }
 
+        // Validate image
         if (image == null || image.isEmpty()) {
             return ResponseEntity.status(400).body(new AuthResponse(Status.FAILURE, "La imagen es requerida"));
         }
 
+        // Validate image size.
         if (image.getSize() > 1024 * 1024 * 5) {
             return ResponseEntity.status(400).body(new AuthResponse(Status.FAILURE, "La imagen no puede pesar más de 5MB"));
         }
 
+        // Check if username already exists
         if (userService.getUserByUsername(username) != null) {
             return ResponseEntity.status(400).body(new AuthResponse(Status.FAILURE, "El nombre de usuario ya existe"));
         }
 
+        // Image name
         String imageName = null;
 
+        // Save image
         try {
             imageName = mediaService.saveImage(image);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(new AuthResponse(Status.FAILURE, "Error al guardar la imagen"));
         }
 
+        // Encode password.
         String hashedPassword = new BCryptPasswordEncoder().encode(password);
 
+        // Add user role.
         List<String> rolesList = new ArrayList<>();
         rolesList.add("USER");
 
+        // Create user
         UserDTO user = new UserDTO(null, first_name, last_name, username, hashedPassword, imageName, rolesList, null);
         userService.createUser(user);
 
@@ -106,6 +117,7 @@ public class LoginRestController {
         return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, "Usuario creado correctamente"));
     }
 
+    // Refresh a token.
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(
             @CookieValue(name = "RefreshToken", required = false) String refreshToken, HttpServletResponse response) {
@@ -113,6 +125,7 @@ public class LoginRestController {
         return userLoginService.refresh(response, refreshToken);
     }
 
+    // Logout a user.
     @PostMapping("/logout")
     public ResponseEntity<AuthResponse> logOut(HttpServletResponse response) {
         return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, userLoginService.logout(response)));

@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-//this code is for when one user doesnt have enough permissions
 @Component
 public class AccessDeniedHandlerJwt implements AccessDeniedHandler {
 

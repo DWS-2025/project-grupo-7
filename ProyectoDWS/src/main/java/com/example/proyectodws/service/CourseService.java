@@ -23,6 +23,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
+// Service for courses.
 @Service
 public class CourseService {
     @Autowired
@@ -40,6 +41,7 @@ public class CourseService {
     @Autowired
     private MediaService mediaService;
 
+    // Look for and return all courses
     public CourseDTO createWithMedia(CourseDTO courseDTO, MultipartFile image, MultipartFile video) throws IOException, SQLException {
         Course course = courseMapper.toDomain(courseDTO);
 

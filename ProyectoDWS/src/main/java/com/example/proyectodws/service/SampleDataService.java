@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+// Service for creating sample data.
 @Service
 public class SampleDataService {
 
@@ -33,10 +34,13 @@ public class SampleDataService {
     @Autowired
     private SubjectRepository subjectRepository;
 
+    // This method will be executed when the application starts.
     @PostConstruct
     public void init() throws SQLException, IOException {
+        // Check if subjects already exist
         if (subjectRepository.findAll().isEmpty()) {
 
+            // Create some subjects
             Subject subject1 = new Subject("Matemáticas", "Curso sobre conceptos fundamentales de matemáticas, álgebra y cálculo.");
             Subject subject2 = new Subject("Programación", "Introducción a la programación y desarrollo de software.");
             Subject subject3 = new Subject("Física", "Estudio de las leyes fundamentales del universo y la materia.");
@@ -58,6 +62,7 @@ public class SampleDataService {
             Subject subject19 = new Subject("Tecnología", "Avances tecnológicos y su impacto en la sociedad.");
             Subject subject20 = new Subject("Educación Física", "Desarrollo físico y deportivo.");
 
+            // Create some images for the subjects
             try {
                 Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
                 subject1.setImageFile(mathImage);
@@ -74,35 +79,41 @@ public class SampleDataService {
                 System.err.println("Image images.jpeg not found or unreadable");
             }
 
+            // Save the subjects
             subjectRepository.saveAll(Arrays.asList(subject1, subject2, subject3, subject4, subject5, subject6, subject7, subject8, subject9, subject10, subject11, subject12, subject13, subject14, subject15, subject16, subject17, subject18, subject19, subject20));
 
+            // Check if users already exist
             if (userRepository.findAll().isEmpty()) {
 
-                //create images for users
+                // Create images for users
                 String user1Image = null;
                 String user2Image = null;
                 try {
-                    //convert profile1.png to MultipartFile and save it
+                    // Convert profile1.png to MultipartFile and save it
                     Blob profile1Blob = mediaService.filePathToBlob("images\\profile1.png");
                     user1Image = mediaService.saveImage(profile1Blob);
 
-                    //convert profile2.png to MultipartFile and save it
+                    // Convert profile2.png to MultipartFile and save it
                     Blob profile2Blob = mediaService.filePathToBlob("images\\profile2.png");
                     user2Image = mediaService.saveImage(profile2Blob);
                 } catch (IOException e) {
                     System.err.println("Error saving user profile images");
                 }
 
+                // Set roles for users
                 List<String> user1Roles = new ArrayList<>(Arrays.asList("USER", "ADMIN"));
                 List<String> user2Roles = new ArrayList<>(Arrays.asList("USER"));
 
+                // Create some users
                 User user1 = new User("John", "Doe", "johndoe", user1Image, new BCryptPasswordEncoder().encode("1234"), user1Roles);
                 User user2 = new User("Jane", "Doe", "janedoe", user2Image, new BCryptPasswordEncoder().encode("1234"), user2Roles);
 
+                // Save the users
                 userRepository.saveAll(Arrays.asList(user1, user2));
 
-                //check if courses already exist
+                // Check if courses already exist
                 if (courseRepository.findAll().isEmpty()) {
+                    // Create some courses
                     Course course1 = new Course("Algebra", "Introduction to algebra.", true, "/videos/course_sample.mp4");
                     Course course2 = new Course("Java Programming", "Learn the basics of Java.", true, "/videos/course_sample.mp4");
 
@@ -111,6 +122,7 @@ public class SampleDataService {
                     course2.addSubject(subject1);
                     course2.addSubject(subject2);
 
+                    // Create some images for the courses
                     try {
                         Blob course1Image = mediaService.filePathToBlob("images\\matematicas.jpg");
                         course1.setImageFile(course1Image);
@@ -127,17 +139,21 @@ public class SampleDataService {
                         System.err.println("Image images.jpeg not found or unreadable");
                     }
 
+                    // Save the courses
                     courseRepository.saveAll(Arrays.asList(course1, course2));
 
-                    //associate users to the courses (enroll students)
-                    course1.getEnrolledStudents().add(user1); //john-->algebra
-                    course1.getEnrolledStudents().add(user2);  //jane-->algebra
+                    // Associate users to the courses (enroll students)
+                    course1.getEnrolledStudents().add(user1);  // John Doe enrolls in the Algebra course
+                    course1.getEnrolledStudents().add(user2);  // Jane Doe enrolls in the Algebra course
 
-                    course2.getEnrolledStudents().add(user2);  //jane-->java programming
+                    course2.getEnrolledStudents().add(user2);  // Jane Doe enrolls in the Java Programming course
 
+                    // Save the changes in the courses
                     courseRepository.saveAll(Arrays.asList(course1, course2));
                 }
             }
         }
     }
 }
+
+

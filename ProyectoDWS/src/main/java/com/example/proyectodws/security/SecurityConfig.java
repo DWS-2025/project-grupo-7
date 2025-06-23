@@ -45,7 +45,7 @@ public class SecurityConfig {
         secureRandom.nextBytes(nonceBytes);
         return Base64.getEncoder().encodeToString(nonceBytes);
     }
-    //this part of code is to made difficult some attacks, for example XSS
+
     private HeaderWriter cspHeaderWriter() {
         return (request, response) -> {
             String nonce = generateNonce();
@@ -88,7 +88,7 @@ public class SecurityConfig {
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http.authenticationProvider(authenticationProvider());
 
-        // add HSTS and CSP headers for API endpoints and use https instead of http
+        // Add HSTS and CSP headers for API endpoints
         http.headers(headers -> headers
                 .httpStrictTransportSecurity(hsts -> hsts
                         .includeSubDomains(true)

@@ -7,6 +7,7 @@ import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
+// Entity for subjects.
 @Entity
 @Table(name = "Subject")
 public class Subject {
@@ -84,6 +85,11 @@ public class Subject {
 
     @Lob
     private byte[] imageData;
+
+    // Getters y setters
+   /* public byte[] getImageData() {
+        return imageData;
+    }*/
 
     public void setImageData(byte[] imageData) {
         this.imageData = imageData;

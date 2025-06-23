@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// Rest controller for users.
 @RestController
 @RequestMapping("/api/users")
 public class UserRestController {
@@ -54,6 +55,7 @@ public class UserRestController {
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getMe() {
+        // Get authenticated user from JWT token
         UserDTO user = userService.getLoggedUserDTO();
 
         UserWithoutPasswordDTO userWithoutPassword = new UserWithoutPasswordDTO(user.id(), user.first_name(), user.last_name(), user.username(), user.imageName());
@@ -65,10 +67,12 @@ public class UserRestController {
     public ResponseEntity<CoursesResponse> getUserCourses(@PathVariable Long id) {
         UserDTO user = userService.getUserById(id);
 
+        // Check if user exists
         if (user == null) {
             return ResponseEntity.status(404).body(new CoursesResponse(new GenericResponse("Usuario no encontrado", 404), null));
         }
 
+        // Get user courses
         List<CourseDTO> courses = user.courses();
 
         return ResponseEntity.ok(new CoursesResponse(new GenericResponse("Cursos obtenidos correctamente", 200), courses));
@@ -84,6 +88,7 @@ public class UserRestController {
             @RequestParam(required = false) List<String> roles
     ) {
 
+        // Validate required fields
         if (username == null || username.isBlank()) {
             return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("El nombre de usuario es requerido", 400), null));
         }
@@ -100,28 +105,35 @@ public class UserRestController {
             return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("El apellido es requerido", 400), null));
         }
 
+        // Validate image
         if (image == null || image.isEmpty()) {
             return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("La imagen es requerida", 400), null));
         }
 
+        // Validate image size.
         if (image.getSize() > 1024 * 1024 * 5) {
             return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("La imagen no puede pesar más de 5MB", 400), null));
         }
 
+        // Check if username already exists
         if (userService.getUserByUsername(username) != null) {
             return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("El nombre de usuario ya existe", 400), null));
         }
 
+        // Image name
         String imageName = null;
 
+        // Save image
         try {
             imageName = mediaService.saveImage(image);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(new UserResponse(new GenericResponse("Error al guardar la imagen", 500), null));
         }
 
+        // Encode password.
         String hashedPassword = new BCryptPasswordEncoder().encode(password);
 
+        // Add user role.
         List<String> rolesList = new ArrayList<>();
         if (roles == null || roles.isEmpty()) {
             rolesList.add("USER");
@@ -129,6 +141,7 @@ public class UserRestController {
             rolesList.addAll(roles);
         }
 
+        // Create user
         UserDTO user = new UserDTO(null, first_name, last_name, username, hashedPassword, imageName, rolesList, null);
         UserDTO createdUser = userService.createUser(user);
 
@@ -147,6 +160,7 @@ public class UserRestController {
             @RequestPart(required = false) MultipartFile image,
             @RequestParam(required = false) List<String> roles) {
 
+        // Validate required fields
         if (first_name == null || first_name.isBlank()) {
             return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("El nombre es requerido", 400), null));
         }
@@ -159,20 +173,24 @@ public class UserRestController {
             return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("El nombre de usuario es requerido", 400), null));
         }
 
+        // Validate image
         if (image == null || image.isEmpty()) {
             return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("La imagen es requerida", 400), null));
         }
 
+        // Validate image size.
         if (image.getSize() > 1024 * 1024 * 5) {
             return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("La imagen no puede pesar más de 5MB", 400), null));
         }
 
+        // Get old user
         UserDTO oldUser = userService.getUserById(id);
 
         if (oldUser == null) {
             return ResponseEntity.status(404).body(new UserResponse(new GenericResponse("Usuario no encontrado", 404), null));
         }
 
+        // Check if username already exists
         if (username != oldUser.username()) {
             UserDTO existingUser = userService.getUserByUsername(username);
             if (existingUser != null && existingUser.id() != oldUser.id()) {
@@ -180,6 +198,7 @@ public class UserRestController {
             }
         }
 
+        //Save image if it exists
         String imageName = null;
         if (image != null && !image.isEmpty()) {
             try {
@@ -205,6 +224,7 @@ public class UserRestController {
                 roles,
                 null);
 
+        // Save user
         UserDTO updatedUser = userService.updateUser(oldUser.id(), newUser);
 
         UserWithoutPasswordDTO userWithoutPassword = new UserWithoutPasswordDTO(updatedUser.id(), updatedUser.first_name(), updatedUser.last_name(), updatedUser.username(), updatedUser.imageName());
@@ -215,6 +235,7 @@ public class UserRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<GenericResponse> deleteUser(@PathVariable Long id) {
 
+        // Check if user exists
         UserDTO user = userService.getUserById(id);
         if (user == null) {
             return ResponseEntity.status(404).body(new GenericResponse("Usuario no encontrado", 404));
@@ -226,6 +247,7 @@ public class UserRestController {
             return ResponseEntity.status(400).body(new GenericResponse("No puedes eliminar tu propio usuario", 400));
         }
 
+        // Delete user
         userService.deleteUser(id);
 
         return ResponseEntity.ok(new GenericResponse("Usuario eliminado correctamente", 200));

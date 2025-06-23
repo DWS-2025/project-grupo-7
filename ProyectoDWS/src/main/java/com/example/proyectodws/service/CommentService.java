@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+// Service for comments.
 @Service
 public class CommentService {
 
@@ -42,6 +43,7 @@ public class CommentService {
     @Autowired
     private CommentMapper commentMapper;
 
+    // add comment
     public CommentDTO addComment(Long userId, Long courseId, CommentDTO commentDTO) {
         Comment comment = new Comment();
 
@@ -62,6 +64,7 @@ public class CommentService {
         return commentMapper.toDTO(comment);
     }
 
+    // Get comments for course
     public List<CommentWithRelationsDTO> getCommentsForCourse(Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElse(null);
@@ -78,6 +81,7 @@ public class CommentService {
         return commentDTOs;
     }
 
+    // Get comments for course without related information.
     public List<CommentWithIdsDTO> getCommentsForCourseCompact(Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElse(null);
@@ -93,6 +97,7 @@ public class CommentService {
         return commentDTOs;
     }
 
+    // get comment by id
     public CommentDTO getCommentById(Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElse(null);
@@ -102,6 +107,7 @@ public class CommentService {
         return commentMapper.toDTO(comment);
     }
 
+    // get user from comment id
     public UserDTO getUserFromCommentId(Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElse(null);
@@ -111,10 +117,12 @@ public class CommentService {
         return userMapper.toDTO(comment.getUser());
     }
 
+    // delete comment
     public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
     }
 
+    // delete user comments
     public void deleteUserComments(Long userId) {
         List<Comment> comments = commentRepository.findByUserId(userId);
         comments.forEach(comment -> {
@@ -122,6 +130,7 @@ public class CommentService {
         });
     }
 
+    // convert comment to dto with relations
     public CommentWithRelationsDTO convertCommentToDTO(Comment comment) {
 
         UserDTO userDTO = userMapper.toDTO(comment.getUser());

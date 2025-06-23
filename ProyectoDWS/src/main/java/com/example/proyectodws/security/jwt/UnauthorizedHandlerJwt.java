@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import com.example.proyectodws.api.GenericResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-//this code is for when an user doesnt autenticate
 @Component
 public class UnauthorizedHandlerJwt implements AuthenticationEntryPoint {
 

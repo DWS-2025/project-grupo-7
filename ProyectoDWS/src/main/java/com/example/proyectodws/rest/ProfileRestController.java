@@ -63,7 +63,7 @@ public class ProfileRestController {
         }
 
         if (image.getSize() > 1024 * 1024 * 5) {
-            return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("La imagen no puede pesar mÃ¡s de 5MB", 400), null));
+            return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("La imagen no puede pesar más de 5MB", 400), null));
         }
 
         UserDTO oldUser = userService.getLoggedUserDTO();

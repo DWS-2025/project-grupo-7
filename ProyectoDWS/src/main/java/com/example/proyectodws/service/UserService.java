@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+// Service for users.
 @Service
 public class UserService {
 
@@ -49,8 +50,10 @@ public class UserService {
             throw new RuntimeException("User not found");
         }
 
+        // Store the current password before any updates
         String currentPassword = user.getEncodedPassword();
 
+        // Update all non-password fields first
         if (userRequestDTO.username() != null) {
             user.setUsername(userRequestDTO.username());
         }
@@ -70,9 +73,11 @@ public class UserService {
             user.setCourses(userRequestDTO.courses().stream().map(courseMapper::toDomain).collect(Collectors.toSet()));
         }
 
+        // Handle password separately - either keep existing or update if requested
         if (userRequestDTO.encodedPassword() != null) {
             user.setEncodedPassword(userRequestDTO.encodedPassword());
         } else {
+            // Always restore the original password if no update was requested
             user.setEncodedPassword(currentPassword);
         }
 
@@ -144,4 +149,7 @@ public class UserService {
     public UserDTO getLoggedUserDTO() {
         return userMapper.toDTO(getLoggedUser());
     }
+
+
 }
+

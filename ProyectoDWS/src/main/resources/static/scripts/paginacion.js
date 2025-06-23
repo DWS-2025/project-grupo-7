@@ -16,7 +16,7 @@ $(document).ready(function() {
                         <div class="card">
                             <img class="card-image" src="/subject/${subject.id}/image" alt="${subject.title}">
                             <a href="/subject/${subject.id}">${subject.title}</a>
-                            <p><u>DescripciÃ³n:</u> ${subject.text}</p>
+                            <p><u>Descripción:</u> ${subject.text}</p>
                         </div>
                     `;
                 });
@@ -68,3 +68,4 @@ $(document).ready(function() {
         loadSubjects(currentPage);
     });
 });
+

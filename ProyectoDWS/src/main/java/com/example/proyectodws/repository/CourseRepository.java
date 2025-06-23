@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
+// Repository for courses.
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query("SELECT DISTINCT c FROM Course c " +
@@ -18,4 +19,5 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query("SELECT c FROM Course c WHERE c.isFeatured = true")
     List<Course> findByIsFeaturedTrue();
+
 }
