@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-// Controller for managing subjects.
 @Controller
 public class SubjectController {
 

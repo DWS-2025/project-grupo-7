@@ -4,7 +4,6 @@ import java.sql.Date;
 
 import jakarta.persistence.*;
 
-// Entity for comments.
 @Entity
 public class Comment {
     @Id

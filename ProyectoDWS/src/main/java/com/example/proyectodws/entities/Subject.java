@@ -7,7 +7,6 @@ import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
-// Entity for subjects.
 @Entity
 @Table(name = "Subject")
 public class Subject {

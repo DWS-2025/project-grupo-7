@@ -10,7 +10,6 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// Entity for courses.
 @Entity
 public class Course {
     @Id

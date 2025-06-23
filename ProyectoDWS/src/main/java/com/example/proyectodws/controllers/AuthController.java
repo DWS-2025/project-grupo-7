@@ -46,7 +46,7 @@ public class AuthController {
         if (error != null) {
             switch (error) {
                 case "username_taken":
-                    model.addAttribute("error", "El nombre de usuario ya estÃ¡ en uso");
+                    model.addAttribute("error", "El nombre de usuario ya está en uso");
                     break;
                 default:
                     model.addAttribute("error", "Error al crear la cuenta");

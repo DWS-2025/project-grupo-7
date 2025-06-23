@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-// Controller for managing users.
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -24,7 +23,6 @@ public class UserController {
 
     @Autowired
     private MediaService mediaService;
-
 
     // Display all the users
     @GetMapping
