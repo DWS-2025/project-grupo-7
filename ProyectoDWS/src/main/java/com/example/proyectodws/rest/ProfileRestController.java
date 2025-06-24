@@ -2,6 +2,8 @@ package com.example.proyectodws.rest;
 
 import java.io.IOException;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -45,6 +47,12 @@ public class ProfileRestController {
             @RequestParam String username,
             @RequestParam(required = false) String password,
             @RequestPart(required = false) MultipartFile image) {
+
+        // Use jsoup to clean the input values.
+        first_name = Jsoup.clean(first_name, "", Safelist.none());
+        last_name = Jsoup.clean(last_name, "", Safelist.none());
+        username = Jsoup.clean(username, "", Safelist.none());
+        password = Jsoup.clean(password, "", Safelist.none());
 
         if (first_name == null || first_name.isBlank()) {
             return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("El nombre es requerido", 400), null));
@@ -103,6 +111,7 @@ public class ProfileRestController {
                 imageName,
                 null, null);
 
+        // Save user
         UserDTO updatedUser = userService.updateUser(oldUser.id(), newUser);
 
         UserWithoutPasswordDTO userWithoutPassword = new UserWithoutPasswordDTO(updatedUser.id(), updatedUser.first_name(), updatedUser.last_name(), updatedUser.username(), updatedUser.imageName());

@@ -7,6 +7,9 @@ import com.example.proyectodws.api.SubjectResponse;
 import com.example.proyectodws.api.SubjectsResponse;
 import com.example.proyectodws.dto.SubjectDTO;
 import com.example.proyectodws.service.SubjectService;
+
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +22,6 @@ import java.sql.SQLException;
 import java.util.Base64;
 import java.util.List;
 
-// Rest controller for subjects.
 @RestController
 @RequestMapping("/api/subjects")
 public class SubjectRestController {
@@ -82,6 +84,10 @@ public class SubjectRestController {
             @RequestParam String text,
             @RequestPart MultipartFile image) throws IOException, SQLException {
 
+        // Use jsoup to clean the input values.
+        title = Jsoup.clean(title, "", Safelist.none());
+        text = Jsoup.clean(text, "", Safelist.none());
+
         // Validate title
         if (title == null || title.trim().isEmpty()) {
             return ResponseEntity.badRequest().body(new SubjectResponse(new GenericResponse("El título es obligatorio", 400), null));
@@ -128,6 +134,10 @@ public class SubjectRestController {
             @PathVariable Long id,
             @RequestParam String title,
             @RequestParam String text) {
+
+        // Use jsoup to clean the input values.
+        title = Jsoup.clean(title, "", Safelist.none());
+        text = Jsoup.clean(text, "", Safelist.none());
 
         // Check if subject exists
         SubjectDTO existingSubject = subjectService.getSubjectById(id);

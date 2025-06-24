@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -62,21 +64,35 @@ public class AuthController {
             @RequestParam("image") MultipartFile image,
             HttpServletResponse response) throws IOException {
 
+        // Use jsoup to clean the input values.
+        String firstName = Jsoup.clean(newUserRequest.first_name(), "", Safelist.none());
+        String lastName = Jsoup.clean(newUserRequest.last_name(), "", Safelist.none());
+        String username = Jsoup.clean(newUserRequest.username(), "", Safelist.none());
+        String password = Jsoup.clean(newUserRequest.password(), "", Safelist.none());
+
+        NewUserRequestDTO newUserRequestCleaned = new NewUserRequestDTO(
+                firstName,
+                lastName,
+                username,
+                password,
+                image
+        );
+
         // Check if username already exists
-        if (userService.getUserByUsername(newUserRequest.username()) != null) {
+        if (userService.getUserByUsername(newUserRequestCleaned.username()) != null) {
             return "redirect:/register?error=username_taken";
         }
 
-        String hashedPassword = new BCryptPasswordEncoder().encode(newUserRequest.password());
+        String hashedPassword = new BCryptPasswordEncoder().encode(newUserRequestCleaned.password());
 
         String imageName = mediaService.saveImage(image);
         List<String> roles = new ArrayList<>(Arrays.asList("USER"));
 
         UserDTO user = new UserDTO(
                 null,
-                newUserRequest.first_name(),
-                newUserRequest.last_name(),
-                newUserRequest.username(),
+                newUserRequestCleaned.first_name(),
+                newUserRequestCleaned.last_name(),
+                newUserRequestCleaned.username(),
                 hashedPassword,
                 imageName,
                 roles,

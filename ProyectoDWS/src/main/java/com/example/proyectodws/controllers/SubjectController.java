@@ -4,6 +4,9 @@ import com.example.proyectodws.dto.SubjectDTO;
 import com.example.proyectodws.dto.SubjectDTOWithCourses;
 import com.example.proyectodws.entities.Subject;
 import com.example.proyectodws.service.*;
+
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
@@ -58,11 +61,22 @@ public class SubjectController {
     public String createSubject(Model model, @ModelAttribute @Validated SubjectDTO subject, BindingResult result,
                                 @RequestParam("image") MultipartFile image) throws IOException, SQLException {
 
+        // Use jsoup to clean the input values.
+        String title = Jsoup.clean(subject.title(), "", Safelist.none());
+        String text = Jsoup.clean(subject.text(), "", Safelist.none());
+
+        SubjectDTO newSubject = new SubjectDTO(
+                null,
+                title,
+                text,
+                image.getOriginalFilename()
+        );
+
         if (image != null && !image.isEmpty()) {
-            subjectService.createWithImage(subject, image);
+            subjectService.createWithImage(newSubject, image);
         }
         else {
-            subjectService.saveSubject(subject);
+            subjectService.saveSubject(newSubject);
         }
 
         return "subjects/saved_subject";
@@ -99,7 +113,7 @@ public class SubjectController {
             return "errorScreens/error404";
         }
 
-        model.addAttribute("subject", subject); // adds the language attribute to the model
+        model.addAttribute("subject", subject);
         return "courses/show_courses_for_subject";
     }
 
@@ -121,7 +135,18 @@ public class SubjectController {
             return "subjects/edited_subject";
         }
 
-        subjectService.updateSubject(id, subject);
+        // Use jsoup to clean the input values.
+        String title = Jsoup.clean(subject.title(), "", Safelist.none());
+        String text = Jsoup.clean(subject.text(), "", Safelist.none());
+
+        SubjectDTO newSubject = new SubjectDTO(
+                id,
+                title,
+                text,
+                null
+        );
+
+        subjectService.updateSubject(id, newSubject);
 
         return "redirect:/subject/" + id;
     }

@@ -11,6 +11,8 @@ import com.example.proyectodws.service.CourseService;
 import com.example.proyectodws.service.SubjectService;
 import com.example.proyectodws.service.UserService;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-// Rest controller for courses.
 @RestController
 @RequestMapping("/api/courses")
 public class CourseRestController {
@@ -48,6 +49,10 @@ public class CourseRestController {
 
     @GetMapping("/search")
     public ResponseEntity<CoursesResponse> searchCourses(@RequestParam String search) {
+
+        // Use jsoup to clean the input values.
+        search = Jsoup.clean(search, "", Safelist.none());
+
         List<CourseDTO> courses = courseService.findCoursesByTitles(search, search);
         GenericResponse genericResponse = new GenericResponse("Cursos obtenidos correctamente", 200);
         return ResponseEntity.ok(new CoursesResponse(genericResponse, courses));
@@ -98,6 +103,10 @@ public class CourseRestController {
             @RequestParam List<Long> subjectIds,
             @RequestPart MultipartFile image,
             @RequestPart MultipartFile video) throws IOException, SQLException {
+
+        // Use jsoup to clean the input values.
+        title = Jsoup.clean(title, "", Safelist.none());
+        description = Jsoup.clean(description, "", Safelist.none());
 
         // Validate title
         if (title == null || title.trim().isEmpty()) {
@@ -207,6 +216,10 @@ public class CourseRestController {
             @RequestParam String title,
             @RequestParam String description,
             @RequestParam List<Long> subjectIds) throws IOException, SQLException {
+
+        // Use jsoup to clean the input values.
+        title = Jsoup.clean(title, "", Safelist.none());
+        description = Jsoup.clean(description, "", Safelist.none());
 
         // Check if course exists
         CourseDTO existingCourse = courseService.getCourseById(id);

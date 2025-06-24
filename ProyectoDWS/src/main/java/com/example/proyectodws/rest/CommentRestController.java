@@ -11,6 +11,8 @@ import com.example.proyectodws.service.CommentService;
 import com.example.proyectodws.service.CourseService;
 import com.example.proyectodws.service.UserService;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,6 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
-// Rest controller for comments.
 @RestController
 @RequestMapping("/api/comments")
 public class CommentRestController {
@@ -55,6 +56,9 @@ public class CommentRestController {
             @RequestParam Long courseId,
             @RequestParam String text
     ) {
+
+        // Use jsoup to clean the input values.
+        text = Jsoup.clean(text, "", Safelist.basic().addTags("p", "br", "strong", "em", "u", "s", "blockquote", "ol", "ul", "li", "h1", "h2", "h3"));
 
         // Validate text
         if (text == null || text.trim().isEmpty()) {

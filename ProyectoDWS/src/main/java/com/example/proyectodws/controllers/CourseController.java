@@ -10,6 +10,9 @@ import com.example.proyectodws.service.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -68,23 +71,35 @@ public class CourseController {
     @PostMapping("/courses/saved")
     public String createCourse(Model model, @ModelAttribute NewCourseRequestDTO newCourseRequest) throws IOException, SQLException {
         try {
-            List<SubjectDTO> subjects = newCourseRequest.subjects().stream()
+            // Use jsoup to clean the input values.
+            String title = Jsoup.clean(newCourseRequest.title(), "", Safelist.none());
+            String description = Jsoup.clean(newCourseRequest.description(), "", Safelist.none());
+
+            NewCourseRequestDTO newCourseRequestCleaned = new NewCourseRequestDTO(
+                    title,
+                    description,
+                    newCourseRequest.image(),
+                    newCourseRequest.subjects(),
+                    newCourseRequest.video()
+            );
+
+            List<SubjectDTO> subjects = newCourseRequestCleaned.subjects().stream()
                     .map(id -> subjectService.getSubjectById(id))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
             CourseDTO course = new CourseDTO(
                     null,
-                    newCourseRequest.title(),
-                    newCourseRequest.description(),
-                    newCourseRequest.image().getOriginalFilename(),
+                    newCourseRequestCleaned.title(),
+                    newCourseRequestCleaned.description(),
+                    newCourseRequestCleaned.image().getOriginalFilename(),
                     false,
                     subjects,
-                    newCourseRequest.video().getOriginalFilename()
+                    newCourseRequestCleaned.video().getOriginalFilename()
             );
 
-            MultipartFile image = newCourseRequest.image();
-            MultipartFile video = newCourseRequest.video();
+            MultipartFile image = newCourseRequestCleaned.image();
+            MultipartFile video = newCourseRequestCleaned.video();
             if (!image.isEmpty()) {
                 courseService.createWithMedia(course, image, video);
             }
@@ -124,7 +139,7 @@ public class CourseController {
 
     @GetMapping("/course/{id}/image")
     public ResponseEntity<Object> downloadImage(@PathVariable long id) throws SQLException {
-        Resource course = courseService.getCourseImage(id); // Supposing that `getLanguageById` returns an object `Post`
+        Resource course = courseService.getCourseImage(id);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
                 .body(course);
@@ -141,7 +156,7 @@ public class CourseController {
                 course.subjects().stream().map(SubjectDTO::id).collect(Collectors.toList())
         );
 
-        model.addAttribute("course", updateCourseRequestDTO); // adds the edit course to the model
+        model.addAttribute("course", updateCourseRequestDTO);
         model.addAttribute("subjects", subjectService.getAllSubjects());
         return "courses/edit_course";
     }
@@ -149,15 +164,26 @@ public class CourseController {
     @PostMapping("/course/{id}/edited_course")
     public String editCourse (Model model, @PathVariable long id, UpdateCourseRequestDTO updatedCourse) {
 
-        List<SubjectDTO> subjects = updatedCourse.subjects().stream()
+        // Use jsoup to clean the input values.
+        String title = Jsoup.clean(updatedCourse.title(), "", Safelist.none());
+        String description = Jsoup.clean(updatedCourse.description(), "", Safelist.none());
+
+        UpdateCourseRequestDTO updatedCourseCleaned = new UpdateCourseRequestDTO(
+                updatedCourse.id(),
+                title,
+                description,
+                updatedCourse.subjects()
+        );
+
+        List<SubjectDTO> subjects = updatedCourseCleaned.subjects().stream()
                 .map(subjectId -> subjectService.getSubjectById(subjectId))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         CourseDTO updatedCourseDTO = new CourseDTO(
-                updatedCourse.id(),
-                updatedCourse.title(),
-                updatedCourse.description(),
+                updatedCourseCleaned.id(),
+                updatedCourseCleaned.title(),
+                updatedCourseCleaned.description(),
                 null,
                 false,
                 subjects,
@@ -174,7 +200,7 @@ public class CourseController {
         CourseDTO course = courseService.getCourseById(id);
 
         if (course == null) {
-            return "errorScreens/error404.html";
+            return "errorScreens/error404";
         }
 
         UserDTO user = userService.getLoggedUserDTO();
@@ -217,7 +243,7 @@ public class CourseController {
         CourseDTO course = courseService.getCourseById(id);
 
         if (course == null) {
-            return "errorScreens/error404.html";
+            return "errorScreens/error404";
         }
 
         List<UserDTO> enrolledStudents = courseService.getEnrolledStudents(id);

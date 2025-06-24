@@ -5,6 +5,9 @@ import com.example.proyectodws.dto.NewUserRequestDTO;
 import com.example.proyectodws.dto.UserDTO;
 import com.example.proyectodws.service.MediaService;
 import com.example.proyectodws.service.UserService;
+
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -68,12 +71,18 @@ public class UserController {
     @PostMapping("/create")
     public String createUser(NewUserRequestDTO newUserRequest, @RequestParam("image") MultipartFile image) throws IOException {
 
+        // Use jsoup to clean the input values.
+        String firstName = Jsoup.clean(newUserRequest.first_name(), "", Safelist.none());
+        String lastName = Jsoup.clean(newUserRequest.last_name(), "", Safelist.none());
+        String username = Jsoup.clean(newUserRequest.username(), "", Safelist.none());
+        String password = Jsoup.clean(newUserRequest.password(), "", Safelist.none());
+
         UserDTO user = new UserDTO(
                 null,
-                newUserRequest.first_name(),
-                newUserRequest.last_name(),
-                newUserRequest.username(),
-                newUserRequest.password(),
+                firstName,
+                lastName,
+                username,
+                password,
                 image.getOriginalFilename(),
                 null,
                 null

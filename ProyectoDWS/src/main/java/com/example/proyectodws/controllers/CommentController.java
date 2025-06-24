@@ -3,6 +3,8 @@ package com.example.proyectodws.controllers;
 import java.sql.Date;
 import java.time.LocalDate;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,6 +39,9 @@ public class CommentController {
 
     @PostMapping("/course/{id}/comments/new")
     public String addComment(@PathVariable Long id, @RequestParam String text, Model model) {
+
+        // Use jsoup to clean the input values.
+        text = Jsoup.clean(text, "", Safelist.basic().addTags("p", "br", "strong", "em", "u", "s", "blockquote", "ol", "ul", "li", "h1", "h2", "h3"));
 
         CourseDTO course = courseService.getCourseById(id);
         if (course != null) {

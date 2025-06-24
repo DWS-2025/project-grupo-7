@@ -3,6 +3,8 @@ package com.example.proyectodws.controllers;
 import java.io.IOException;
 import java.util.List;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -57,19 +59,33 @@ public class ProfileController {
             @RequestParam(value = "image", required = false) MultipartFile image,
             HttpServletResponse response) throws IOException {
 
+        // Use jsoup to clean the input values.
+        String firstName = Jsoup.clean(newUserRequest.first_name(), "", Safelist.none());
+        String lastName = Jsoup.clean(newUserRequest.last_name(), "", Safelist.none());
+        String username = Jsoup.clean(newUserRequest.username(), "", Safelist.none());
+        String password = Jsoup.clean(newUserRequest.password(), "", Safelist.none());
+
+        NewUserRequestDTO newUserRequestCleaned = new NewUserRequestDTO(
+                firstName,
+                lastName,
+                username,
+                password,
+                image
+        );
+
         UserDTO oldUser = userService.getLoggedUserDTO();
 
-        if (!oldUser.username().equals(newUserRequest.username())) {
+        if (!oldUser.username().equals(newUserRequestCleaned.username())) {
             // If username exists, throw exception
-            UserDTO existingUser = userService.getUserByUsername(newUserRequest.username());
+            UserDTO existingUser = userService.getUserByUsername(newUserRequestCleaned.username());
             if (existingUser != null && existingUser.id() != oldUser.id()) {
                 return "redirect:/profile/edit?error=username_taken";
             }
         }
 
         String hashedPassword = null;
-        if (newUserRequest.password() != null && !newUserRequest.password().isEmpty()) {
-            hashedPassword = new BCryptPasswordEncoder().encode(newUserRequest.password());
+        if (newUserRequestCleaned.password() != null && !newUserRequestCleaned.password().isEmpty()) {
+            hashedPassword = new BCryptPasswordEncoder().encode(newUserRequestCleaned.password());
         }
 
         String imageName = null;
@@ -82,9 +98,9 @@ public class ProfileController {
 
         UserDTO newUser = new UserDTO(
                 oldUser.id(),
-                newUserRequest.first_name(),
-                newUserRequest.last_name(),
-                newUserRequest.username(),
+                newUserRequestCleaned.first_name(),
+                newUserRequestCleaned.last_name(),
+                newUserRequestCleaned.username(),
                 hashedPassword,
                 imageName,
                 oldUser.roles(),

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -58,6 +60,11 @@ public class LoginRestController {
             @RequestPart MultipartFile image,
             HttpServletResponse response
     ) {
+        // Use jsoup to clean the input values.
+        username = Jsoup.clean(username, "", Safelist.none());
+        first_name = Jsoup.clean(first_name, "", Safelist.none());
+        last_name = Jsoup.clean(last_name, "", Safelist.none());
+        password = Jsoup.clean(password, "", Safelist.none());
 
         // Validate required fields
         if (username == null || username.isBlank()) {
@@ -121,6 +128,9 @@ public class LoginRestController {
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(
             @CookieValue(name = "RefreshToken", required = false) String refreshToken, HttpServletResponse response) {
+
+        // Use jsoup to clean the input values.
+        refreshToken = Jsoup.clean(refreshToken, "", Safelist.none());
 
         return userLoginService.refresh(response, refreshToken);
     }

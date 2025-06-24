@@ -10,6 +10,8 @@ import com.example.proyectodws.dto.UserWithoutPasswordDTO;
 import com.example.proyectodws.service.MediaService;
 import com.example.proyectodws.service.UserService;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// Rest controller for users.
 @RestController
 @RequestMapping("/api/users")
 public class UserRestController {
@@ -87,6 +88,12 @@ public class UserRestController {
             @RequestPart MultipartFile image,
             @RequestParam(required = false) List<String> roles
     ) {
+
+        // Use jsoup to clean the input values.
+        username = Jsoup.clean(username, "", Safelist.none());
+        first_name = Jsoup.clean(first_name, "", Safelist.none());
+        last_name = Jsoup.clean(last_name, "", Safelist.none());
+        password = Jsoup.clean(password, "", Safelist.none());
 
         // Validate required fields
         if (username == null || username.isBlank()) {
@@ -159,6 +166,12 @@ public class UserRestController {
             @RequestParam(required = false) String password,
             @RequestPart(required = false) MultipartFile image,
             @RequestParam(required = false) List<String> roles) {
+
+        // Use jsoup to clean the input values.
+        first_name = Jsoup.clean(first_name, "", Safelist.none());
+        last_name = Jsoup.clean(last_name, "", Safelist.none());
+        username = Jsoup.clean(username, "", Safelist.none());
+        password = Jsoup.clean(password, "", Safelist.none());
 
         // Validate required fields
         if (first_name == null || first_name.isBlank()) {

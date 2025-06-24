@@ -206,6 +206,7 @@ public class SecurityConfig {
                         .requestMatchers("/course/*/enroll").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/course/*/unenroll").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/course/*/comments/new").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/course/*/comments/*/delete").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/profile").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/profile/**").hasAnyRole("USER", "ADMIN")
 
@@ -220,7 +221,6 @@ public class SecurityConfig {
                         .requestMatchers("/subjects/saved").hasRole("ADMIN")
                         .requestMatchers("/subject/*/edit").hasRole("ADMIN")
                         .requestMatchers("/subject/*/delete").hasRole("ADMIN")
-                        .requestMatchers("/course/*/comments/*/delete").hasRole("ADMIN")
                         .requestMatchers("/users").hasRole("ADMIN")
                         .requestMatchers("/users/**").hasRole("ADMIN")
                 )
