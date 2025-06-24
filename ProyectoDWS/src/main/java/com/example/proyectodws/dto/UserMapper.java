@@ -17,5 +17,7 @@ public interface UserMapper {
 
     @Mapping(target = "courses", ignore = true)
     @Mapping(target = "comments", ignore = true)
+    @Mapping(target = "imageFile", ignore = true)
+    @Mapping(target = "image", ignore = true)
     User toDomain(UserDTO userDTO);
 }

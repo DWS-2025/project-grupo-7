@@ -1,8 +1,10 @@
 package com.example.proyectodws.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.sql.Blob;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +20,7 @@ public class User {
     private String last_name;
     private String username;
     private String encodedPassword;
+    private String imagePath;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles;
@@ -34,25 +37,24 @@ public class User {
     @JsonManagedReference
     private Set<Course> courses = new HashSet<>();
 
-    @Column(name = "image_name")
-    private String imageName;
+    @Lob
+    @JsonIgnore
+    private Blob imageFile;
 
 
     public User(){}
 
-    public User(String first_name, String last_name, String username, String imageName, String encodedPassword) {
+    public User(String first_name, String last_name, String username, String encodedPassword) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.username = username;
-        this.imageName = imageName;
         this.encodedPassword = encodedPassword;
     }
 
-    public User(String first_name, String last_name, String username, String imageName, String encodedPassword, List<String> roles) {
+    public User(String first_name, String last_name, String username, String encodedPassword, List<String> roles) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.username = username;
-        this.imageName = imageName;
         this.encodedPassword = encodedPassword;
         this.roles = roles;
     }
@@ -108,12 +110,12 @@ public class User {
         course.getEnrolledStudents().remove(this);
     }
 
-    public String getImageName() {
-        return imageName;
+    public String getImage() {
+        return imagePath;
     }
 
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
+    public void setImage(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public List<String> getRoles() {
@@ -145,4 +147,11 @@ public class User {
         this.comments = comments;
     }
 
+    public Blob getImageFile() {
+        return imageFile;
+    }
+
+    public void setImageFile(Blob imageFile) {
+        this.imageFile = imageFile;
+    }
 }

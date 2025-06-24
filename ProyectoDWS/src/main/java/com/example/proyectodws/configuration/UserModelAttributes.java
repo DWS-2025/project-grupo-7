@@ -24,13 +24,11 @@ public class UserModelAttributes {
         Principal principal = request.getUserPrincipal();
 
         if (principal != null) {
-
             UserDTO user = userService.getUserByUsername(principal.getName());
             model.addAttribute("logged", true);
             model.addAttribute("userName", principal.getName());
-            model.addAttribute("userImage", user.imageName());
+            model.addAttribute("userId", user.id());
             model.addAttribute("admin", request.isUserInRole("ADMIN"));
-
         } else {
             model.addAttribute("logged", false);
         }

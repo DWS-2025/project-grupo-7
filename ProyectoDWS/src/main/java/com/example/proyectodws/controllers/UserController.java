@@ -9,12 +9,16 @@ import com.example.proyectodws.service.UserService;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 @Controller
@@ -23,9 +27,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private MediaService mediaService;
 
     // Display all the users
     @GetMapping
@@ -43,6 +44,24 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("enrolledCourses", enrolledCourses);
         return "users/user_details";
+    }
+
+    @GetMapping("/{id}/image")
+    public ResponseEntity<Object> downloadImage(@PathVariable long id) throws SQLException {
+        Resource user = userService.getUserImage(id);
+
+        UserDTO userDTO = userService.getUserById(id);
+        if (userDTO == null) {
+            return ResponseEntity.status(404).build();
+        }
+
+        UserDTO loggedUser = userService.getLoggedUserDTO();
+        if (!loggedUser.id().equals(id) && !loggedUser.roles().contains("ADMIN")) {
+            return ResponseEntity.status(403).build();
+        }
+
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
+                .body(user);
     }
 
     // Display the user's courses
@@ -88,8 +107,19 @@ public class UserController {
                 null
         );
 
-        mediaService.saveImage(image);
-        userService.createUser(user);
+        if (image != null && !image.isEmpty()) {
+            try {
+                userService.createWithImage(user, image);
+            } catch (IOException e) {
+                return "errorScreens/error500";
+            } catch (SQLException e) {
+                return "errorScreens/error500";
+            }
+        }
+        else {
+            userService.createUser(user);
+        }
+
         return "redirect:/users/" + user.id();
     }
 

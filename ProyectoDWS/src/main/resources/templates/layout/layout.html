@@ -30,7 +30,7 @@
 
                 <div class="d-flex align-items-center" th:if="${logged}">
                     <a href="/profile" class="text-white text-decoration-none me-3 d-flex align-items-center">
-                        <img id="userImage" th:src="${userImage}" alt="Foto de perfil" class="rounded-circle me-2">
+                        <img id="userImage" th:src="@{/users/{id}/image(id=${userId})}" alt="Foto de perfil" class="rounded-circle me-2">
                         <span th:text="${userName}"></span>
                     </a>
                     <a href="/enrolled_courses" class="btn btn-outline-light me-2">MIS CURSOS</a>

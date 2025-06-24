@@ -126,6 +126,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/comments/*").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/profile").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/profile").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/users/*/image").hasAnyRole("USER", "ADMIN")
 
                         // ADMIN ENDPOINTS
                         .requestMatchers(HttpMethod.POST, "/api/courses").hasRole("ADMIN")
@@ -207,6 +208,7 @@ public class SecurityConfig {
                         .requestMatchers("/course/*/unenroll").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/course/*/comments/new").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/course/*/comments/*/delete").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/users/*/image").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/profile").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/profile/**").hasAnyRole("USER", "ADMIN")
 

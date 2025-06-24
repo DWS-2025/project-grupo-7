@@ -82,31 +82,32 @@ public class SampleDataService {
             // Save the subjects
             subjectRepository.saveAll(Arrays.asList(subject1, subject2, subject3, subject4, subject5, subject6, subject7, subject8, subject9, subject10, subject11, subject12, subject13, subject14, subject15, subject16, subject17, subject18, subject19, subject20));
 
+
+            // Set roles for users
+            List<String> user1Roles = new ArrayList<>(Arrays.asList("USER", "ADMIN"));
+            List<String> user2Roles = new ArrayList<>(Arrays.asList("USER"));
+
+            // Create some users
+            User user1 = new User("John", "Doe", "johndoe", new BCryptPasswordEncoder().encode("1234"), user1Roles);
+            User user2 = new User("Jane", "Doe", "janedoe", new BCryptPasswordEncoder().encode("1234"), user2Roles);
+
             // Check if users already exist
             if (userRepository.findAll().isEmpty()) {
 
                 // Create images for users
-                String user1Image = null;
-                String user2Image = null;
                 try {
                     // Convert profile1.png to MultipartFile and save it
                     Blob profile1Blob = mediaService.filePathToBlob("images\\profile1.png");
-                    user1Image = mediaService.saveImage(profile1Blob);
+                    user1.setImageFile(profile1Blob);
+                    user1.setImage("profile1.png");
 
                     // Convert profile2.png to MultipartFile and save it
                     Blob profile2Blob = mediaService.filePathToBlob("images\\profile2.png");
-                    user2Image = mediaService.saveImage(profile2Blob);
+                    user2.setImageFile(profile2Blob);
+                    user2.setImage("profile2.png");
                 } catch (IOException e) {
                     System.err.println("Error saving user profile images");
                 }
-
-                // Set roles for users
-                List<String> user1Roles = new ArrayList<>(Arrays.asList("USER", "ADMIN"));
-                List<String> user2Roles = new ArrayList<>(Arrays.asList("USER"));
-
-                // Create some users
-                User user1 = new User("John", "Doe", "johndoe", user1Image, new BCryptPasswordEncoder().encode("1234"), user1Roles);
-                User user2 = new User("Jane", "Doe", "janedoe", user2Image, new BCryptPasswordEncoder().encode("1234"), user2Roles);
 
                 // Save the users
                 userRepository.saveAll(Arrays.asList(user1, user2));

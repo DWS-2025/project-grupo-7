@@ -33,7 +33,7 @@
           <div class="row mb-3">
             <div class="col-md-4 fw-bold">Imagen de perfil:</div>
             <div class="col-md-8">
-              <img id="userDetailsImage" th:src="${user.imageName}" alt="Imagen del usuario" class="img-thumbnail">
+              <img id="userDetailsImage" th:src="@{/users/{id}/image(id=${user.id})}" alt="Imagen del usuario" class="img-thumbnail">
             </div>
           </div>
           <div class="row mb-3">

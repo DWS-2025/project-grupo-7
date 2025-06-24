@@ -8,7 +8,7 @@ public record UserDTO(
         String last_name,
         String username,
         String encodedPassword,
-        String imageName,
+        String image,
         List<String> roles,
         List<CourseDTO> courses) {
 }

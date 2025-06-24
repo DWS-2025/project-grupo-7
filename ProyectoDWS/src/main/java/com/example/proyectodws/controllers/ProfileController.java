@@ -1,6 +1,7 @@
 package com.example.proyectodws.controllers;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.jsoup.Jsoup;
@@ -75,6 +76,7 @@ public class ProfileController {
 
         UserDTO oldUser = userService.getLoggedUserDTO();
 
+        // Check if username was changed
         if (!oldUser.username().equals(newUserRequestCleaned.username())) {
             // If username exists, throw exception
             UserDTO existingUser = userService.getUserByUsername(newUserRequestCleaned.username());
@@ -88,26 +90,28 @@ public class ProfileController {
             hashedPassword = new BCryptPasswordEncoder().encode(newUserRequestCleaned.password());
         }
 
-        String imageName = null;
-        if (image != null && !image.isEmpty()) {
-            imageName = mediaService.saveImage(image);
-        }
-        else {
-            imageName = oldUser.imageName();
-        }
-
         UserDTO newUser = new UserDTO(
                 oldUser.id(),
                 newUserRequestCleaned.first_name(),
                 newUserRequestCleaned.last_name(),
                 newUserRequestCleaned.username(),
                 hashedPassword,
-                imageName,
+                null,
                 oldUser.roles(),
                 oldUser.courses()
         );
 
-        userService.updateUser(oldUser.id(), newUser);
+        if (image != null && !image.isEmpty()) {
+            try {
+                userService.updateWithImage(oldUser.id(), newUser, image);
+            } catch (IOException e) {
+                return "errorScreens/error500";
+            } catch (SQLException e) {
+                return "errorScreens/error500";
+            }
+        } else {
+            userService.updateUser(oldUser.id(), newUser);
+        }
 
         return "profile/profile_edited";
     }

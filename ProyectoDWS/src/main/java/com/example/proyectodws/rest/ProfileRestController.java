@@ -1,6 +1,7 @@
 package com.example.proyectodws.rest;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -87,17 +88,6 @@ public class ProfileRestController {
             }
         }
 
-        String imageName = null;
-        if (image != null && !image.isEmpty()) {
-            try {
-                imageName = mediaService.saveImage(image);
-            } catch (IOException e) {
-                return ResponseEntity.status(500).body(new UserResponse(new GenericResponse("Error al guardar la imagen", 500), null));
-            }
-        } else {
-            imageName = oldUser.imageName();
-        }
-
         String encodedPassword = password != null && !password.isEmpty() ?
                 new BCryptPasswordEncoder().encode(password) :
                 null;
@@ -108,13 +98,24 @@ public class ProfileRestController {
                 last_name,
                 username,
                 encodedPassword,
-                imageName,
+                null,
                 null, null);
 
         // Save user
-        UserDTO updatedUser = userService.updateUser(oldUser.id(), newUser);
+        UserDTO updatedUser;
+        if (image != null && !image.isEmpty()) {
+            try {
+                updatedUser = userService.updateWithImage(oldUser.id(), newUser, image);
+            } catch (IOException e) {
+                return ResponseEntity.status(500).body(new UserResponse(new GenericResponse("Error al guardar la imagen", 500), null));
+            } catch (SQLException e) {
+                return ResponseEntity.status(500).body(new UserResponse(new GenericResponse("Error al guardar la imagen", 500), null));
+            }
+        } else {
+            updatedUser = userService.updateUser(oldUser.id(), newUser);
+        }
 
-        UserWithoutPasswordDTO userWithoutPassword = new UserWithoutPasswordDTO(updatedUser.id(), updatedUser.first_name(), updatedUser.last_name(), updatedUser.username(), updatedUser.imageName());
+        UserWithoutPasswordDTO userWithoutPassword = new UserWithoutPasswordDTO(updatedUser.id(), updatedUser.first_name(), updatedUser.last_name(), updatedUser.username());
 
         return ResponseEntity.ok(new UserResponse(new GenericResponse("Usuario actualizado correctamente", 200), userWithoutPassword));
     }

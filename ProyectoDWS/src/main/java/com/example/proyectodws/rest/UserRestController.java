@@ -2,6 +2,7 @@ package com.example.proyectodws.rest;
 
 import com.example.proyectodws.api.CoursesResponse;
 import com.example.proyectodws.api.GenericResponse;
+import com.example.proyectodws.api.ImageResponse;
 import com.example.proyectodws.api.UserResponse;
 import com.example.proyectodws.api.UsersResponse;
 import com.example.proyectodws.dto.CourseDTO;
@@ -13,13 +14,16 @@ import com.example.proyectodws.service.UserService;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,13 +34,10 @@ public class UserRestController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private MediaService mediaService;
-
     @GetMapping
     public ResponseEntity<UsersResponse> getAllUsers() {
         List<UserWithoutPasswordDTO> usersWithoutPassword = userService.getAllUsers().stream()
-                .map(user -> new UserWithoutPasswordDTO(user.id(), user.first_name(), user.last_name(), user.username(), user.imageName()))
+                .map(user -> new UserWithoutPasswordDTO(user.id(), user.first_name(), user.last_name(), user.username()))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(new UsersResponse(new GenericResponse("Usuarios obtenidos correctamente", 200), usersWithoutPassword));
@@ -49,9 +50,37 @@ public class UserRestController {
             return ResponseEntity.status(404).body(new UserResponse(new GenericResponse("Usuario no encontrado", 404), null));
         }
 
-        UserWithoutPasswordDTO userWithoutPassword = new UserWithoutPasswordDTO(user.id(), user.first_name(), user.last_name(), user.username(), user.imageName());
+        UserWithoutPasswordDTO userWithoutPassword = new UserWithoutPasswordDTO(user.id(), user.first_name(), user.last_name(), user.username());
 
         return ResponseEntity.ok(new UserResponse(new GenericResponse("Usuario obtenido correctamente", 200), userWithoutPassword));
+    }
+
+    @GetMapping("/{id}/image")
+    public ResponseEntity<Object> downloadImage(@PathVariable long id) throws SQLException {
+        Resource user = userService.getUserImage(id);
+        byte[] imageBytes;
+
+        // Check if user exists
+        UserDTO userDTO = userService.getUserById(id);
+        if (userDTO == null) {
+            return ResponseEntity.status(404).body(new ImageResponse(new GenericResponse("Usuario no encontrado", 404), null));
+        }
+
+        // Check permissions (admin can see all images but user only his own)
+        UserDTO loggedUser = userService.getLoggedUserDTO();
+        if (!loggedUser.id().equals(id) && !loggedUser.roles().contains("ADMIN")) {
+            return ResponseEntity.status(403).body(new ImageResponse(new GenericResponse("No tienes permisos para ver esta imagen", 403), null));
+        }
+
+        try {
+            imageBytes = user.getInputStream().readAllBytes();
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(new ImageResponse(new GenericResponse("Error al obtener la imagen", 500), null));
+        }
+
+        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+        String dataUrl = "data:image/jpeg;base64," + base64Image;
+        return ResponseEntity.ok(new ImageResponse(new GenericResponse("Imagen obtenida correctamente", 200), dataUrl));
     }
 
     @GetMapping("/me")
@@ -59,7 +88,7 @@ public class UserRestController {
         // Get authenticated user from JWT token
         UserDTO user = userService.getLoggedUserDTO();
 
-        UserWithoutPasswordDTO userWithoutPassword = new UserWithoutPasswordDTO(user.id(), user.first_name(), user.last_name(), user.username(), user.imageName());
+        UserWithoutPasswordDTO userWithoutPassword = new UserWithoutPasswordDTO(user.id(), user.first_name(), user.last_name(), user.username());
 
         return ResponseEntity.ok(new UserResponse(new GenericResponse("Usuario obtenido correctamente", 200), userWithoutPassword));
     }
@@ -127,16 +156,6 @@ public class UserRestController {
             return ResponseEntity.status(400).body(new UserResponse(new GenericResponse("El nombre de usuario ya existe", 400), null));
         }
 
-        // Image name
-        String imageName = null;
-
-        // Save image
-        try {
-            imageName = mediaService.saveImage(image);
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body(new UserResponse(new GenericResponse("Error al guardar la imagen", 500), null));
-        }
-
         // Encode password.
         String hashedPassword = new BCryptPasswordEncoder().encode(password);
 
@@ -149,10 +168,22 @@ public class UserRestController {
         }
 
         // Create user
-        UserDTO user = new UserDTO(null, first_name, last_name, username, hashedPassword, imageName, rolesList, null);
-        UserDTO createdUser = userService.createUser(user);
+        UserDTO user = new UserDTO(null, first_name, last_name, username, hashedPassword, null, rolesList, null);
+        UserDTO createdUser;
 
-        UserWithoutPasswordDTO userWithoutPassword = new UserWithoutPasswordDTO(createdUser.id(), createdUser.first_name(), createdUser.last_name(), createdUser.username(), createdUser.imageName());
+        if (image != null && !image.isEmpty()) {
+            try {
+                createdUser = userService.createWithImage(user, image);
+            } catch (IOException e) {
+                return ResponseEntity.status(500).body(new UserResponse(new GenericResponse("Error al guardar la imagen", 500), null));
+            } catch (SQLException e) {
+                return ResponseEntity.status(500).body(new UserResponse(new GenericResponse("Error al guardar la imagen", 500), null));
+            }
+        } else {
+            createdUser = userService.createUser(user);
+        }
+
+        UserWithoutPasswordDTO userWithoutPassword = new UserWithoutPasswordDTO(createdUser.id(), createdUser.first_name(), createdUser.last_name(), createdUser.username());
 
         return ResponseEntity.ok(new UserResponse(new GenericResponse("Usuario creado correctamente", 200), userWithoutPassword));
     }
@@ -211,18 +242,6 @@ public class UserRestController {
             }
         }
 
-        //Save image if it exists
-        String imageName = null;
-        if (image != null && !image.isEmpty()) {
-            try {
-                imageName = mediaService.saveImage(image);
-            } catch (IOException e) {
-                return ResponseEntity.status(500).body(new UserResponse(new GenericResponse("Error al guardar la imagen", 500), null));
-            }
-        } else {
-            imageName = oldUser.imageName();
-        }
-
         String encodedPassword = password != null && !password.isEmpty() ?
                 new BCryptPasswordEncoder().encode(password) :
                 null;
@@ -233,14 +252,25 @@ public class UserRestController {
                 last_name,
                 username,
                 encodedPassword,
-                imageName,
+                null,
                 roles,
                 null);
 
-        // Save user
-        UserDTO updatedUser = userService.updateUser(oldUser.id(), newUser);
+        UserDTO updatedUser;
 
-        UserWithoutPasswordDTO userWithoutPassword = new UserWithoutPasswordDTO(updatedUser.id(), updatedUser.first_name(), updatedUser.last_name(), updatedUser.username(), updatedUser.imageName());
+        if (image != null && !image.isEmpty()) {
+            try {
+                updatedUser = userService.updateWithImage(oldUser.id(), newUser, image);
+            } catch (IOException e) {
+                return ResponseEntity.status(500).body(new UserResponse(new GenericResponse("Error al guardar la imagen", 500), null));
+            } catch (SQLException e) {
+                return ResponseEntity.status(500).body(new UserResponse(new GenericResponse("Error al guardar la imagen", 500), null));
+            }
+        } else {
+            updatedUser = userService.updateUser(oldUser.id(), newUser);
+        }
+
+        UserWithoutPasswordDTO userWithoutPassword = new UserWithoutPasswordDTO(updatedUser.id(), updatedUser.first_name(), updatedUser.last_name(), updatedUser.username());
 
         return ResponseEntity.ok(new UserResponse(new GenericResponse("Usuario actualizado correctamente", 200), userWithoutPassword));
     }
