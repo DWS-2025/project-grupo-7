@@ -7,6 +7,7 @@ import com.example.proyectodws.dto.CommentDTO;
 import com.example.proyectodws.dto.CommentWithIdsDTO;
 import com.example.proyectodws.dto.CourseDTO;
 import com.example.proyectodws.dto.UserDTO;
+import com.example.proyectodws.entities.Comment;
 import com.example.proyectodws.service.CommentService;
 import com.example.proyectodws.service.CourseService;
 import com.example.proyectodws.service.UserService;
@@ -86,6 +87,34 @@ public class CommentRestController {
         );
 
         return ResponseEntity.ok(new CommentResponse(new GenericResponse("Comentario creado correctamente", 200), commentService.addComment(user.id(), courseId, comment)));
+    }
+
+    @PutMapping("/{commentId}")
+    public ResponseEntity<CommentResponse> updateComment(@PathVariable Long commentId, @RequestParam String text) {
+        // Use jsoup to clean the input values.
+        text = Jsoup.clean(text, "", Safelist.basic().addTags("p", "br", "strong", "em", "u", "s", "blockquote", "ol", "ul", "li", "h1", "h2", "h3"));
+
+        if (text == null || text.trim().isEmpty()) {
+            return ResponseEntity.status(400).body(new CommentResponse(new GenericResponse("El texto es obligatorio", 400), null));
+        }
+
+        CommentDTO comment = commentService.getCommentById(commentId);
+        if (comment == null) {
+            return ResponseEntity.status(404).body(new CommentResponse(new GenericResponse("Comentario no encontrado", 404), null));
+        }
+
+        UserDTO commentUser = commentService.getUserFromCommentId(commentId);
+        if (commentUser == null) {
+            return ResponseEntity.status(404).body(new CommentResponse(new GenericResponse("Comentario no encontrado", 404), null));
+        }
+
+        UserDTO currentUser = userService.getLoggedUserDTO();
+        if (!currentUser.roles().contains("ADMIN") && !commentUser.id().equals(currentUser.id())) {
+            return ResponseEntity.status(403).body(new CommentResponse(new GenericResponse("No tienes permisos para editar este comentario", 403), null));
+        }
+
+        CommentDTO updatedComment = commentService.updateComment(commentId, new CommentDTO(commentId, text, null));
+        return ResponseEntity.ok(new CommentResponse(new GenericResponse("Comentario actualizado correctamente", 200), updatedComment));
     }
 
     // Delete comment

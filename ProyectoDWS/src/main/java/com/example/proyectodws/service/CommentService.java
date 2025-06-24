@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-// Service for comments.
 @Service
 public class CommentService {
 
@@ -64,6 +63,13 @@ public class CommentService {
         return commentMapper.toDTO(comment);
     }
 
+    public CommentDTO updateComment(Long commentId, CommentDTO commentDTO) {
+        Comment oldComment = commentRepository.findById(commentId).orElse(null);
+        Comment newComment = commentMapper.toDomain(commentDTO);
+        oldComment.setText(newComment.getText());
+
+        return commentMapper.toDTO(commentRepository.save(oldComment));
+    }
     // Get comments for course
     public List<CommentWithRelationsDTO> getCommentsForCourse(Long courseId) {
         Course course = courseRepository.findById(courseId)

@@ -58,9 +58,12 @@
                             <strong th:text="${comment.user.username}">Usuario</strong>
                             <small class="text-muted ms-2" th:text="${comment.createdAt}"></small>
                         </h6>
-                        <form th:if="${comment.user.username == userName}" th:action="@{/course/{courseId}/comments/{commentId}/delete(courseId=${course.id}, commentId=${comment.id})}" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                        </form>
+                        <div class="d-flex gap-2">
+                            <a th:if="${comment.user.username == userName}" th:href="@{/course/{courseId}/comments/{commentId}/edit(courseId=${course.id}, commentId=${comment.id})}" class="btn btn-sm btn-primary">Editar</a>
+                            <form th:if="${comment.user.username == userName || admin}" th:action="@{/course/{courseId}/comments/{commentId}/delete(courseId=${course.id}, commentId=${comment.id})}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                            </form>
+                        </div>
                     </div>
                     <div class="comment-content" th:utext="${comment.text}"></div>
                 </div>

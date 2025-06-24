@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head('Comentario editado - AcademiaSaber', '/styles/comments/edited_comment.css', '')"></head>
+<body>
+<div th:replace="layout/layout :: header"></div>
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <p class="mb-2">Comentario editado correctamente.</p>
+                    <p class="mb-4">Detalles del comentario editado:</p>
+                    <div class="mb-4">
+                        <p><u>Texto</u><br><span th:utext="${comment.text}"></span></p>
+                    </div>
+                    <a th:href="@{/course/{courseId}(courseId=${courseId})}" class="btn btn-secondary">Volver al curso</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="layout/layout :: footer"></div>
+</body>
+</html>

@@ -43,6 +43,10 @@ public class CommentController {
         // Use jsoup to clean the input values.
         text = Jsoup.clean(text, "", Safelist.basic().addTags("p", "br", "strong", "em", "u", "s", "blockquote", "ol", "ul", "li", "h1", "h2", "h3"));
 
+        if (text == null || text.trim().isEmpty()) {
+            return "errorScreens/error400";
+        }
+
         CourseDTO course = courseService.getCourseById(id);
         if (course != null) {
             UserDTO defaultUser = userService.getLoggedUserDTO();
@@ -54,6 +58,61 @@ public class CommentController {
         }
 
         return "errorScreens/error404";
+    }
+
+    @GetMapping("/course/{courseId}/comments/{commentId}/edit")
+    public String editComment(@PathVariable Long courseId, @PathVariable Long commentId, Model model) {
+        CommentDTO comment = commentService.getCommentById(commentId);
+        CourseDTO course = courseService.getCourseById(courseId);
+
+        if (course == null) {
+            return "errorScreens/error404";
+        }
+
+        if (comment == null) {
+            return "errorScreens/error404";
+        }
+
+        UserDTO commentUser = commentService.getUserFromCommentId(commentId);
+        if (commentUser == null) {
+            return "errorScreens/error404";
+        }
+
+        UserDTO currentUser = userService.getLoggedUserDTO();
+        if (!currentUser.roles().contains("ADMIN") && !commentUser.id().equals(currentUser.id())) {
+            return "errorScreens/error403";
+        }
+
+        model.addAttribute("course", course);
+        model.addAttribute("comment", comment);
+        return "comments/edit_comment";
+    }
+
+    @PostMapping("/course/{courseId}/comments/{commentId}/update")
+    public String updateComment(@PathVariable Long courseId, @PathVariable Long commentId, @RequestParam String text, Model model) {
+
+        // Use jsoup to clean the input values.
+        text = Jsoup.clean(text, "", Safelist.basic().addTags("p", "br", "strong", "em", "u", "s", "blockquote", "ol", "ul", "li", "h1", "h2", "h3"));
+
+        if (text == null || text.trim().isEmpty()) {
+            return "errorScreens/error400";
+        }
+
+        UserDTO commentUser = commentService.getUserFromCommentId(commentId);
+        if (commentUser == null) {
+            return "errorScreens/error404";
+        }
+
+        UserDTO currentUser = userService.getLoggedUserDTO();
+        if (!currentUser.roles().contains("ADMIN") && !commentUser.id().equals(currentUser.id())) {
+            return "errorScreens/error403";
+        }
+
+        commentService.updateComment(commentId, new CommentDTO(commentId, text, null));
+
+        model.addAttribute("courseId", courseId);
+        model.addAttribute("comment", commentService.getCommentById(commentId));
+        return "comments/edited_comment";
     }
 
     @PostMapping("/course/{courseId}/comments/{commentId}/delete")
