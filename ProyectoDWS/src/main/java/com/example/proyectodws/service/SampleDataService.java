@@ -64,11 +64,11 @@ public class SampleDataService {
 
             // Create some images for the subjects
             try {
-                Blob mathImage = mediaService.filePathToBlob("images\\matematicas.jpg");
+                Blob mathImage = mediaService.filePathToBlob("images\\mates.jpeg");
                 subject1.setImageFile(mathImage);
-                subject1.setImage("matematicas.jpg");
+                subject1.setImage("mates.jpeg");
             } catch (IOException e) {
-                System.err.println("Image matematicas.jpg not found or unreadable");
+                System.err.println("Image mates.jpeg not found or unreadable");
             }
 
             try {
@@ -125,11 +125,11 @@ public class SampleDataService {
 
                     // Create some images for the courses
                     try {
-                        Blob course1Image = mediaService.filePathToBlob("images\\matematicas.jpg");
+                        Blob course1Image = mediaService.filePathToBlob("images\\mates.jpeg");
                         course1.setImageFile(course1Image);
-                        course1.setImage("matematicas.jpg");
+                        course1.setImage("mates.jpeg");
                     } catch (IOException e) {
-                        System.err.println("Image matematicas.jpg not found or unreadable");
+                        System.err.println("Image mates.jpeg not found or unreadable");
                     }
 
                     try {
