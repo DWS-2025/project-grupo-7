@@ -126,7 +126,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/comments/*").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/comments/*").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/profile").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/profile").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/profile").hasAnyRole("USER")/// admin cant delete him/her profile
                         .requestMatchers(HttpMethod.GET, "/api/users/*/image").hasAnyRole("USER", "ADMIN")
 
                         // ADMIN ENDPOINTS

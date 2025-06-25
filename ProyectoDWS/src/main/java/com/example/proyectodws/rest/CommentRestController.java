@@ -110,8 +110,11 @@ public class CommentRestController {
         }
 
         UserDTO currentUser = userService.getLoggedUserDTO();
-        if (!currentUser.roles().contains("ADMIN") && !commentUser.id().equals(currentUser.id())) {
-            return ResponseEntity.status(403).body(new CommentResponse(new GenericResponse("No tienes permisos para editar este comentario", 403), null));
+        // only the owner of comment can edit (ADMIN cant edit other user's comment)
+        if (!commentUser.id().equals(currentUser.id())) {
+            return ResponseEntity.status(403).body(
+                    new CommentResponse(new GenericResponse("Solo el autor puede editar su comentario", 403), null)
+            );
         }
 
         CommentDTO updatedComment = commentService.updateComment(commentId, new CommentDTO(commentId, text, null));
