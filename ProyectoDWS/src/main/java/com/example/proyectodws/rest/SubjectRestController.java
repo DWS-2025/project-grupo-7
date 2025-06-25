@@ -6,6 +6,7 @@ import com.example.proyectodws.api.PagedSubjectsResponse;
 import com.example.proyectodws.api.SubjectResponse;
 import com.example.proyectodws.api.SubjectsResponse;
 import com.example.proyectodws.dto.SubjectDTO;
+import com.example.proyectodws.dto.UpdateSubjectRequestDTO;
 import com.example.proyectodws.service.SubjectService;
 
 import org.jsoup.Jsoup;
@@ -80,8 +81,8 @@ public class SubjectRestController {
 
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<SubjectResponse> createSubjectWithImage(
-            @RequestParam String title,
-            @RequestParam String text,
+            @RequestPart String title,
+            @RequestPart String text,
             @RequestPart MultipartFile image) throws IOException, SQLException {
 
         // Use jsoup to clean the input values.
@@ -132,12 +133,11 @@ public class SubjectRestController {
     @PutMapping("/{id}")
     public ResponseEntity<SubjectResponse> updateSubject(
             @PathVariable Long id,
-            @RequestParam String title,
-            @RequestParam String text) {
+            @RequestBody UpdateSubjectRequestDTO updateSubjectRequestDTO) {
 
         // Use jsoup to clean the input values.
-        title = Jsoup.clean(title, "", Safelist.none());
-        text = Jsoup.clean(text, "", Safelist.none());
+        String title = Jsoup.clean(updateSubjectRequestDTO.title(), "", Safelist.none());
+        String text = Jsoup.clean(updateSubjectRequestDTO.text(), "", Safelist.none());
 
         // Check if subject exists
         SubjectDTO existingSubject = subjectService.getSubjectById(id);

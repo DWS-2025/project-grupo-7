@@ -8,7 +8,6 @@ import com.example.proyectodws.api.UsersResponse;
 import com.example.proyectodws.dto.CourseDTO;
 import com.example.proyectodws.dto.UserDTO;
 import com.example.proyectodws.dto.UserWithoutPasswordDTO;
-import com.example.proyectodws.service.MediaService;
 import com.example.proyectodws.service.UserService;
 
 import org.jsoup.Jsoup;
@@ -110,12 +109,12 @@ public class UserRestController {
 
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<UserResponse> createUser(
-            @RequestParam String username,
-            @RequestParam String password,
-            @RequestParam String first_name,
-            @RequestParam String last_name,
+            @RequestPart String username,
+            @RequestPart String first_name,
+            @RequestPart String last_name,
+            @RequestPart String password,
             @RequestPart MultipartFile image,
-            @RequestParam(required = false) List<String> roles
+            @RequestPart(required = false) String roles
     ) {
 
         // Use jsoup to clean the input values.
@@ -164,7 +163,10 @@ public class UserRestController {
         if (roles == null || roles.isEmpty()) {
             rolesList.add("USER");
         } else {
-            rolesList.addAll(roles);
+            String[] roleArray = roles.split(",");
+            for (String role : roleArray) {
+                rolesList.add(role.trim());
+            }
         }
 
         // Create user
@@ -191,12 +193,12 @@ public class UserRestController {
     @PutMapping(value = "/{id}", consumes = "multipart/form-data")
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable Long id,
-            @RequestParam String first_name,
-            @RequestParam String last_name,
-            @RequestParam String username,
-            @RequestParam(required = false) String password,
+            @RequestPart String first_name,
+            @RequestPart String last_name,
+            @RequestPart String username,
+            @RequestPart(required = false) String password,
             @RequestPart(required = false) MultipartFile image,
-            @RequestParam(required = false) List<String> roles) {
+            @RequestPart(required = false) String roles) {
 
         // Use jsoup to clean the input values.
         first_name = Jsoup.clean(first_name, "", Safelist.none());
@@ -246,6 +248,16 @@ public class UserRestController {
                 new BCryptPasswordEncoder().encode(password) :
                 null;
 
+        List<String> rolesList = new ArrayList<>();
+        if (roles == null || roles.isEmpty()) {
+            rolesList.add("USER");
+        } else {
+            String[] roleArray = roles.split(",");
+            for (String role : roleArray) {
+                rolesList.add(role.trim());
+            }
+        }
+
         UserDTO newUser = new UserDTO(
                 oldUser.id(),
                 first_name,
@@ -253,7 +265,7 @@ public class UserRestController {
                 username,
                 encodedPassword,
                 null,
-                roles,
+                rolesList,
                 null);
 
         UserDTO updatedUser;

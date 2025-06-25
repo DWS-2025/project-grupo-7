@@ -21,11 +21,16 @@ public class CSRFHandlerConfiguration implements WebMvcConfigurer {
 
 class CSRFHandlerInterceptor implements HandlerInterceptor {
 
+    private boolean isRedirectView(ModelAndView modelAndView) {
+        String viewName = modelAndView.getViewName();
+        return viewName != null && viewName.startsWith("redirect:");
+    }
+
     @Override
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler,
                            final ModelAndView modelAndView) throws Exception {
 
-        if (modelAndView != null) {
+        if (modelAndView != null && !isRedirectView(modelAndView)) {
 
             CsrfToken token = (CsrfToken) request.getAttribute("_csrf");
             if (token != null) {

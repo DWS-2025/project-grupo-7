@@ -6,8 +6,9 @@ import com.example.proyectodws.api.GenericResponse;
 import com.example.proyectodws.dto.CommentDTO;
 import com.example.proyectodws.dto.CommentWithIdsDTO;
 import com.example.proyectodws.dto.CourseDTO;
+import com.example.proyectodws.dto.NewCommentRequestDTO;
+import com.example.proyectodws.dto.UpdateCommentRequestDTO;
 import com.example.proyectodws.dto.UserDTO;
-import com.example.proyectodws.entities.Comment;
 import com.example.proyectodws.service.CommentService;
 import com.example.proyectodws.service.CourseService;
 import com.example.proyectodws.service.UserService;
@@ -54,18 +55,18 @@ public class CommentRestController {
     // Add comment
     @PostMapping
     public ResponseEntity<CommentResponse> createComment(
-            @RequestParam Long courseId,
-            @RequestParam String text
+            @RequestBody NewCommentRequestDTO newCommentRequestDTO
     ) {
 
         // Use jsoup to clean the input values.
-        text = Jsoup.clean(text, "", Safelist.basic().addTags("p", "br", "strong", "em", "u", "s", "blockquote", "ol", "ul", "li", "h1", "h2", "h3"));
+        String text = Jsoup.clean(newCommentRequestDTO.text(), "", Safelist.basic().addTags("p", "br", "strong", "em", "u", "s", "blockquote", "ol", "ul", "li", "h1", "h2", "h3"));
 
         // Validate text
         if (text == null || text.trim().isEmpty()) {
             return ResponseEntity.status(400).body(new CommentResponse(new GenericResponse("El texto es obligatorio", 400), null));
         }
 
+        Long courseId = newCommentRequestDTO.courseId();
         // Validate courseId
         if (courseId == null || courseId < 0) {
             return ResponseEntity.status(400).body(new CommentResponse(new GenericResponse("El curso es obligatorio", 400), null));
@@ -90,9 +91,9 @@ public class CommentRestController {
     }
 
     @PutMapping("/{commentId}")
-    public ResponseEntity<CommentResponse> updateComment(@PathVariable Long commentId, @RequestParam String text) {
+    public ResponseEntity<CommentResponse> updateComment(@PathVariable Long commentId, @RequestBody UpdateCommentRequestDTO requestBody) {
         // Use jsoup to clean the input values.
-        text = Jsoup.clean(text, "", Safelist.basic().addTags("p", "br", "strong", "em", "u", "s", "blockquote", "ol", "ul", "li", "h1", "h2", "h3"));
+        String text = Jsoup.clean(requestBody.text(), "", Safelist.basic().addTags("p", "br", "strong", "em", "u", "s", "blockquote", "ol", "ul", "li", "h1", "h2", "h3"));
 
         if (text == null || text.trim().isEmpty()) {
             return ResponseEntity.status(400).body(new CommentResponse(new GenericResponse("El texto es obligatorio", 400), null));
@@ -142,4 +143,3 @@ public class CommentRestController {
         return ResponseEntity.ok(new GenericResponse("Comentario eliminado correctamente", 200));
     }
 }
-

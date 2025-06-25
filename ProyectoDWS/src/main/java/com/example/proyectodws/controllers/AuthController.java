@@ -1,6 +1,7 @@
 package com.example.proyectodws.controllers;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -99,7 +100,17 @@ public class AuthController {
                 null
         );
 
-        userService.createUser(user);
+        if (image != null && !image.isEmpty()) {
+            try {
+                userService.createWithImage(user, image);
+            } catch (IOException e) {
+                return "errorScreens/error500";
+            } catch (SQLException e) {
+                return "errorScreens/error500";
+            }
+        } else {
+            userService.createUser(user);
+        }
 
         return "redirect:/login";
     }

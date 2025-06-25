@@ -8,7 +8,6 @@ import com.example.proyectodws.dto.UpdateCourseRequestDTO;
 import com.example.proyectodws.entities.Course;
 import com.example.proyectodws.service.*;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import org.jsoup.Jsoup;
@@ -121,13 +120,10 @@ public class CourseController {
     }
 
     @GetMapping("/course/{id}")
-    public String showCourse(@PathVariable Long id, Model model, HttpServletRequest request) {
+    public String showCourse(@PathVariable Long id, Model model) {
         CourseDTO course = courseService.getCourseById(id);
         List<UserDTO> enrolledStudents = courseService.getEnrolledStudents(id);
-        UserDTO user = null;
-        if (request.getUserPrincipal() != null) {
-            user = userService.getLoggedUserDTO();
-        }
+        UserDTO user = userService.getLoggedUserDTO();
 
         model.addAttribute("course", course);
         model.addAttribute("enrolledStudents", enrolledStudents);
@@ -139,7 +135,7 @@ public class CourseController {
 
     @GetMapping("/course/{id}/image")
     public ResponseEntity<Object> downloadImage(@PathVariable long id) throws SQLException {
-        Resource course = courseService.getCourseImage(id);
+        Resource course = courseService.getCourseImage(id); // Supposing that `getLanguageById` returns an object `Post`
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
                 .body(course);
@@ -156,7 +152,7 @@ public class CourseController {
                 course.subjects().stream().map(SubjectDTO::id).collect(Collectors.toList())
         );
 
-        model.addAttribute("course", updateCourseRequestDTO);
+        model.addAttribute("course", updateCourseRequestDTO); // adds the edit course to the model
         model.addAttribute("subjects", subjectService.getAllSubjects());
         return "courses/edit_course";
     }
@@ -200,7 +196,7 @@ public class CourseController {
         CourseDTO course = courseService.getCourseById(id);
 
         if (course == null) {
-            return "errorScreens/error404";
+            return "errorScreens/error404.html";
         }
 
         UserDTO user = userService.getLoggedUserDTO();
@@ -243,7 +239,7 @@ public class CourseController {
         CourseDTO course = courseService.getCourseById(id);
 
         if (course == null) {
-            return "errorScreens/error404";
+            return "errorScreens/error404.html";
         }
 
         List<UserDTO> enrolledStudents = courseService.getEnrolledStudents(id);
@@ -272,7 +268,7 @@ public class CourseController {
         CourseDTO course = courseService.getCourseById(id);
         if (course != null) {
             courseService.deleteCourse(id);
-            userSession.disNumCourses();
+            userSession.disNumCourses(); // Decrease the number of courses for the user session
 
             for (UserDTO user : userService.getAllUsers()) {
                 if (user.courses().contains(course)) {

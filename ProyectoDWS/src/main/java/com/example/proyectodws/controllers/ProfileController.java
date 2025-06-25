@@ -19,9 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.proyectodws.dto.CourseDTO;
 import com.example.proyectodws.dto.NewUserRequestDTO;
 import com.example.proyectodws.dto.UserDTO;
-import com.example.proyectodws.service.MediaService;
+import com.example.proyectodws.security.jwt.UserLoginService;
 import com.example.proyectodws.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
@@ -31,7 +32,7 @@ public class ProfileController {
     private UserService userService;
 
     @Autowired
-    private MediaService mediaService;
+    private UserLoginService userLoginService;
 
     @GetMapping("/profile")
     public String getProfilePage(Model model) {
@@ -117,10 +118,12 @@ public class ProfileController {
     }
 
     @PostMapping("/profile/delete")
-    public String deleteProfile(HttpServletResponse response) {
+    public String deleteProfile(HttpServletRequest request, HttpServletResponse response) {
 
         Long userId = userService.getLoggedUserDTO().id();
+        request.getSession().invalidate();
         SecurityContextHolder.clearContext();
+        userLoginService.logout(response);
         userService.deleteUser(userId);
 
         return "profile/profile_deleted";

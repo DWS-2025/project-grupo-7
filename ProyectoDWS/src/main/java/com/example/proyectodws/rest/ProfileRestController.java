@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +22,6 @@ import com.example.proyectodws.dto.UserWithoutPasswordDTO;
 import com.example.proyectodws.security.jwt.AuthResponse;
 import com.example.proyectodws.security.jwt.AuthResponse.Status;
 import com.example.proyectodws.security.jwt.UserLoginService;
-import com.example.proyectodws.service.MediaService;
 import com.example.proyectodws.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,17 +34,14 @@ public class ProfileRestController {
     private UserService userService;
 
     @Autowired
-    private MediaService mediaService;
-
-    @Autowired
     private UserLoginService userLoginService;
 
     @PutMapping(consumes = "multipart/form-data")
     public ResponseEntity<UserResponse> updateProfile(
-            @RequestParam String first_name,
-            @RequestParam String last_name,
-            @RequestParam String username,
-            @RequestParam(required = false) String password,
+            @RequestPart String first_name,
+            @RequestPart String last_name,
+            @RequestPart String username,
+            @RequestPart(required = false) String password,
             @RequestPart(required = false) MultipartFile image) {
 
         // Use jsoup to clean the input values.

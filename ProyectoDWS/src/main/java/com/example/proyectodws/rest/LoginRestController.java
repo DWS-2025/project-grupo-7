@@ -1,6 +1,7 @@
 package com.example.proyectodws.rest;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,10 +53,10 @@ public class LoginRestController {
     // Register a new user.
     @PostMapping(consumes = "multipart/form-data", path = "/register")
     public ResponseEntity<AuthResponse> createUser(
-            @RequestParam String username,
-            @RequestParam String password,
-            @RequestParam String first_name,
-            @RequestParam String last_name,
+            @RequestPart String username,
+            @RequestPart String first_name,
+            @RequestPart String last_name,
+            @RequestPart String password,
             @RequestPart MultipartFile image,
             HttpServletResponse response
     ) {
@@ -116,8 +116,20 @@ public class LoginRestController {
         rolesList.add("USER");
 
         // Create user
-        UserDTO user = new UserDTO(null, first_name, last_name, username, hashedPassword, imageName, rolesList, null);
-        userService.createUser(user);
+        UserDTO newUser = new UserDTO(null, first_name, last_name, username, hashedPassword, imageName, rolesList, null);
+
+        if (image != null && !image.isEmpty()) {
+            try {
+                newUser = userService.createWithImage(newUser, image);
+            } catch (IOException e) {
+                return ResponseEntity.status(500).body(new AuthResponse(Status.FAILURE, "Error al guardar la imagen"));
+            } catch (SQLException e) {
+                return ResponseEntity.status(500).body(new AuthResponse(Status.FAILURE, "Error al guardar la imagen"));
+            }
+        }
+        else {
+            userService.createUser(newUser);
+        }
 
         userLoginService.login(response, new LoginRequest(username, password));
 

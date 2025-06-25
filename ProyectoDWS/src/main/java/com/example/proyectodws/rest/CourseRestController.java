@@ -6,6 +6,7 @@ import com.example.proyectodws.api.GenericResponse;
 import com.example.proyectodws.api.ImageResponse;
 import com.example.proyectodws.dto.CourseDTO;
 import com.example.proyectodws.dto.SubjectDTO;
+import com.example.proyectodws.dto.UpdateCourseApiRequestDTO;
 import com.example.proyectodws.dto.UserDTO;
 import com.example.proyectodws.service.CourseService;
 import com.example.proyectodws.service.SubjectService;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
@@ -98,9 +100,9 @@ public class CourseRestController {
 
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<CourseResponse> createCourseByParams(
-            @RequestParam String title,
-            @RequestParam String description,
-            @RequestParam List<Long> subjectIds,
+            @RequestPart String title,
+            @RequestPart String description,
+            @RequestPart String subjectIds,
             @RequestPart MultipartFile image,
             @RequestPart MultipartFile video) throws IOException, SQLException {
 
@@ -108,6 +110,7 @@ public class CourseRestController {
         title = Jsoup.clean(title, "", Safelist.none());
         description = Jsoup.clean(description, "", Safelist.none());
 
+        List<Long> subjectIdsList = new ArrayList<>();
         // Validate title
         if (title == null || title.trim().isEmpty()) {
             return ResponseEntity.badRequest()
@@ -141,7 +144,11 @@ public class CourseRestController {
         // Validate subject IDs if provided
         if (subjectIds != null) {
             // Check if any subject ID is null or negative
-            if (subjectIds.stream().anyMatch(id -> id == null || id < 0)) {
+            String[] subjectIdArray = subjectIds.split(",");
+            for (String subjectId : subjectIdArray) {
+                subjectIdsList.add(Long.parseLong(subjectId.trim()));
+            }
+            if (subjectIdsList.stream().anyMatch(id -> id == null || id < 0)) {
                 return ResponseEntity.badRequest().body(new CourseResponse(new GenericResponse("Las asignaturas deben ser válidas", 400), null));
             }
         }
@@ -160,7 +167,7 @@ public class CourseRestController {
             }
         }
 
-        List<SubjectDTO> subjects = subjectIds.stream()
+        List<SubjectDTO> subjects = subjectIdsList.stream()
                 .map(id -> subjectService.getSubjectById(id))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
@@ -213,13 +220,18 @@ public class CourseRestController {
     @PutMapping("/{id}")
     public ResponseEntity<CourseResponse> updateCourseByParams(
             @PathVariable Long id,
-            @RequestParam String title,
-            @RequestParam String description,
-            @RequestParam List<Long> subjectIds) throws IOException, SQLException {
+            @RequestBody UpdateCourseApiRequestDTO updateCourseRequestDTO) throws IOException, SQLException {
 
         // Use jsoup to clean the input values.
-        title = Jsoup.clean(title, "", Safelist.none());
-        description = Jsoup.clean(description, "", Safelist.none());
+        String title = Jsoup.clean(updateCourseRequestDTO.title(), "", Safelist.none());
+        String description = Jsoup.clean(updateCourseRequestDTO.description(), "", Safelist.none());
+
+        String subjectIds = updateCourseRequestDTO.subjects();
+        List<Long> subjectIdsList = new ArrayList<>();
+        String[] subjectIdArray = subjectIds.split(",");
+        for (String subjectId : subjectIdArray) {
+            subjectIdsList.add(Long.parseLong(subjectId.trim()));
+        }
 
         // Check if course exists
         CourseDTO existingCourse = courseService.getCourseById(id);
@@ -248,12 +260,12 @@ public class CourseRestController {
         // Validate subject IDs if provided
         if (subjectIds != null) {
             // Check if any subject ID is null or negative
-            if (subjectIds.stream().anyMatch(subjectId -> subjectId == null || subjectId < 0)) {
+            if (subjectIdsList.stream().anyMatch(subjectId -> subjectId == null || subjectId < 0)) {
                 return ResponseEntity.badRequest().body(new CourseResponse(new GenericResponse("Las asignaturas deben ser válidas", 400), null));
             }
         }
 
-        List<SubjectDTO> subjects = subjectIds.stream()
+        List<SubjectDTO> subjects = subjectIdsList.stream()
                 .map(subjectId -> subjectService.getSubjectById(subjectId))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());

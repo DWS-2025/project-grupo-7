@@ -31,6 +31,9 @@ public class UserModelAttributes {
             model.addAttribute("admin", request.isUserInRole("ADMIN"));
         } else {
             model.addAttribute("logged", false);
+            model.addAttribute("userName", "");
+            model.addAttribute("userId", 0);
+            model.addAttribute("admin", false);
         }
     }
 

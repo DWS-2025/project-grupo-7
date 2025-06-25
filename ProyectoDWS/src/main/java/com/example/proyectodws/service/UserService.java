@@ -85,6 +85,7 @@ public class UserService {
         if (userRequestDTO.last_name() != null) {
             user.setLast_name(userRequestDTO.last_name());
         }
+
         if (userRequestDTO.roles() != null) {
             user.setRoles(userRequestDTO.roles());
         }
@@ -115,6 +116,38 @@ public class UserService {
             byte[] imageBytes = image.getBytes();
             Blob blob = new SerialBlob(imageBytes);
             user.setImageFile(blob);
+        }
+
+        // Store the current password before any updates
+        String currentPassword = user.getEncodedPassword();
+
+        // Update all non-password fields first
+        if (userRequestDTO.username() != null) {
+            user.setUsername(userRequestDTO.username());
+        }
+
+        if (userRequestDTO.first_name() != null) {
+            user.setFirst_name(userRequestDTO.first_name());
+        }
+
+        if (userRequestDTO.last_name() != null) {
+            user.setLast_name(userRequestDTO.last_name());
+        }
+
+        if (userRequestDTO.roles() != null) {
+            user.setRoles(userRequestDTO.roles());
+        }
+
+        if (userRequestDTO.courses() != null) {
+            user.setCourses(userRequestDTO.courses().stream().map(courseMapper::toDomain).collect(Collectors.toSet()));
+        }
+
+        // Handle password separately - either keep existing or update if requested
+        if (userRequestDTO.encodedPassword() != null) {
+            user.setEncodedPassword(userRequestDTO.encodedPassword());
+        } else {
+            // Always restore the original password if no update was requested
+            user.setEncodedPassword(currentPassword);
         }
 
         return userMapper.toDTO(userRepository.save(user));
@@ -190,7 +223,10 @@ public class UserService {
 
     public User getLoggedUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username).get();
+        if (username == null) {
+            return null;
+        }
+        return userRepository.findByUsername(username).orElse(null);
     }
 
     public UserDTO getLoggedUserDTO() {
@@ -199,4 +235,3 @@ public class UserService {
 
 
 }
-
