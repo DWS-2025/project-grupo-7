@@ -115,12 +115,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/subjects/all").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/subjects/*/image").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/courses/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/subjects/*").permitAll()
 
                         // USER ENDPOINTS
                         .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/courses/*/enroll").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/courses/*/unenroll").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/subjects/*").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/comments/course/*").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/comments").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/comments/*").hasAnyRole("USER", "ADMIN")
