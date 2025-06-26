@@ -223,6 +223,8 @@ public class SampleDataService {
             // Create some users
             User user1 = new User("John", "Doe", "johndoe", new BCryptPasswordEncoder().encode("1234"), user1Roles);
             User user2 = new User("Jane", "Doe", "janedoe", new BCryptPasswordEncoder().encode("1234"), user2Roles);
+            User user3 = new User("Jose", "Doe", "josedoe", new BCryptPasswordEncoder().encode("1234"), user2Roles);
+
 
             // Check if users already exist
             if (userRepository.findAll().isEmpty()) {
@@ -238,12 +240,17 @@ public class SampleDataService {
                     Blob profile2Blob = mediaService.filePathToBlob("images\\profile2.png");
                     user2.setImageFile(profile2Blob);
                     user2.setImage("profile2.png");
+
+                    // Convert profile2.png to MultipartFile and save it
+                    Blob profile3Blob = mediaService.filePathToBlob("images\\profile2.png");
+                    user3.setImageFile(profile3Blob);
+                    user3.setImage("profile2.png");
                 } catch (IOException e) {
                     System.err.println("Error saving user profile images");
                 }
 
                 // Save the users
-                userRepository.saveAll(Arrays.asList(user1, user2));
+                userRepository.saveAll(Arrays.asList(user1, user2, user3));
 
                 // Check if courses already exist
                 if (courseRepository.findAll().isEmpty()) {
@@ -281,6 +288,7 @@ public class SampleDataService {
                     course1.getEnrolledStudents().add(user2);  // Jane Doe enrolls in the Algebra course
 
                     course2.getEnrolledStudents().add(user2);  // Jane Doe enrolls in the Java Programming course
+                    course2.getEnrolledStudents().add(user3);  // Jose Doe enrolls in the Java Programming course
 
                     // Save the changes in the courses
                     courseRepository.saveAll(Arrays.asList(course1, course2));
