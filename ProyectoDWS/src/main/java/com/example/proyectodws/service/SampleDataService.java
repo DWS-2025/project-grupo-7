@@ -79,6 +79,139 @@ public class SampleDataService {
                 System.err.println("Image images.jpeg not found or unreadable");
             }
 
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\fisica.jpeg");
+                subject3.setImageFile(csImage);
+                subject3.setImage("fisica.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image fisica.jpeg not found or unreadable");
+            }
+
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\quimica.jpg");
+                subject4.setImageFile(csImage);
+                subject4.setImage("quimica.jpg");
+            } catch (IOException e) {
+                System.err.println("Image quimica.jpg not found or unreadable");
+            }
+
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\biologia.jpeg");
+                subject5.setImageFile(csImage);
+                subject5.setImage("biologia.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image biologia.jpeg not found or unreadable");
+            }
+
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\asignatura.jpeg");
+                subject6.setImageFile(csImage);
+                subject6.setImage("asignatura.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image asignatura.jpeg not found or unreadable");
+            }
+
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\asignatura.jpeg");
+                subject7.setImageFile(csImage);
+                subject7.setImage("asignatura.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image asignatura.jpeg not found or unreadable");
+            }
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\asignatura.jpeg");
+                subject8.setImageFile(csImage);
+                subject8.setImage("asignatura.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image asignatura.jpeg not found or unreadable");
+            }
+
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\asignatura.jpeg");
+                subject9.setImageFile(csImage);
+                subject9.setImage("asignatura.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image asignatura.jpeg not found or unreadable");
+            }
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\asignatura.jpeg");
+                subject10.setImageFile(csImage);
+                subject10.setImage("asignatura.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image asignatura.jpeg not found or unreadable");
+            }
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\asignatura.jpeg");
+                subject11.setImageFile(csImage);
+                subject11.setImage("asignatura.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image asignatura.jpeg not found or unreadable");
+            }
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\asignatura.jpeg");
+                subject12.setImageFile(csImage);
+                subject12.setImage("asignatura.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image asignatura.jpeg not found or unreadable");
+            }
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\asignatura.jpeg");
+                subject13.setImageFile(csImage);
+                subject13.setImage("asignatura.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image asignatura.jpeg not found or unreadable");
+            }
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\asignatura.jpeg");
+                subject14.setImageFile(csImage);
+                subject14.setImage("asignatura.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image asignatura.jpeg not found or unreadable");
+            }
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\asignatura.jpeg");
+                subject15.setImageFile(csImage);
+                subject15.setImage("asignatura.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image asignatura.jpeg not found or unreadable");
+            }
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\asignatura.jpeg");
+                subject16.setImageFile(csImage);
+                subject16.setImage("asignatura.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image asignatura.jpeg not found or unreadable");
+            }
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\asignatura.jpeg");
+                subject17.setImageFile(csImage);
+                subject17.setImage("asignatura.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image asignatura.jpeg not found or unreadable");
+            }
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\asignatura.jpeg");
+                subject18.setImageFile(csImage);
+                subject18.setImage("asignatura.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image asignatura.jpeg not found or unreadable");
+            }
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\asignatura.jpeg");
+                subject19.setImageFile(csImage);
+                subject19.setImage("asignatura.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image asignatura.jpeg not found or unreadable");
+            }
+            try {
+                Blob csImage = mediaService.filePathToBlob("images\\asignatura.jpeg");
+                subject20.setImageFile(csImage);
+                subject20.setImage("asignatura.jpeg");
+            } catch (IOException e) {
+                System.err.println("Image asignatura.jpeg not found or unreadable");
+            }
+
+
             // Save the subjects
             subjectRepository.saveAll(Arrays.asList(subject1, subject2, subject3, subject4, subject5, subject6, subject7, subject8, subject9, subject10, subject11, subject12, subject13, subject14, subject15, subject16, subject17, subject18, subject19, subject20));
 
