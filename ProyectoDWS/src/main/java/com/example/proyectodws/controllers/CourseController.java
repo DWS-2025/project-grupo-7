@@ -141,6 +141,22 @@ public class CourseController {
                 .body(course);
     }
 
+    @GetMapping("/videos/{id}/{videoName}")
+    public ResponseEntity<Object> downloadVideo(@PathVariable long id, @PathVariable String videoName) throws SQLException {
+        if (videoName == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Resource video = courseService.getVideo(id, videoName);
+        if (video == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, "video/" + videoName.substring(videoName.lastIndexOf('.') + 1))
+                .body(video);
+    }
+
     @GetMapping("/course/{id}/edit")
     public String editCourseForm(Model model, @PathVariable long id) {
         CourseDTO course = courseService.getCourseById(id);
@@ -196,7 +212,7 @@ public class CourseController {
         CourseDTO course = courseService.getCourseById(id);
 
         if (course == null) {
-            return "errorScreens/error404";
+            return "errorScreens/error404.html";
         }
 
         UserDTO user = userService.getLoggedUserDTO();
@@ -211,6 +227,7 @@ public class CourseController {
         return "courses/enrolled_courses";
     }
 
+    // Unenroll from a course
     @PostMapping("/course/{id}/unenroll")
     public String unenrollFromCourse(Model model, @PathVariable long id) {
         CourseDTO course = courseService.getCourseById(id);
@@ -239,7 +256,7 @@ public class CourseController {
         CourseDTO course = courseService.getCourseById(id);
 
         if (course == null) {
-            return "errorScreens/error404";
+            return "errorScreens/error404.html";
         }
 
         List<UserDTO> enrolledStudents = courseService.getEnrolledStudents(id);
@@ -268,7 +285,7 @@ public class CourseController {
         CourseDTO course = courseService.getCourseById(id);
         if (course != null) {
             courseService.deleteCourse(id);
-            userSession.disNumCourses(); // Decrease the number of courses for the user session
+            userSession.disNumCourses();
 
             for (UserDTO user : userService.getAllUsers()) {
                 if (user.courses().contains(course)) {

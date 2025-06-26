@@ -84,7 +84,7 @@ public class MediaService {
     public String saveVideo(Long courseId, MultipartFile video) throws IOException {
 
         // Create directory if it doesn't exist
-        Path directory = Paths.get(System.getProperty("user.dir"), "src", "main", "resources", "static", "videos", courseId.toString());
+        Path directory = Paths.get(System.getProperty("user.dir"), "uploads", "videos", courseId.toString());
 
         // Create directory if it doesn't exist
         if (!Files.exists(directory)) {
@@ -139,6 +139,15 @@ public class MediaService {
             return new UrlResource(imagePath.toUri());
         } catch (MalformedURLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't get local image");
+        }
+    }
+
+    public Resource getVideo(Long courseId, String videoName) {
+        Path videoPath = Paths.get(System.getProperty("user.dir"), "uploads", "videos", courseId.toString(), videoName);
+        try {
+            return new UrlResource(videoPath.toUri());
+        } catch (MalformedURLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't get local video");
         }
     }
 

@@ -23,7 +23,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
-// Service for courses.
 @Service
 public class CourseService {
     @Autowired
@@ -80,6 +79,15 @@ public class CourseService {
     public CourseDTO getCourseById(Long id) {
         Course course = courseRepository.findById(id).orElse(null);
         return courseMapper.toDTO(course);
+    }
+
+    public Resource getVideo(Long id, String videoName) {
+        Course course = courseRepository.findById(id).orElse(null);
+        if (course.getVideo() != null) {
+            Resource video = mediaService.getVideo(id, videoName);
+            return video;
+        }
+        return null;
     }
 
     public List<CourseDTO> getAllCourses(){
