@@ -23,7 +23,6 @@ import com.example.proyectodws.security.jwt.AuthResponse;
 import com.example.proyectodws.security.jwt.AuthResponse.Status;
 import com.example.proyectodws.security.jwt.LoginRequest;
 import com.example.proyectodws.security.jwt.UserLoginService;
-import com.example.proyectodws.service.MediaService;
 import com.example.proyectodws.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,9 +36,6 @@ public class LoginRestController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private MediaService mediaService;
 
     // Login a user.
     @PostMapping("/login")
@@ -98,16 +94,6 @@ public class LoginRestController {
             return ResponseEntity.status(400).body(new AuthResponse(Status.FAILURE, "El nombre de usuario ya existe"));
         }
 
-        // Image name
-        String imageName = null;
-
-        // Save image
-        try {
-            imageName = mediaService.saveImage(image);
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body(new AuthResponse(Status.FAILURE, "Error al guardar la imagen"));
-        }
-
         // Encode password.
         String hashedPassword = new BCryptPasswordEncoder().encode(password);
 
@@ -116,7 +102,7 @@ public class LoginRestController {
         rolesList.add("USER");
 
         // Create user
-        UserDTO newUser = new UserDTO(null, first_name, last_name, username, hashedPassword, imageName, rolesList, null);
+        UserDTO newUser = new UserDTO(null, first_name, last_name, username, hashedPassword, null, rolesList, null);
 
         if (image != null && !image.isEmpty()) {
             try {

@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.proyectodws.dto.NewUserRequestDTO;
 import com.example.proyectodws.dto.UserDTO;
-import com.example.proyectodws.service.MediaService;
 import com.example.proyectodws.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,9 +29,6 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private MediaService mediaService;
 
     @GetMapping("/login")
     public String login() {
@@ -86,7 +82,6 @@ public class AuthController {
 
         String hashedPassword = new BCryptPasswordEncoder().encode(newUserRequestCleaned.password());
 
-        String imageName = mediaService.saveImage(image);
         List<String> roles = new ArrayList<>(Arrays.asList("USER"));
 
         UserDTO user = new UserDTO(
@@ -95,7 +90,7 @@ public class AuthController {
                 newUserRequestCleaned.last_name(),
                 newUserRequestCleaned.username(),
                 hashedPassword,
-                imageName,
+                null,
                 roles,
                 null
         );
