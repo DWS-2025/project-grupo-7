@@ -117,9 +117,15 @@ public class ProfileRestController {
 
     @DeleteMapping()
     public ResponseEntity<AuthResponse> deleteProfile(HttpServletResponse response) {
-        Long userId = userService.getLoggedUserDTO().id();
-        String result = userLoginService.logout(response);
-        userService.deleteUser(userId);
-        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, result));
+        UserDTO user = userService.getLoggedUserDTO();
+
+        if (user.roles().contains("ADMIN")) {
+            return ResponseEntity.status(403).body(new AuthResponse(Status.FAILURE, "Los administradores no pueden eliminar su cuenta"));
+        } else {
+            Long userId = user.id();
+            String result = userLoginService.logout(response);
+            userService.deleteUser(userId);
+            return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, result));
+        }
     }
 }

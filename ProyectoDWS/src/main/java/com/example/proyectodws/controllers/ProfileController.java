@@ -120,7 +120,13 @@ public class ProfileController {
     @PostMapping("/profile/delete")
     public String deleteProfile(HttpServletRequest request, HttpServletResponse response) {
 
-        Long userId = userService.getLoggedUserDTO().id();
+        UserDTO user = userService.getLoggedUserDTO();
+
+        if (user.roles().contains("ADMIN")) {
+            return "errorScreens/error403";
+        }
+
+        Long userId = user.id();
         request.getSession().invalidate();
         SecurityContextHolder.clearContext();
         userLoginService.logout(response);

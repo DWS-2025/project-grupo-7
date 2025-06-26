@@ -196,7 +196,7 @@ public class CourseController {
         CourseDTO course = courseService.getCourseById(id);
 
         if (course == null) {
-            return "errorScreens/error404.html";
+            return "errorScreens/error404";
         }
 
         UserDTO user = userService.getLoggedUserDTO();
@@ -239,7 +239,7 @@ public class CourseController {
         CourseDTO course = courseService.getCourseById(id);
 
         if (course == null) {
-            return "errorScreens/error404.html";
+            return "errorScreens/error404";
         }
 
         List<UserDTO> enrolledStudents = courseService.getEnrolledStudents(id);

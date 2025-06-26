@@ -28,7 +28,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // Display all the users
     @GetMapping
     public String showUsers(Model model) {
         List<UserDTO> users = userService.getAllUsers();
@@ -36,7 +35,6 @@ public class UserController {
         return "users/users";
     }
 
-    // Display info from user by 'id'
     @GetMapping("/{id}")
     public String showUserDetails(@PathVariable("id") Long id, Model model) {
         UserDTO user = userService.getUserById(id);
@@ -55,6 +53,7 @@ public class UserController {
             return ResponseEntity.status(404).build();
         }
 
+        // Check permissions (admin can see all images but user only his own)
         UserDTO loggedUser = userService.getLoggedUserDTO();
         if (!loggedUser.id().equals(id) && !loggedUser.roles().contains("ADMIN")) {
             return ResponseEntity.status(403).build();
@@ -127,7 +126,13 @@ public class UserController {
     @PostMapping("/{id}/delete")
     public String deleteUserById(@PathVariable("id") Long id) {
         UserDTO loggedUser = userService.getLoggedUserDTO();
+        UserDTO user = userService.getUserById(id);
+
         if (loggedUser.id().equals(id)) {
+            return "errorScreens/error403";
+        }
+
+        if (user.roles().contains("ADMIN")) {
             return "errorScreens/error403";
         }
 

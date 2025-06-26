@@ -302,6 +302,10 @@ public class UserRestController {
             return ResponseEntity.status(400).body(new GenericResponse("No puedes eliminar tu propio usuario", 400));
         }
 
+        if (user.roles().contains("ADMIN")) {
+            return ResponseEntity.status(403).body(new GenericResponse("No puedes eliminar un usuario administrador", 403));
+        }
+
         // Delete user
         userService.deleteUser(id);
 
